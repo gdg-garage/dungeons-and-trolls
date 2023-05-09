@@ -1,4 +1,4 @@
-const GameObjectPriorities : string[] = ["Player"]
+const GameObjectPriorities : string[] = ["Player", "Moster"]
 
 function allChildren(go: any): any[] {
     var res: any[] = [go];
@@ -42,6 +42,8 @@ function GameObjectToEmoji(gameObject : any) : string {
             return "."
         case "Stairs":
             return "H"
+        case "Monster":
+            return "M"
         default:
             return "?"
     }

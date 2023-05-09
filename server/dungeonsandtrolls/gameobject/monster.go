@@ -1,15 +1,15 @@
 package gameobject
 
-type Player struct {
+type Monster struct {
 	GameObject `json:",inline"`
 	Name       string `json:"name"`
 }
 
-func CreatePlayer(name string) *Player {
-	return &Player{
+func CreateMonster(name string) *Monster {
+	return &Monster{
 		Name: name,
 		GameObject: GameObject{
-			Type: "Player",
+			Type: "Monster",
 		},
 	}
 }

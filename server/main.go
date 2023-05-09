@@ -48,6 +48,7 @@ func main() {
 		gameHandler(g, w, r)
 	}))
 
+	log.Info().Msg("Starting server")
 	err = http.ListenAndServe(":8080", nil)
 	if err != nil {
 		log.Fatal().Err(err)

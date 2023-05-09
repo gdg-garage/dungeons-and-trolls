@@ -7,8 +7,18 @@ type GameObject struct {
 
 type Interface interface {
 	GetType() string
+	GetChildren() []Interface
+	SetChildren([]Interface)
 }
 
 func (g *GameObject) GetType() string {
 	return g.Type
+}
+
+func (g *GameObject) GetChildren() []Interface {
+	return g.Children
+}
+
+func (g *GameObject) SetChildren(children []Interface) {
+	g.Children = children
 }

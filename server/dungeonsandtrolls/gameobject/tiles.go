@@ -1,19 +1,13 @@
 package gameobject
 
-func CreateEmpty() GameObject {
-	return GameObject{
+func CreateEmpty() *GameObject {
+	return &GameObject{
 		Type: "Empty",
 	}
 }
 
-func CreateWall() GameObject {
-	return GameObject{
+func CreateWall() *GameObject {
+	return &GameObject{
 		Type: "Wall",
-	}
-}
-
-func CreateStairs() GameObject {
-	return GameObject{
-		Type: "Stairs",
 	}
 }

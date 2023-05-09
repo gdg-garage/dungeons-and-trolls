@@ -14,6 +14,6 @@ func CreateGame() (*Game, error) {
 	}
 	g.Map = m
 	// place player
-	(*g.Map)[0][4][4].Children = append((*g.Map)[0][4][4].Children, gameobject.CreatePlayer("player"))
+	(*g.Map)[0][4][4].SetChildren(append((*g.Map)[0][4][4].GetChildren(), gameobject.CreatePlayer("player 1")))
 	return &g, nil
 }
