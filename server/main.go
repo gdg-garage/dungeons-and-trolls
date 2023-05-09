@@ -4,6 +4,7 @@ import (
 	"dungeons-and-trolls/dungeonsandtrolls"
 	"encoding/json"
 	"github.com/rs/zerolog/log"
+	"io"
 	"net/http"
 )
 
@@ -20,6 +21,20 @@ func gameHandler(game *dungeonsandtrolls.Game, w http.ResponseWriter, r *http.Re
 		log.Err(err)
 		return
 	}
+}
+
+func actionHandler(game *dungeonsandtrolls.Game, w http.ResponseWriter, r *http.Request) {
+	body, err := io.ReadAll(r.Body)
+	if err != nil {
+		// TODO log and so on
+		return
+	}
+	var mc dungeonsandtrolls.MoveCommand
+	err = json.Unmarshal(body, &mc)
+	if err != nil {
+		return
+	}
+	game.Inputs["player 1"] = []dungeonsandtrolls.CommandI{mc}
 }
 
 func addDefaultHeaders(fn http.HandlerFunc) http.HandlerFunc {
@@ -46,6 +61,9 @@ func main() {
 
 	http.HandleFunc("/", addDefaultHeaders(func(w http.ResponseWriter, r *http.Request) {
 		gameHandler(g, w, r)
+	}))
+	http.HandleFunc("/actions", addDefaultHeaders(func(w http.ResponseWriter, r *http.Request) {
+		actionHandler(g, w, r)
 	}))
 
 	log.Info().Msg("Starting server")

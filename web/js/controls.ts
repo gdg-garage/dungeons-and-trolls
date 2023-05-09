@@ -1,4 +1,29 @@
 export function processUserInput(key: KeyboardEvent) {
-    // todo process valid keys for movement and actions and map them to appropriate calls
-    console.log(key.key, key.code)
+
+    switch (key.key) {
+        case "ArrowUp":
+            fetch('http://localhost:8080/actions', {
+                method: 'POST',
+                body: JSON.stringify({ "type": "Move", "direction": "up"})
+            })
+            break;
+        case "ArrowDown":
+            fetch('http://localhost:8080/actions', {
+                method: 'POST',
+                body: JSON.stringify({ "type": "Move", "direction": "down"})
+            })
+            break;
+        case "ArrowLeft":
+            fetch('http://localhost:8080/actions', {
+                method: 'POST',
+                body: JSON.stringify({ "type": "Move", "direction": "left"})
+            })
+            break;
+        case "ArrowRight":
+            fetch('http://localhost:8080/actions', {
+                method: 'POST',
+                body: JSON.stringify({ "type": "Move", "direction": "right"})
+            })
+            break;
+    }
 }

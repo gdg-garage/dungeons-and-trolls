@@ -53,7 +53,7 @@ function renderMapToDom(game: any) {
     for (const [levelIdx, level] of game["map"].entries()) {
         let levelHeader = document.createElement("h2");
         levelHeader.textContent = "Level " + levelIdx;
-        document.body.append(levelHeader);
+        document.getElementById("game").append(levelHeader);
 
         let levelMap = document.createElement("div");
         for (const row of level) {
@@ -67,7 +67,7 @@ function renderMapToDom(game: any) {
             }
             levelMap.append(mapRow);
         }
-        document.body.append(levelMap);
+        document.getElementById("game").append(levelMap);
     }
 }
 
