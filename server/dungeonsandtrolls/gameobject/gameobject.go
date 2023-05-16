@@ -11,6 +11,11 @@ type Interface interface {
 	SetChildren([]Interface)
 }
 
+// TODO use this for ASCII representation
+type Drawable interface {
+	Draw() string
+}
+
 func (g *GameObject) GetType() string {
 	return g.Type
 }
