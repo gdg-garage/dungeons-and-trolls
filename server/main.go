@@ -122,10 +122,4 @@ func main() {
 
 	log.Info().Msg("Serving gRPC-Gateway on http://0.0.0.0:8080")
 	log.Fatal().Err(gwServer.ListenAndServe())
-
-	//log.Info().Msg("Starting server")
-	//err = http.ListenAndServe(":8080", nil)
-	//if err != nil {
-	//	log.Fatal().Err(err)
-	//}
 }
