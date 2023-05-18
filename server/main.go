@@ -1,10 +1,16 @@
 package main
 
 import (
+	"context"
 	"encoding/json"
+	"fmt"
 	"github.com/gdg-garage/dungeons-and-trolls/server/dungeonsandtrolls"
+	"github.com/grpc-ecosystem/grpc-gateway/v2/runtime"
 	"github.com/rs/zerolog/log"
+	"google.golang.org/grpc"
+	"google.golang.org/grpc/credentials/insecure"
 	"io"
+	"net"
 	"net/http"
 )
 
@@ -53,6 +59,16 @@ func addDefaultHeaders(fn http.HandlerFunc) http.HandlerFunc {
 	}
 }
 
+type server struct {
+	dungeonsandtrolls.UnimplementedGreeterServer
+}
+
+// SayHello implements helloworld.GreeterServer
+func (s *server) SayHello(ctx context.Context, in *dungeonsandtrolls.HelloRequest) (*dungeonsandtrolls.HelloReply, error) {
+	log.Printf("Received: %v", in.GetName())
+	return &dungeonsandtrolls.HelloReply{Message: "Hello " + in.GetName()}, nil
+}
+
 func main() {
 	g, err := dungeonsandtrolls.CreateGame()
 	if err != nil {
@@ -66,9 +82,50 @@ func main() {
 		actionHandler(g, w, r)
 	}))
 
-	log.Info().Msg("Starting server")
-	err = http.ListenAndServe(":8080", nil)
+	lis, err := net.Listen("tcp", fmt.Sprintf(":%d", 8081))
 	if err != nil {
-		log.Fatal().Err(err)
+		log.Fatal().Msgf("failed to listen: %v", err)
 	}
+	s := grpc.NewServer()
+	dungeonsandtrolls.RegisterGreeterServer(s, &server{})
+	log.Printf("server listening at %v", lis.Addr())
+
+	go func() {
+		if err := s.Serve(lis); err != nil {
+			log.Fatal().Msgf("failed to serve: %v", err)
+		}
+	}()
+
+	// Create a client connection to the gRPC server we just started
+	// This is where the gRPC-Gateway proxies the requests
+	conn, err := grpc.DialContext(
+		context.Background(),
+		"0.0.0.0:8081",
+		grpc.WithBlock(),
+		grpc.WithTransportCredentials(insecure.NewCredentials()),
+	)
+	if err != nil {
+		log.Fatal().Msgf("Failed to dial server:", err)
+	}
+
+	gwmux := runtime.NewServeMux()
+	// Register Greeter
+	err = dungeonsandtrolls.RegisterGreeterHandler(context.Background(), gwmux, conn)
+	if err != nil {
+		log.Fatal().Msgf("Failed to register gateway:", err)
+	}
+
+	gwServer := &http.Server{
+		Addr:    ":8080",
+		Handler: gwmux,
+	}
+
+	log.Info().Msg("Serving gRPC-Gateway on http://0.0.0.0:8080")
+	log.Fatal().Err(gwServer.ListenAndServe())
+
+	//log.Info().Msg("Starting server")
+	//err = http.ListenAndServe(":8080", nil)
+	//if err != nil {
+	//	log.Fatal().Err(err)
+	//}
 }
