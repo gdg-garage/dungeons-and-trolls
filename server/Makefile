@@ -4,3 +4,6 @@ proto-plugin-deps:
 
 proto:
 	protoc --go_out=../server/dungeonsandtrolls --go_opt=paths=source_relative --go-grpc_out=../server/dungeonsandtrolls --go-grpc_opt=paths=source_relative --proto_path=../spec ../spec/dungeonsandtrolls.proto
+
+update-deps:
+	go get -t -u
