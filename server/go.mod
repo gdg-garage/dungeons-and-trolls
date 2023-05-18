@@ -1,4 +1,3 @@
-//module github.com/gdg-garage/dungeons-and-trolls/server
 module github.com/gdg-garage/dungeons-and-trolls/server
 
 go 1.20
