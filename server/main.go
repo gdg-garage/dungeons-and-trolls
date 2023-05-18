@@ -1,8 +1,8 @@
 package main
 
 import (
-	"dungeons-and-trolls/dungeonsandtrolls"
 	"encoding/json"
+	"github.com/gdg-garage/dungeons-and-trolls/server/dungeonsandtrolls"
 	"github.com/rs/zerolog/log"
 	"io"
 	"net/http"

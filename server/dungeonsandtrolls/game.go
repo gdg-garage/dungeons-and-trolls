@@ -1,7 +1,7 @@
 package dungeonsandtrolls
 
 import (
-	"dungeons-and-trolls/dungeonsandtrolls/gameobject"
+	"github.com/gdg-garage/dungeons-and-trolls/server/dungeonsandtrolls/gameobject"
 	"time"
 )
 
