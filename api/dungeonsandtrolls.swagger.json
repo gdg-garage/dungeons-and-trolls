@@ -1,7 +1,7 @@
 {
   "swagger": "2.0",
   "info": {
-    "title": "dungeonsandtrolls.proto",
+    "title": "proto/dungeonsandtrolls.proto",
     "version": "version not set"
   },
   "tags": [
@@ -16,7 +16,7 @@
     "application/json"
   ],
   "paths": {
-    "/v1/example/echo": {
+    "/v1/echo": {
       "post": {
         "summary": "Sends a greeting",
         "operationId": "Greeter_SayHello",

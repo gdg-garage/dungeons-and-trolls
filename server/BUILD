@@ -5,4 +5,5 @@ gateway_grpc_compile(
     protos = ["//proto:dungeonsandtrolls_proto"],
     output_mode = "NO_PREFIX",
     prefix_path = "dungeonsandtrolls",
+    
 )

@@ -1,11 +1,25 @@
 load("@rules_proto//proto:defs.bzl", "proto_library")
 
+package(default_visibility = ["//visibility:public"])
+
 proto_library(
     name = "dungeonsandtrolls_proto",
-    srcs = ["dungeonsandtrolls.proto"],
+    srcs = [
+        "dungeonsandtrolls.proto",
+    ],
+)
+
+proto_library(
+    name = "dungeonsandtrolls_annotated_proto",
+    srcs = [
+        "dungeonsandtrolls_annotated.proto",
+    ],
     deps = [
         "@go_googleapis//google/api:annotations_proto",
     ],
-    visibility = ["//visibility:public"],
-    strip_import_prefix = ""
+)
+
+filegroup(
+  name = 'service',
+  srcs = ["service.yml"],
 )
