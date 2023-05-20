@@ -2,7 +2,7 @@
 // versions:
 // - protoc-gen-go-grpc v1.2.0
 // - protoc             v3.21.10
-// source: dungeonsandtrolls.proto
+// source: proto/dungeonsandtrolls.proto
 
 package dungeonsandtrolls
 
@@ -101,5 +101,5 @@ var Greeter_ServiceDesc = grpc.ServiceDesc{
 		},
 	},
 	Streams:  []grpc.StreamDesc{},
-	Metadata: "dungeonsandtrolls.proto",
+	Metadata: "proto/dungeonsandtrolls.proto",
 }

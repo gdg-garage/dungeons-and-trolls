@@ -1,6 +1,6 @@
 proto:
 	bazel build //...
-	cp ../bazel-bin/server/dungeonsandtrolls/* dungeonsandtrolls/
+	cp ../bazel-bin/server/dungeonsandtrolls/proto/* dungeonsandtrolls/
 	chmod u+w dungeonsandtrolls/*
 
 update-deps:
