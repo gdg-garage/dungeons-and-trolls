@@ -6,10 +6,10 @@ import (
 	"math/rand"
 )
 
-type Map [][][]gameobject.Interface
+type ObsoleteMap [][][]gameobject.Interface
 
-func CreateMap() (*Map, error) {
-	var m Map
+func CreateMap() (*ObsoleteMap, error) {
+	var m ObsoleteMap
 	m = append(m, baseFloor())
 	monsterCounter := 1
 	for l := 1; l < 3; l++ {

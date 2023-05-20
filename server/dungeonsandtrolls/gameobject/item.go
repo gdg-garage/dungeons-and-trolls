@@ -1,6 +1,8 @@
 package gameobject
 
-import "github.com/google/uuid"
+import (
+	"github.com/google/uuid"
+)
 
 type Id interface {
 	GetId() string
@@ -22,16 +24,16 @@ func (i *Item) GetId() string {
 	return i.Id
 }
 
-type Weapon struct {
-	*Item  `json:",inline"`
-	Damage float32 `json:"damage"`
-	Weight float32 `json:"weight"`
-}
+//type Weapon struct {
+//	*Item  `json:",inline"`
+//	Damage float32 `json:"damage"`
+//	Weight float32 `json:"weight"`
+//}
 
-func CreateWeapon(name string, damage, weight float32) *Weapon {
-	return &Weapon{
-		Item:   CreateItem(name),
-		Damage: damage,
-		Weight: weight,
-	}
-}
+//func CreateWeapon(name string, damage, weight float32) *Weapon {
+//	return &Weapon{
+//		Item:   CreateItem(name),
+//		Damage: damage,
+//		Weight: weight,
+//	}
+//}

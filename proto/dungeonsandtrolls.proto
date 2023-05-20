@@ -4,19 +4,50 @@ option go_package = "github.com/gdg-garage/dungeons-and-trolls/server/dungeonsan
 
 package dungeonsandtrolls;
 
+import "google/protobuf/empty.proto";
+import "google/protobuf/struct.proto";
 
-// The greeting service definition.
-service Greeter {
-  // Sends a greeting
-  rpc SayHello (HelloRequest) returns (HelloReply) {}
+
+// The game service definition.
+service DungeonsAndTrolls {
+  // Sends all info about the game.
+  rpc Game(google.protobuf.Empty) returns (GameState) {}
 }
 
-// The request message containing the user's name.
-message HelloRequest {
+message Weapon {
   string name = 1;
+  float damage = 2;
+  float weight = 3;
 }
 
-// The response message containing the greetings
-message HelloReply {
-  string message = 1;
+message Items {
+  repeated Weapon weapons = 1;
+}
+
+// TODO this is temporary
+message Object {
+  string name = 1;
+  int32 position_x = 2;
+  int32 position_y = 3;
+}
+
+message MapDecorations {
+  repeated Object carpets = 1;
+  // TODO add other like rugs, doors, ...
+}
+
+message MapObjects {
+  repeated Object monsters = 1;
+  repeated Object chests = 2;
+  repeated Object stairs = 3;
+}
+
+message Map {
+  repeated google.protobuf.ListValue free = 1;
+  MapObjects objects = 2;
+}
+
+message GameState {
+  Map map = 1;
+  Items items = 2;
 }

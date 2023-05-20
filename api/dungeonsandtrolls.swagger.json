@@ -6,7 +6,7 @@
   },
   "tags": [
     {
-      "name": "Greeter"
+      "name": "DungeonsAndTrolls"
     }
   ],
   "consumes": [
@@ -16,15 +16,15 @@
     "application/json"
   ],
   "paths": {
-    "/v1/echo": {
-      "post": {
-        "summary": "Sends a greeting",
-        "operationId": "Greeter_SayHello",
+    "/v1/game": {
+      "get": {
+        "summary": "Sends all info about the game.",
+        "operationId": "DungeonsAndTrolls_Game",
         "responses": {
           "200": {
             "description": "A successful response.",
             "schema": {
-              "$ref": "#/definitions/dungeonsandtrollsHelloReply"
+              "$ref": "#/definitions/dungeonsandtrollsGameState"
             }
           },
           "default": {
@@ -34,41 +34,107 @@
             }
           }
         },
-        "parameters": [
-          {
-            "name": "body",
-            "description": "The request message containing the user's name.",
-            "in": "body",
-            "required": true,
-            "schema": {
-              "$ref": "#/definitions/dungeonsandtrollsHelloRequest"
-            }
-          }
-        ],
         "tags": [
-          "Greeter"
+          "DungeonsAndTrolls"
         ]
       }
     }
   },
   "definitions": {
-    "dungeonsandtrollsHelloReply": {
+    "dungeonsandtrollsGameState": {
       "type": "object",
       "properties": {
-        "message": {
-          "type": "string"
+        "map": {
+          "$ref": "#/definitions/dungeonsandtrollsMap"
+        },
+        "items": {
+          "$ref": "#/definitions/dungeonsandtrollsItems"
         }
-      },
-      "title": "The response message containing the greetings"
+      }
     },
-    "dungeonsandtrollsHelloRequest": {
+    "dungeonsandtrollsItems": {
+      "type": "object",
+      "properties": {
+        "weapons": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/dungeonsandtrollsWeapon"
+          }
+        }
+      }
+    },
+    "dungeonsandtrollsMap": {
+      "type": "object",
+      "properties": {
+        "free": {
+          "type": "array",
+          "items": {
+            "type": "array",
+            "items": {
+              "type": "object"
+            }
+          }
+        },
+        "objects": {
+          "$ref": "#/definitions/dungeonsandtrollsMapObjects"
+        }
+      }
+    },
+    "dungeonsandtrollsMapObjects": {
+      "type": "object",
+      "properties": {
+        "monsters": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/dungeonsandtrollsObject"
+          }
+        },
+        "chests": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/dungeonsandtrollsObject"
+          }
+        },
+        "stairs": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/dungeonsandtrollsObject"
+          }
+        }
+      }
+    },
+    "dungeonsandtrollsObject": {
       "type": "object",
       "properties": {
         "name": {
           "type": "string"
+        },
+        "positionX": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "positionY": {
+          "type": "integer",
+          "format": "int32"
         }
       },
-      "description": "The request message containing the user's name."
+      "title": "TODO this is temporary"
+    },
+    "dungeonsandtrollsWeapon": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string"
+        },
+        "damage": {
+          "type": "number",
+          "format": "float"
+        },
+        "weight": {
+          "type": "number",
+          "format": "float"
+        }
+      }
     },
     "protobufAny": {
       "type": "object",
@@ -78,6 +144,13 @@
         }
       },
       "additionalProperties": {}
+    },
+    "protobufNullValue": {
+      "type": "string",
+      "enum": [
+        "NULL_VALUE"
+      ],
+      "default": "NULL_VALUE"
     },
     "rpcStatus": {
       "type": "object",

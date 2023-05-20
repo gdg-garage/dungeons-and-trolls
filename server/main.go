@@ -9,6 +9,7 @@ import (
 	"github.com/rs/zerolog/log"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials/insecure"
+	"google.golang.org/protobuf/types/known/emptypb"
 	"io"
 	"net"
 	"net/http"
@@ -60,13 +61,12 @@ func addDefaultHeaders(fn http.HandlerFunc) http.HandlerFunc {
 }
 
 type server struct {
-	dungeonsandtrolls.UnimplementedGreeterServer
+	dungeonsandtrolls.UnsafeDungeonsAndTrollsServer
 }
 
-// SayHello implements helloworld.GreeterServer
-func (s *server) SayHello(ctx context.Context, in *dungeonsandtrolls.HelloRequest) (*dungeonsandtrolls.HelloReply, error) {
-	log.Printf("Received: %v", in.GetName())
-	return &dungeonsandtrolls.HelloReply{Message: "Hello " + in.GetName()}, nil
+// SayHello implements dungeonsandtrolls.GameServer
+func (s *server) Game(ctx context.Context, _ *emptypb.Empty) (*dungeonsandtrolls.GameState, error) {
+	return &dungeonsandtrolls.GameState{}, nil
 }
 
 func main() {
@@ -87,7 +87,7 @@ func main() {
 		log.Fatal().Msgf("failed to listen: %v", err)
 	}
 	s := grpc.NewServer()
-	dungeonsandtrolls.RegisterGreeterServer(s, &server{})
+	dungeonsandtrolls.RegisterDungeonsAndTrollsServer(s, &server{})
 	log.Printf("server listening at %v", lis.Addr())
 
 	go func() {
@@ -110,7 +110,7 @@ func main() {
 
 	gwmux := runtime.NewServeMux()
 	// Register Greeter
-	err = dungeonsandtrolls.RegisterGreeterHandler(context.Background(), gwmux, conn)
+	err = dungeonsandtrolls.RegisterDungeonsAndTrollsHandler(context.Background(), gwmux, conn)
 	if err != nil {
 		log.Fatal().Msgf("Failed to register gateway: %s", err)
 	}

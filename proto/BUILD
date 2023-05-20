@@ -7,6 +7,10 @@ proto_library(
     srcs = [
         "dungeonsandtrolls.proto",
     ],
+    deps = [
+        "@com_google_protobuf//:empty_proto",
+        "@com_google_protobuf//:struct_proto",
+    ],
 )
 
 proto_library(

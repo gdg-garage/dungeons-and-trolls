@@ -3,6 +3,5 @@ config_version: 3
 
 http:
   rules:
-    - selector: dungeonsandtrolls.Greeter.SayHello
-      post: "/v1/echo"
-      body: "*"
+    - selector: dungeonsandtrolls.DungeonsAndTrolls.Game
+      get: "/v1/game"
