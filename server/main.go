@@ -105,14 +105,14 @@ func main() {
 		grpc.WithTransportCredentials(insecure.NewCredentials()),
 	)
 	if err != nil {
-		log.Fatal().Msgf("Failed to dial server:", err)
+		log.Fatal().Msgf("Failed to dial server: %s", err)
 	}
 
 	gwmux := runtime.NewServeMux()
 	// Register Greeter
 	err = dungeonsandtrolls.RegisterGreeterHandler(context.Background(), gwmux, conn)
 	if err != nil {
-		log.Fatal().Msgf("Failed to register gateway:", err)
+		log.Fatal().Msgf("Failed to register gateway: %s", err)
 	}
 
 	gwServer := &http.Server{
