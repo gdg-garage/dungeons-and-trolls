@@ -1,8 +1,9 @@
 package dungeonsandtrolls
 
 import (
-	"github.com/gdg-garage/dungeons-and-trolls/server/dungeonsandtrolls/gameobject"
 	"time"
+
+	"github.com/gdg-garage/dungeons-and-trolls/server/dungeonsandtrolls/gameobject"
 )
 
 const LoopTime = time.Second
@@ -10,8 +11,8 @@ const LoopTime = time.Second
 func CreateWeapon(name string, damage, weight float32) *Weapon {
 	return &Weapon{
 		//Item:   CreateItem(name),
-		Damage: damage,
-		Weight: weight,
+		MaxDamage: damage,
+		Weight:    weight,
 	}
 }
 
