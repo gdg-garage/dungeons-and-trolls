@@ -41,6 +41,86 @@
     }
   },
   "definitions": {
+    "dungeonsandtrollsArmor": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string"
+        },
+        "price": {
+          "type": "number",
+          "format": "float"
+        },
+        "weight": {
+          "type": "number",
+          "format": "float"
+        },
+        "defence": {
+          "type": "number",
+          "format": "float"
+        },
+        "requirements": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/dungeonsandtrollsRequirement"
+          }
+        },
+        "boosts": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/dungeonsandtrollsBoost"
+          }
+        }
+      }
+    },
+    "dungeonsandtrollsAttribute": {
+      "type": "string",
+      "enum": [
+        "STRENGTH",
+        "INTELIGENCE",
+        "VITALITY",
+        "DEXTERITY"
+      ],
+      "default": "STRENGTH"
+    },
+    "dungeonsandtrollsBoost": {
+      "type": "object",
+      "properties": {
+        "attribute": {
+          "$ref": "#/definitions/dungeonsandtrollsAttribute"
+        },
+        "value": {
+          "type": "number",
+          "format": "float"
+        }
+      }
+    },
+    "dungeonsandtrollsDamageOverTime": {
+      "type": "object",
+      "properties": {
+        "element": {
+          "$ref": "#/definitions/dungeonsandtrollsElement"
+        },
+        "damage": {
+          "type": "number",
+          "format": "float",
+          "title": "dps"
+        },
+        "duration": {
+          "type": "integer",
+          "format": "int32"
+        }
+      }
+    },
+    "dungeonsandtrollsElement": {
+      "type": "string",
+      "enum": [
+        "COLD",
+        "FIRE",
+        "LIGHTNING"
+      ],
+      "default": "COLD"
+    },
     "dungeonsandtrollsGameState": {
       "type": "object",
       "properties": {
@@ -59,6 +139,12 @@
           "type": "array",
           "items": {
             "$ref": "#/definitions/dungeonsandtrollsWeapon"
+          }
+        },
+        "armors": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/dungeonsandtrollsArmor"
           }
         }
       }
@@ -120,19 +206,57 @@
       },
       "title": "TODO this is temporary"
     },
+    "dungeonsandtrollsRequirement": {
+      "type": "object",
+      "properties": {
+        "attribute": {
+          "$ref": "#/definitions/dungeonsandtrollsAttribute"
+        },
+        "value": {
+          "type": "number",
+          "format": "float"
+        }
+      }
+    },
     "dungeonsandtrollsWeapon": {
       "type": "object",
       "properties": {
         "name": {
           "type": "string"
         },
-        "damage": {
+        "minDamage": {
+          "type": "number",
+          "format": "float"
+        },
+        "maxDamage": {
           "type": "number",
           "format": "float"
         },
         "weight": {
           "type": "number",
           "format": "float"
+        },
+        "price": {
+          "type": "number",
+          "format": "float"
+        },
+        "damageOverTime": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/dungeonsandtrollsDamageOverTime"
+          }
+        },
+        "requirements": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/dungeonsandtrollsRequirement"
+          }
+        },
+        "boosts": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/dungeonsandtrollsBoost"
+          }
         }
       }
     },

@@ -14,14 +14,59 @@ service DungeonsAndTrolls {
   rpc Game(google.protobuf.Empty) returns (GameState) {}
 }
 
+enum Element {
+  COLD = 0;
+  FIRE = 1;
+  LIGHTNING = 2;
+}
+
+message DamageOverTime {
+  Element element = 1;
+  // dps
+  float damage = 2;
+  int32 duration = 3;
+}
+
+enum Attribute {
+  STRENGTH = 0;
+  INTELIGENCE = 1;
+  VITALITY = 2;
+  DEXTERITY = 3;
+}
+
+message Requirement {
+  Attribute attribute = 1;
+  float value = 2;
+}
+
+message Boost {
+  Attribute attribute = 1;
+  float value = 2;
+}
+
 message Weapon {
   string name = 1;
-  float damage = 2;
+  float min_damage = 2;
+  float max_damage = 3;  
+  float weight = 4;
+  float price = 5;
+  repeated DamageOverTime damage_over_time = 6;
+  repeated Requirement requirements = 7;
+  repeated Boost boosts = 8;
+}
+
+message Armor {
+  string name = 1;
+  float price = 2;
   float weight = 3;
+  float defence = 4;
+  repeated Requirement requirements = 5;
+  repeated Boost boosts = 6;
 }
 
 message Items {
   repeated Weapon weapons = 1;
+  repeated Armor armors = 2;
 }
 
 // TODO this is temporary
