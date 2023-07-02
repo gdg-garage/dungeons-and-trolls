@@ -47,6 +47,9 @@
         "name": {
           "type": "string"
         },
+        "type": {
+          "$ref": "#/definitions/dungeonsandtrollsArmorType"
+        },
         "price": {
           "type": "number",
           "format": "float"
@@ -55,35 +58,54 @@
           "type": "number",
           "format": "float"
         },
-        "defence": {
+        "defense": {
           "type": "number",
           "format": "float"
         },
         "requirements": {
           "type": "array",
           "items": {
-            "$ref": "#/definitions/dungeonsandtrollsRequirement"
+            "$ref": "#/definitions/dungeonsandtrollsAttributeValue"
           }
         },
         "boosts": {
           "type": "array",
           "items": {
-            "$ref": "#/definitions/dungeonsandtrollsBoost"
+            "$ref": "#/definitions/dungeonsandtrollsAttributeValue"
+          }
+        },
+        "resistances": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/dungeonsandtrollsResistance"
           }
         }
       }
+    },
+    "dungeonsandtrollsArmorType": {
+      "type": "string",
+      "enum": [
+        "SHIELD",
+        "HELMET",
+        "BODY_ARMOR",
+        "TROUSERS",
+        "BELT",
+        "BOOTS",
+        "GLOVES"
+      ],
+      "default": "SHIELD"
     },
     "dungeonsandtrollsAttribute": {
       "type": "string",
       "enum": [
         "STRENGTH",
-        "INTELIGENCE",
+        "INTELLIGENCE",
         "VITALITY",
         "DEXTERITY"
       ],
       "default": "STRENGTH"
     },
-    "dungeonsandtrollsBoost": {
+    "dungeonsandtrollsAttributeValue": {
       "type": "object",
       "properties": {
         "attribute": {
@@ -104,7 +126,7 @@
         "damage": {
           "type": "number",
           "format": "float",
-          "title": "dps"
+          "title": "DPS"
         },
         "duration": {
           "type": "integer",
@@ -117,7 +139,8 @@
       "enum": [
         "COLD",
         "FIRE",
-        "LIGHTNING"
+        "LIGHTNING",
+        "POISON"
       ],
       "default": "COLD"
     },
@@ -172,7 +195,13 @@
         "monsters": {
           "type": "array",
           "items": {
-            "$ref": "#/definitions/dungeonsandtrollsObject"
+            "$ref": "#/definitions/dungeonsandtrollsMonster"
+          }
+        },
+        "players": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/dungeonsandtrollsPlayer"
           }
         },
         "chests": {
@@ -185,6 +214,40 @@
           "type": "array",
           "items": {
             "$ref": "#/definitions/dungeonsandtrollsObject"
+          }
+        }
+      }
+    },
+    "dungeonsandtrollsMonster": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string"
+        },
+        "health": {
+          "type": "number",
+          "format": "float"
+        },
+        "level": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "attributes": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/dungeonsandtrollsAttributeValue"
+          }
+        },
+        "resistances": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/dungeonsandtrollsResistance"
+          }
+        },
+        "inventory": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/dungeonsandtrollsItems"
           }
         }
       }
@@ -206,11 +269,53 @@
       },
       "title": "TODO this is temporary"
     },
-    "dungeonsandtrollsRequirement": {
+    "dungeonsandtrollsPlayer": {
       "type": "object",
       "properties": {
-        "attribute": {
-          "$ref": "#/definitions/dungeonsandtrollsAttribute"
+        "name": {
+          "type": "string"
+        },
+        "health": {
+          "type": "number",
+          "format": "float"
+        },
+        "level": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "attributes": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/dungeonsandtrollsAttributeValue"
+          }
+        },
+        "resistances": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/dungeonsandtrollsResistance"
+          }
+        },
+        "inventory": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/dungeonsandtrollsItems"
+          }
+        },
+        "xp": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "money": {
+          "type": "integer",
+          "format": "int32"
+        }
+      }
+    },
+    "dungeonsandtrollsResistance": {
+      "type": "object",
+      "properties": {
+        "element": {
+          "$ref": "#/definitions/dungeonsandtrollsElement"
         },
         "value": {
           "type": "number",
@@ -223,6 +328,12 @@
       "properties": {
         "name": {
           "type": "string"
+        },
+        "oneHand": {
+          "type": "boolean"
+        },
+        "type": {
+          "$ref": "#/definitions/dungeonsandtrollsWeaponType"
         },
         "minDamage": {
           "type": "number",
@@ -249,16 +360,36 @@
         "requirements": {
           "type": "array",
           "items": {
-            "$ref": "#/definitions/dungeonsandtrollsRequirement"
+            "$ref": "#/definitions/dungeonsandtrollsAttributeValue"
           }
         },
         "boosts": {
           "type": "array",
           "items": {
-            "$ref": "#/definitions/dungeonsandtrollsBoost"
+            "$ref": "#/definitions/dungeonsandtrollsAttributeValue"
+          }
+        },
+        "resistances": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/dungeonsandtrollsResistance"
           }
         }
       }
+    },
+    "dungeonsandtrollsWeaponType": {
+      "type": "string",
+      "enum": [
+        "DAGGER",
+        "SWORD",
+        "WAND",
+        "AXE",
+        "MACE",
+        "CLAW",
+        "STAFF",
+        "SPEAR"
+      ],
+      "default": "DAGGER"
     },
     "protobufAny": {
       "type": "object",

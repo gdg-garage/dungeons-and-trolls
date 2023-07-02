@@ -18,25 +18,51 @@ enum Element {
   COLD = 0;
   FIRE = 1;
   LIGHTNING = 2;
+  POISON = 3;
 }
 
 message DamageOverTime {
   Element element = 1;
-  // dps
+  // DPS
   float damage = 2;
   int32 duration = 3;
 }
 
 enum Attribute {
   STRENGTH = 0;
-  INTELIGENCE = 1;
+  INTELLIGENCE = 1;
   VITALITY = 2;
   DEXTERITY = 3;
 }
 
-message Requirement {
+message AttributeValue {
   Attribute attribute = 1;
   float value = 2;
+}
+
+message Resistance {
+  Element element = 1;
+  float value = 2;
+}
+
+message Monster {
+  string name = 1;
+  float health = 2;
+  int32 level = 3;
+  repeated AttributeValue attributes = 4;
+  repeated Resistance resistances = 5;
+  repeated Items inventory = 6;
+}
+
+message Player {
+  string name = 1;
+  float health = 2;
+  int32 level = 3;
+  repeated AttributeValue attributes = 4;
+  repeated Resistance resistances = 5;
+  repeated Items inventory = 6;
+  int32 xp = 7;
+  int32 money = 8;
 }
 
 message Boost {
@@ -45,24 +71,52 @@ message Boost {
 }
 
 message Weapon {
+  enum Type {
+    DAGGER = 0;
+    SWORD = 1;
+    WAND = 2;
+    AXE = 3;
+    MACE = 4;
+    CLAW = 5;
+    STAFF = 6;
+    SPEAR = 7;
+  }
+
   string name = 1;
-  float min_damage = 2;
-  float max_damage = 3;  
-  float weight = 4;
-  float price = 5;
-  repeated DamageOverTime damage_over_time = 6;
-  repeated Requirement requirements = 7;
-  repeated Boost boosts = 8;
+  bool one_hand = 2;
+  Type type = 3;
+  float min_damage = 4;
+  float max_damage = 5;
+  float weight = 6;
+  float price = 7;
+  repeated DamageOverTime damage_over_time = 8;
+  repeated AttributeValue requirements = 9;
+  repeated AttributeValue boosts = 10;
+  repeated Resistance resistances = 11;
 }
 
 message Armor {
+  enum Type {
+    SHIELD = 0;
+    HELMET = 1;
+    BODY_ARMOR = 2;
+    TROUSERS = 3;
+    BELT = 4;
+    BOOTS = 5;
+    GLOVES = 6;
+  }
+
   string name = 1;
-  float price = 2;
-  float weight = 3;
-  float defence = 4;
-  repeated Requirement requirements = 5;
-  repeated Boost boosts = 6;
+  Type type = 2;
+  float price = 3;
+  float weight = 4;
+  float defense = 5;
+  repeated AttributeValue requirements = 6;
+  repeated AttributeValue boosts = 7;
+  repeated Resistance resistances = 8;
 }
+
+// TODO: Maybe add jewelery
 
 message Items {
   repeated Weapon weapons = 1;
@@ -82,9 +136,10 @@ message MapDecorations {
 }
 
 message MapObjects {
-  repeated Object monsters = 1;
-  repeated Object chests = 2;
-  repeated Object stairs = 3;
+  repeated Monster monsters = 1;
+  repeated Player players = 2;
+  repeated Object chests = 3;
+  repeated Object stairs = 4;
 }
 
 message Map {
