@@ -44,6 +44,9 @@
     "dungeonsandtrollsArmor": {
       "type": "object",
       "properties": {
+        "id": {
+          "type": "string"
+        },
         "name": {
           "type": "string"
         },
@@ -117,6 +120,65 @@
         }
       }
     },
+    "dungeonsandtrollsCharacter": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "name": {
+          "type": "string"
+        },
+        "health": {
+          "type": "number",
+          "format": "float"
+        },
+        "level": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "attributes": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/dungeonsandtrollsAttributeValue"
+          }
+        },
+        "resistances": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/dungeonsandtrollsResistance"
+          }
+        },
+        "inventory": {
+          "$ref": "#/definitions/dungeonsandtrollsItems"
+        },
+        "xp": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "money": {
+          "type": "integer",
+          "format": "int32"
+        }
+      }
+    },
+    "dungeonsandtrollsCoordinates": {
+      "type": "object",
+      "properties": {
+        "level": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "positionX": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "positionY": {
+          "type": "integer",
+          "format": "int32"
+        }
+      }
+    },
     "dungeonsandtrollsDamageOverTime": {
       "type": "object",
       "properties": {
@@ -154,7 +216,10 @@
           "$ref": "#/definitions/dungeonsandtrollsItems"
         },
         "character": {
-          "$ref": "#/definitions/dungeonsandtrollsPlayer"
+          "$ref": "#/definitions/dungeonsandtrollsCharacter"
+        },
+        "currentPosition": {
+          "$ref": "#/definitions/dungeonsandtrollsCoordinates"
         }
       }
     },
@@ -171,6 +236,12 @@
           "type": "array",
           "items": {
             "$ref": "#/definitions/dungeonsandtrollsArmor"
+          }
+        },
+        "potions": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/dungeonsandtrollsPotion"
           }
         }
       }
@@ -189,6 +260,12 @@
         },
         "objects": {
           "$ref": "#/definitions/dungeonsandtrollsMapObjects"
+        },
+        "ascii": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
         }
       }
     },
@@ -204,7 +281,7 @@
         "players": {
           "type": "array",
           "items": {
-            "$ref": "#/definitions/dungeonsandtrollsPlayer"
+            "$ref": "#/definitions/dungeonsandtrollsCharacter"
           }
         },
         "chests": {
@@ -219,11 +296,15 @@
             "$ref": "#/definitions/dungeonsandtrollsObject"
           }
         }
-      }
+      },
+      "description": "TODO those should be identified by Coordinates."
     },
     "dungeonsandtrollsMonster": {
       "type": "object",
       "properties": {
+        "id": {
+          "type": "string"
+        },
         "name": {
           "type": "string"
         },
@@ -248,10 +329,7 @@
           }
         },
         "inventory": {
-          "type": "array",
-          "items": {
-            "$ref": "#/definitions/dungeonsandtrollsItems"
-          }
+          "$ref": "#/definitions/dungeonsandtrollsItems"
         }
       }
     },
@@ -272,21 +350,24 @@
       },
       "title": "TODO this is temporary"
     },
-    "dungeonsandtrollsPlayer": {
+    "dungeonsandtrollsPotion": {
       "type": "object",
       "properties": {
+        "id": {
+          "type": "string"
+        },
         "name": {
           "type": "string"
         },
-        "health": {
+        "price": {
           "type": "number",
           "format": "float"
         },
-        "level": {
-          "type": "integer",
-          "format": "int32"
+        "weight": {
+          "type": "number",
+          "format": "float"
         },
-        "attributes": {
+        "boosts": {
           "type": "array",
           "items": {
             "$ref": "#/definitions/dungeonsandtrollsAttributeValue"
@@ -297,20 +378,6 @@
           "items": {
             "$ref": "#/definitions/dungeonsandtrollsResistance"
           }
-        },
-        "inventory": {
-          "type": "array",
-          "items": {
-            "$ref": "#/definitions/dungeonsandtrollsItems"
-          }
-        },
-        "xp": {
-          "type": "integer",
-          "format": "int32"
-        },
-        "money": {
-          "type": "integer",
-          "format": "int32"
         }
       }
     },
@@ -329,6 +396,9 @@
     "dungeonsandtrollsWeapon": {
       "type": "object",
       "properties": {
+        "id": {
+          "type": "string"
+        },
         "name": {
           "type": "string"
         },

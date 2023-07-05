@@ -12,6 +12,22 @@ import "google/protobuf/struct.proto";
 service DungeonsAndTrolls {
   // Sends all info about the game.
   rpc Game(google.protobuf.Empty) returns (GameState) {}
+  // Register provided User to the Game and create a character.
+  rpc Register(User) returns (google.protobuf.Empty) {}
+  // Buy the Item identified by the provided ID for the Character bound to the logged user.
+  rpc Buy(Identifier) returns (google.protobuf.Empty) {}
+  // Equip the Item identified by the provided ID for the Character bound to the logged user.
+  rpc Equip(Identifier) returns (google.protobuf.Empty) {}
+  // Drink the Potion identified by the provided ID for the Character bound to the logged user.
+  rpc Drink(Identifier) returns (google.protobuf.Empty) {}
+  // Move the Character bound to the logged user to the specified place.
+  rpc Move(Coordinates) returns (google.protobuf.Empty) {}
+  // Attack the entity identified by the provided ID.
+  rpc Attack(Identifier) returns (google.protobuf.Empty) {}
+  // TODO: How to use stairs.
+  // TODO: How to control monsters.
+  // TODO: Stats? Those will be probably in Grafana (not sure if we need an rpc for that).
+  // TODO: A helper for knowing more info about a fight (like damage dealt) for the UI.
 }
 
 enum Element {
@@ -46,23 +62,25 @@ message Resistance {
 }
 
 message Monster {
-  string name = 1;
-  float health = 2;
-  int32 level = 3;
-  repeated AttributeValue attributes = 4;
-  repeated Resistance resistances = 5;
-  repeated Items inventory = 6;
+  string id = 1;
+  string name = 2;
+  float health = 3;
+  int32 level = 4;
+  repeated AttributeValue attributes = 5;
+  repeated Resistance resistances = 6;
+  Items inventory = 7;
 }
 
-message Player {
-  string name = 1;
-  float health = 2;
-  int32 level = 3;
-  repeated AttributeValue attributes = 4;
-  repeated Resistance resistances = 5;
-  repeated Items inventory = 6;
-  int32 xp = 7;
-  int32 money = 8;
+message Character {
+  string id = 1;
+  string name = 2;
+  float health = 3;
+  int32 level = 4;
+  repeated AttributeValue attributes = 5;
+  repeated Resistance resistances = 6;
+  Items inventory = 7;
+  int32 xp = 8;
+  int32 money = 9;
 }
 
 message Boost {
@@ -82,17 +100,18 @@ message Weapon {
     SPEAR = 7;
   }
 
-  string name = 1;
-  bool one_hand = 2;
-  Type type = 3;
-  float min_damage = 4;
-  float max_damage = 5;
-  float weight = 6;
-  float price = 7;
-  repeated DamageOverTime damage_over_time = 8;
-  repeated AttributeValue requirements = 9;
-  repeated AttributeValue boosts = 10;
-  repeated Resistance resistances = 11;
+  string id = 1;
+  string name = 2;
+  bool one_hand = 3;
+  Type type = 4;
+  float min_damage = 5;
+  float max_damage = 6;
+  float weight = 7;
+  float price = 8;
+  repeated DamageOverTime damage_over_time = 9;
+  repeated AttributeValue requirements = 10;
+  repeated AttributeValue boosts = 11;
+  repeated Resistance resistances = 12;
 }
 
 message Armor {
@@ -106,14 +125,24 @@ message Armor {
     GLOVES = 6;
   }
 
-  string name = 1;
-  Type type = 2;
+  string id = 1;
+  string name = 2;
+  Type type = 3;
+  float price = 4;
+  float weight = 5;
+  float defense = 6;
+  repeated AttributeValue requirements = 7;
+  repeated AttributeValue boosts = 8;
+  repeated Resistance resistances = 9;
+}
+
+message Potion {
+  string id = 1;
+  string name = 2;
   float price = 3;
   float weight = 4;
-  float defense = 5;
-  repeated AttributeValue requirements = 6;
-  repeated AttributeValue boosts = 7;
-  repeated Resistance resistances = 8;
+  repeated AttributeValue boosts = 5;
+  repeated Resistance resistances = 6;
 }
 
 // TODO: Maybe add jewelery
@@ -121,6 +150,7 @@ message Armor {
 message Items {
   repeated Weapon weapons = 1;
   repeated Armor armors = 2;
+  repeated Potion potions = 3;
 }
 
 // TODO this is temporary
@@ -135,9 +165,10 @@ message MapDecorations {
   // TODO add other like rugs, doors, ...
 }
 
+// TODO those should be identified by Coordinates.
 message MapObjects {
   repeated Monster monsters = 1;
-  repeated Player players = 2;
+  repeated Character players = 2;
   repeated Object chests = 3;
   repeated Object stairs = 4;
 }
@@ -145,10 +176,26 @@ message MapObjects {
 message Map {
   repeated google.protobuf.ListValue free = 1;
   MapObjects objects = 2;
+  repeated string ascii = 3;
 }
 
 message GameState {
   Map map = 1;
   Items items = 2;
-  optional Player character = 3;
+  optional Character character = 3;
+  optional Coordinates current_position = 4;
+}
+
+message User {
+  string username = 1;
+}
+
+message Identifier {
+  string id = 1;
+}
+
+message Coordinates {
+  int32 level = 1;
+  int32 position_x = 2;
+  int32 position_y = 3;
 }

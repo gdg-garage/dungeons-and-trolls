@@ -24,6 +24,12 @@ const _ = grpc.SupportPackageIsVersion7
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type DungeonsAndTrollsClient interface {
 	Game(ctx context.Context, in *emptypb.Empty, opts ...grpc.CallOption) (*GameState, error)
+	Register(ctx context.Context, in *User, opts ...grpc.CallOption) (*emptypb.Empty, error)
+	Buy(ctx context.Context, in *Identifier, opts ...grpc.CallOption) (*emptypb.Empty, error)
+	Equip(ctx context.Context, in *Identifier, opts ...grpc.CallOption) (*emptypb.Empty, error)
+	Drink(ctx context.Context, in *Identifier, opts ...grpc.CallOption) (*emptypb.Empty, error)
+	Move(ctx context.Context, in *Coordinates, opts ...grpc.CallOption) (*emptypb.Empty, error)
+	Attack(ctx context.Context, in *Identifier, opts ...grpc.CallOption) (*emptypb.Empty, error)
 }
 
 type dungeonsAndTrollsClient struct {
@@ -43,11 +49,71 @@ func (c *dungeonsAndTrollsClient) Game(ctx context.Context, in *emptypb.Empty, o
 	return out, nil
 }
 
+func (c *dungeonsAndTrollsClient) Register(ctx context.Context, in *User, opts ...grpc.CallOption) (*emptypb.Empty, error) {
+	out := new(emptypb.Empty)
+	err := c.cc.Invoke(ctx, "/dungeonsandtrolls.DungeonsAndTrolls/Register", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *dungeonsAndTrollsClient) Buy(ctx context.Context, in *Identifier, opts ...grpc.CallOption) (*emptypb.Empty, error) {
+	out := new(emptypb.Empty)
+	err := c.cc.Invoke(ctx, "/dungeonsandtrolls.DungeonsAndTrolls/Buy", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *dungeonsAndTrollsClient) Equip(ctx context.Context, in *Identifier, opts ...grpc.CallOption) (*emptypb.Empty, error) {
+	out := new(emptypb.Empty)
+	err := c.cc.Invoke(ctx, "/dungeonsandtrolls.DungeonsAndTrolls/Equip", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *dungeonsAndTrollsClient) Drink(ctx context.Context, in *Identifier, opts ...grpc.CallOption) (*emptypb.Empty, error) {
+	out := new(emptypb.Empty)
+	err := c.cc.Invoke(ctx, "/dungeonsandtrolls.DungeonsAndTrolls/Drink", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *dungeonsAndTrollsClient) Move(ctx context.Context, in *Coordinates, opts ...grpc.CallOption) (*emptypb.Empty, error) {
+	out := new(emptypb.Empty)
+	err := c.cc.Invoke(ctx, "/dungeonsandtrolls.DungeonsAndTrolls/Move", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *dungeonsAndTrollsClient) Attack(ctx context.Context, in *Identifier, opts ...grpc.CallOption) (*emptypb.Empty, error) {
+	out := new(emptypb.Empty)
+	err := c.cc.Invoke(ctx, "/dungeonsandtrolls.DungeonsAndTrolls/Attack", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // DungeonsAndTrollsServer is the server API for DungeonsAndTrolls service.
 // All implementations must embed UnimplementedDungeonsAndTrollsServer
 // for forward compatibility
 type DungeonsAndTrollsServer interface {
 	Game(context.Context, *emptypb.Empty) (*GameState, error)
+	Register(context.Context, *User) (*emptypb.Empty, error)
+	Buy(context.Context, *Identifier) (*emptypb.Empty, error)
+	Equip(context.Context, *Identifier) (*emptypb.Empty, error)
+	Drink(context.Context, *Identifier) (*emptypb.Empty, error)
+	Move(context.Context, *Coordinates) (*emptypb.Empty, error)
+	Attack(context.Context, *Identifier) (*emptypb.Empty, error)
 	mustEmbedUnimplementedDungeonsAndTrollsServer()
 }
 
@@ -57,6 +123,24 @@ type UnimplementedDungeonsAndTrollsServer struct {
 
 func (UnimplementedDungeonsAndTrollsServer) Game(context.Context, *emptypb.Empty) (*GameState, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method Game not implemented")
+}
+func (UnimplementedDungeonsAndTrollsServer) Register(context.Context, *User) (*emptypb.Empty, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method Register not implemented")
+}
+func (UnimplementedDungeonsAndTrollsServer) Buy(context.Context, *Identifier) (*emptypb.Empty, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method Buy not implemented")
+}
+func (UnimplementedDungeonsAndTrollsServer) Equip(context.Context, *Identifier) (*emptypb.Empty, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method Equip not implemented")
+}
+func (UnimplementedDungeonsAndTrollsServer) Drink(context.Context, *Identifier) (*emptypb.Empty, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method Drink not implemented")
+}
+func (UnimplementedDungeonsAndTrollsServer) Move(context.Context, *Coordinates) (*emptypb.Empty, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method Move not implemented")
+}
+func (UnimplementedDungeonsAndTrollsServer) Attack(context.Context, *Identifier) (*emptypb.Empty, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method Attack not implemented")
 }
 func (UnimplementedDungeonsAndTrollsServer) mustEmbedUnimplementedDungeonsAndTrollsServer() {}
 
@@ -89,6 +173,114 @@ func _DungeonsAndTrolls_Game_Handler(srv interface{}, ctx context.Context, dec f
 	return interceptor(ctx, in, info, handler)
 }
 
+func _DungeonsAndTrolls_Register_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(User)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(DungeonsAndTrollsServer).Register(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/dungeonsandtrolls.DungeonsAndTrolls/Register",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(DungeonsAndTrollsServer).Register(ctx, req.(*User))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _DungeonsAndTrolls_Buy_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(Identifier)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(DungeonsAndTrollsServer).Buy(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/dungeonsandtrolls.DungeonsAndTrolls/Buy",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(DungeonsAndTrollsServer).Buy(ctx, req.(*Identifier))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _DungeonsAndTrolls_Equip_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(Identifier)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(DungeonsAndTrollsServer).Equip(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/dungeonsandtrolls.DungeonsAndTrolls/Equip",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(DungeonsAndTrollsServer).Equip(ctx, req.(*Identifier))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _DungeonsAndTrolls_Drink_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(Identifier)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(DungeonsAndTrollsServer).Drink(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/dungeonsandtrolls.DungeonsAndTrolls/Drink",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(DungeonsAndTrollsServer).Drink(ctx, req.(*Identifier))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _DungeonsAndTrolls_Move_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(Coordinates)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(DungeonsAndTrollsServer).Move(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/dungeonsandtrolls.DungeonsAndTrolls/Move",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(DungeonsAndTrollsServer).Move(ctx, req.(*Coordinates))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _DungeonsAndTrolls_Attack_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(Identifier)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(DungeonsAndTrollsServer).Attack(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/dungeonsandtrolls.DungeonsAndTrolls/Attack",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(DungeonsAndTrollsServer).Attack(ctx, req.(*Identifier))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // DungeonsAndTrolls_ServiceDesc is the grpc.ServiceDesc for DungeonsAndTrolls service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -99,6 +291,30 @@ var DungeonsAndTrolls_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "Game",
 			Handler:    _DungeonsAndTrolls_Game_Handler,
+		},
+		{
+			MethodName: "Register",
+			Handler:    _DungeonsAndTrolls_Register_Handler,
+		},
+		{
+			MethodName: "Buy",
+			Handler:    _DungeonsAndTrolls_Buy_Handler,
+		},
+		{
+			MethodName: "Equip",
+			Handler:    _DungeonsAndTrolls_Equip_Handler,
+		},
+		{
+			MethodName: "Drink",
+			Handler:    _DungeonsAndTrolls_Drink_Handler,
+		},
+		{
+			MethodName: "Move",
+			Handler:    _DungeonsAndTrolls_Move_Handler,
+		},
+		{
+			MethodName: "Attack",
+			Handler:    _DungeonsAndTrolls_Attack_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},
