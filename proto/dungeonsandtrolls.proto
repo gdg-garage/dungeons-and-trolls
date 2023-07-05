@@ -150,4 +150,5 @@ message Map {
 message GameState {
   Map map = 1;
   Items items = 2;
+  optional Player character = 3;
 }
