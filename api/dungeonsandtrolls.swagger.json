@@ -16,6 +16,142 @@
     "application/json"
   ],
   "paths": {
+    "/v1/attack": {
+      "post": {
+        "summary": "Attack the entity identified by the provided ID.",
+        "operationId": "DungeonsAndTrolls_Attack",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "type": "object",
+              "properties": {}
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/dungeonsandtrollsIdentifier"
+            }
+          }
+        ],
+        "tags": [
+          "DungeonsAndTrolls"
+        ]
+      }
+    },
+    "/v1/buy": {
+      "post": {
+        "summary": "Buy the Item identified by the provided ID for the Character bound to the logged user.",
+        "operationId": "DungeonsAndTrolls_Buy",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "type": "object",
+              "properties": {}
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/dungeonsandtrollsIdentifier"
+            }
+          }
+        ],
+        "tags": [
+          "DungeonsAndTrolls"
+        ]
+      }
+    },
+    "/v1/drink": {
+      "post": {
+        "summary": "Drink the Potion identified by the provided ID for the Character bound to the logged user.",
+        "operationId": "DungeonsAndTrolls_Drink",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "type": "object",
+              "properties": {}
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/dungeonsandtrollsIdentifier"
+            }
+          }
+        ],
+        "tags": [
+          "DungeonsAndTrolls"
+        ]
+      }
+    },
+    "/v1/equip": {
+      "post": {
+        "summary": "Equip the Item identified by the provided ID for the Character bound to the logged user.",
+        "operationId": "DungeonsAndTrolls_Equip",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "type": "object",
+              "properties": {}
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/dungeonsandtrollsIdentifier"
+            }
+          }
+        ],
+        "tags": [
+          "DungeonsAndTrolls"
+        ]
+      }
+    },
     "/v1/game": {
       "get": {
         "summary": "Sends all info about the game.",
@@ -34,6 +170,74 @@
             }
           }
         },
+        "tags": [
+          "DungeonsAndTrolls"
+        ]
+      }
+    },
+    "/v1/move": {
+      "post": {
+        "summary": "Move the Character bound to the logged user to the specified place.",
+        "operationId": "DungeonsAndTrolls_Move",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "type": "object",
+              "properties": {}
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/dungeonsandtrollsCoordinates"
+            }
+          }
+        ],
+        "tags": [
+          "DungeonsAndTrolls"
+        ]
+      }
+    },
+    "/v1/register": {
+      "post": {
+        "summary": "Register provided User to the Game and create a character.",
+        "operationId": "DungeonsAndTrolls_Register",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "type": "object",
+              "properties": {}
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/dungeonsandtrollsUser"
+            }
+          }
+        ],
         "tags": [
           "DungeonsAndTrolls"
         ]
@@ -223,6 +427,14 @@
         }
       }
     },
+    "dungeonsandtrollsIdentifier": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string"
+        }
+      }
+    },
     "dungeonsandtrollsItems": {
       "type": "object",
       "properties": {
@@ -390,6 +602,14 @@
         "value": {
           "type": "number",
           "format": "float"
+        }
+      }
+    },
+    "dungeonsandtrollsUser": {
+      "type": "object",
+      "properties": {
+        "username": {
+          "type": "string"
         }
       }
     },
