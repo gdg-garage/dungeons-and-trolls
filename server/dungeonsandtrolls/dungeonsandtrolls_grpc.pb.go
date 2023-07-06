@@ -30,6 +30,11 @@ type DungeonsAndTrollsClient interface {
 	Drink(ctx context.Context, in *Identifier, opts ...grpc.CallOption) (*emptypb.Empty, error)
 	Move(ctx context.Context, in *Coordinates, opts ...grpc.CallOption) (*emptypb.Empty, error)
 	Attack(ctx context.Context, in *Identifier, opts ...grpc.CallOption) (*emptypb.Empty, error)
+	Respawn(ctx context.Context, in *emptypb.Empty, opts ...grpc.CallOption) (*emptypb.Empty, error)
+	Cast(ctx context.Context, in *SpellAndTarget, opts ...grpc.CallOption) (*emptypb.Empty, error)
+	Jump(ctx context.Context, in *Coordinates, opts ...grpc.CallOption) (*emptypb.Empty, error)
+	Commands(ctx context.Context, in *CommandsBatch, opts ...grpc.CallOption) (*emptypb.Empty, error)
+	MonstersCommands(ctx context.Context, in *CommandsForMonsters, opts ...grpc.CallOption) (*emptypb.Empty, error)
 }
 
 type dungeonsAndTrollsClient struct {
@@ -103,6 +108,51 @@ func (c *dungeonsAndTrollsClient) Attack(ctx context.Context, in *Identifier, op
 	return out, nil
 }
 
+func (c *dungeonsAndTrollsClient) Respawn(ctx context.Context, in *emptypb.Empty, opts ...grpc.CallOption) (*emptypb.Empty, error) {
+	out := new(emptypb.Empty)
+	err := c.cc.Invoke(ctx, "/dungeonsandtrolls.DungeonsAndTrolls/Respawn", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *dungeonsAndTrollsClient) Cast(ctx context.Context, in *SpellAndTarget, opts ...grpc.CallOption) (*emptypb.Empty, error) {
+	out := new(emptypb.Empty)
+	err := c.cc.Invoke(ctx, "/dungeonsandtrolls.DungeonsAndTrolls/Cast", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *dungeonsAndTrollsClient) Jump(ctx context.Context, in *Coordinates, opts ...grpc.CallOption) (*emptypb.Empty, error) {
+	out := new(emptypb.Empty)
+	err := c.cc.Invoke(ctx, "/dungeonsandtrolls.DungeonsAndTrolls/Jump", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *dungeonsAndTrollsClient) Commands(ctx context.Context, in *CommandsBatch, opts ...grpc.CallOption) (*emptypb.Empty, error) {
+	out := new(emptypb.Empty)
+	err := c.cc.Invoke(ctx, "/dungeonsandtrolls.DungeonsAndTrolls/Commands", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *dungeonsAndTrollsClient) MonstersCommands(ctx context.Context, in *CommandsForMonsters, opts ...grpc.CallOption) (*emptypb.Empty, error) {
+	out := new(emptypb.Empty)
+	err := c.cc.Invoke(ctx, "/dungeonsandtrolls.DungeonsAndTrolls/MonstersCommands", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // DungeonsAndTrollsServer is the server API for DungeonsAndTrolls service.
 // All implementations must embed UnimplementedDungeonsAndTrollsServer
 // for forward compatibility
@@ -114,6 +164,11 @@ type DungeonsAndTrollsServer interface {
 	Drink(context.Context, *Identifier) (*emptypb.Empty, error)
 	Move(context.Context, *Coordinates) (*emptypb.Empty, error)
 	Attack(context.Context, *Identifier) (*emptypb.Empty, error)
+	Respawn(context.Context, *emptypb.Empty) (*emptypb.Empty, error)
+	Cast(context.Context, *SpellAndTarget) (*emptypb.Empty, error)
+	Jump(context.Context, *Coordinates) (*emptypb.Empty, error)
+	Commands(context.Context, *CommandsBatch) (*emptypb.Empty, error)
+	MonstersCommands(context.Context, *CommandsForMonsters) (*emptypb.Empty, error)
 	mustEmbedUnimplementedDungeonsAndTrollsServer()
 }
 
@@ -141,6 +196,21 @@ func (UnimplementedDungeonsAndTrollsServer) Move(context.Context, *Coordinates) 
 }
 func (UnimplementedDungeonsAndTrollsServer) Attack(context.Context, *Identifier) (*emptypb.Empty, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method Attack not implemented")
+}
+func (UnimplementedDungeonsAndTrollsServer) Respawn(context.Context, *emptypb.Empty) (*emptypb.Empty, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method Respawn not implemented")
+}
+func (UnimplementedDungeonsAndTrollsServer) Cast(context.Context, *SpellAndTarget) (*emptypb.Empty, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method Cast not implemented")
+}
+func (UnimplementedDungeonsAndTrollsServer) Jump(context.Context, *Coordinates) (*emptypb.Empty, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method Jump not implemented")
+}
+func (UnimplementedDungeonsAndTrollsServer) Commands(context.Context, *CommandsBatch) (*emptypb.Empty, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method Commands not implemented")
+}
+func (UnimplementedDungeonsAndTrollsServer) MonstersCommands(context.Context, *CommandsForMonsters) (*emptypb.Empty, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method MonstersCommands not implemented")
 }
 func (UnimplementedDungeonsAndTrollsServer) mustEmbedUnimplementedDungeonsAndTrollsServer() {}
 
@@ -281,6 +351,96 @@ func _DungeonsAndTrolls_Attack_Handler(srv interface{}, ctx context.Context, dec
 	return interceptor(ctx, in, info, handler)
 }
 
+func _DungeonsAndTrolls_Respawn_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(emptypb.Empty)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(DungeonsAndTrollsServer).Respawn(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/dungeonsandtrolls.DungeonsAndTrolls/Respawn",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(DungeonsAndTrollsServer).Respawn(ctx, req.(*emptypb.Empty))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _DungeonsAndTrolls_Cast_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(SpellAndTarget)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(DungeonsAndTrollsServer).Cast(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/dungeonsandtrolls.DungeonsAndTrolls/Cast",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(DungeonsAndTrollsServer).Cast(ctx, req.(*SpellAndTarget))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _DungeonsAndTrolls_Jump_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(Coordinates)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(DungeonsAndTrollsServer).Jump(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/dungeonsandtrolls.DungeonsAndTrolls/Jump",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(DungeonsAndTrollsServer).Jump(ctx, req.(*Coordinates))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _DungeonsAndTrolls_Commands_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(CommandsBatch)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(DungeonsAndTrollsServer).Commands(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/dungeonsandtrolls.DungeonsAndTrolls/Commands",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(DungeonsAndTrollsServer).Commands(ctx, req.(*CommandsBatch))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _DungeonsAndTrolls_MonstersCommands_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(CommandsForMonsters)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(DungeonsAndTrollsServer).MonstersCommands(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/dungeonsandtrolls.DungeonsAndTrolls/MonstersCommands",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(DungeonsAndTrollsServer).MonstersCommands(ctx, req.(*CommandsForMonsters))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // DungeonsAndTrolls_ServiceDesc is the grpc.ServiceDesc for DungeonsAndTrolls service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -315,6 +475,26 @@ var DungeonsAndTrolls_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "Attack",
 			Handler:    _DungeonsAndTrolls_Attack_Handler,
+		},
+		{
+			MethodName: "Respawn",
+			Handler:    _DungeonsAndTrolls_Respawn_Handler,
+		},
+		{
+			MethodName: "Cast",
+			Handler:    _DungeonsAndTrolls_Cast_Handler,
+		},
+		{
+			MethodName: "Jump",
+			Handler:    _DungeonsAndTrolls_Jump_Handler,
+		},
+		{
+			MethodName: "Commands",
+			Handler:    _DungeonsAndTrolls_Commands_Handler,
+		},
+		{
+			MethodName: "MonstersCommands",
+			Handler:    _DungeonsAndTrolls_MonstersCommands_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},
