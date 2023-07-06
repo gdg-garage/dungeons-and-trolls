@@ -84,6 +84,40 @@
         ]
       }
     },
+    "/v1/cast": {
+      "post": {
+        "summary": "Cast a spell (provided by a rune) by the Character bound to the logged user.",
+        "operationId": "DungeonsAndTrolls_Cast",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "type": "object",
+              "properties": {}
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/dungeonsandtrollsSpellAndTarget"
+            }
+          }
+        ],
+        "tags": [
+          "DungeonsAndTrolls"
+        ]
+      }
+    },
     "/v1/commands": {
       "post": {
         "summary": "Send multiple commands to the Character bound to the logged user. The order of execution is defined in the message.",

@@ -26,6 +26,9 @@ http:
     - selector: dungeonsandtrolls.DungeonsAndTrolls.Respawn
       post: /v1/respawn
       body: "*"
+    - selector: dungeonsandtrolls.DungeonsAndTrolls.Cast
+      post: /v1/cast
+      body: "*"
     - selector: dungeonsandtrolls.DungeonsAndTrolls.Jump
       post: /v1/jump
       body: "*"
