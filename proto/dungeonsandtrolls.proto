@@ -63,6 +63,7 @@ message CommandsBatch {
   optional Coordinates jump = 5;
   optional SpellAndTarget cast = 6;
   optional Identifier attack = 7;
+  repeated AssignAttribute assign_attribute = 8;
 }
 
 message CommandsForMonsters {
