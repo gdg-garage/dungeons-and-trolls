@@ -66,7 +66,7 @@ type server struct {
 }
 
 // SayHello implements dungeonsandtrolls.GameServer
-func (s *server) Game(ctx context.Context, _ *emptypb.Empty) (*dungeonsandtrolls.GameState, error) {
+func (s *server) Game(ctx context.Context, params *dungeonsandtrolls.GameStateParams) (*dungeonsandtrolls.GameState, error) {
 	return &dungeonsandtrolls.GameState{}, nil
 }
 

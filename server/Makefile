@@ -8,3 +8,6 @@ update-deps:
 
 clean:
 	rm -rf ../bazel-*
+
+test:
+	go test ./...

@@ -11,7 +11,7 @@ import "google/protobuf/struct.proto";
 // The game service definition.
 service DungeonsAndTrolls {
   // Sends all info about the game.
-  rpc Game(google.protobuf.Empty) returns (GameState) {}
+  rpc Game(GameStateParams) returns (GameState) {}
   // Register provided User to the Game and create a character.
   rpc Register(User) returns (google.protobuf.Empty) {}
   // Buy the Item identified by the provided ID for the Character bound to the logged user.
@@ -40,6 +40,15 @@ service DungeonsAndTrolls {
   // TODO: Stats? Those will be probably in Grafana (not sure if we need an rpc for that).
   // TODO: A helper for knowing more info about a fight (like damage dealt) for the UI.
   //  * This may be an optional field in the GameState with all the events which happened in the previous step. This may be good for visualization and also debugging. It should contain the event type.
+}
+
+message GameStateParams {
+  // dafault false
+  optional bool ascii = 1;
+  // default false
+  optional bool events = 2;
+  // default true
+  optional bool blocking = 3;
 }
 
 message CommandsBatch {
@@ -244,11 +253,24 @@ message Map {
   repeated string ascii = 3;
 }
 
+message Event {
+  enum Type {
+    DAMAGE = 0;
+  }
+
+  string message = 1;
+  optional Type type = 2;
+  optional Coordinates coordinates = 3;
+}
+
 message GameState {
   Map map = 1;
   Items items = 2;
   optional Character character = 3;
   optional Coordinates current_position = 4;
+  int64 tick = 5;
+  // List of events which occured in the previous tick. Useful for visualising effects and debugging.
+  repeated Event events = 6;
 }
 
 message User {

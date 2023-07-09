@@ -238,6 +238,29 @@
             }
           }
         },
+        "parameters": [
+          {
+            "name": "ascii",
+            "description": "dafault false",
+            "in": "query",
+            "required": false,
+            "type": "boolean"
+          },
+          {
+            "name": "events",
+            "description": "default false",
+            "in": "query",
+            "required": false,
+            "type": "boolean"
+          },
+          {
+            "name": "blocking",
+            "description": "default true",
+            "in": "query",
+            "required": false,
+            "type": "boolean"
+          }
+        ],
         "tags": [
           "DungeonsAndTrolls"
         ]
@@ -635,6 +658,27 @@
       ],
       "default": "COLD"
     },
+    "dungeonsandtrollsEvent": {
+      "type": "object",
+      "properties": {
+        "message": {
+          "type": "string"
+        },
+        "type": {
+          "$ref": "#/definitions/dungeonsandtrollsEventType"
+        },
+        "coordinates": {
+          "$ref": "#/definitions/dungeonsandtrollsCoordinates"
+        }
+      }
+    },
+    "dungeonsandtrollsEventType": {
+      "type": "string",
+      "enum": [
+        "DAMAGE"
+      ],
+      "default": "DAMAGE"
+    },
     "dungeonsandtrollsGameState": {
       "type": "object",
       "properties": {
@@ -649,6 +693,17 @@
         },
         "currentPosition": {
           "$ref": "#/definitions/dungeonsandtrollsCoordinates"
+        },
+        "tick": {
+          "type": "string",
+          "format": "int64"
+        },
+        "events": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/dungeonsandtrollsEvent"
+          },
+          "description": "List of events which occured in the previous tick. Useful for visualising effects and debugging."
         }
       }
     },
