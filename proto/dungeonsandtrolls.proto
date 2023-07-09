@@ -1,0 +1,314 @@
+syntax = "proto3";
+
+option go_package = "github.com/gdg-garage/dungeons-and-trolls/server/dungeonsandtrolls";
+
+package dungeonsandtrolls;
+
+import "google/protobuf/empty.proto";
+import "google/protobuf/struct.proto";
+
+
+// The game service definition.
+service DungeonsAndTrolls {
+  // Sends all info about the game.
+  rpc Game(GameStateParams) returns (GameState) {}
+  // Register provided User to the Game and create a character.
+  rpc Register(User) returns (google.protobuf.Empty) {}
+  // Buy the Item identified by the provided ID for the Character bound to the logged user.
+  rpc Buy(Identifier) returns (google.protobuf.Empty) {}
+  // Equip the Item identified by the provided ID for the Character bound to the logged user.
+  rpc Equip(Identifier) returns (google.protobuf.Empty) {}
+  // Assign skill point to the attribute for the Character bound to the logged user.
+  rpc AssignSkillPoint(AssignAttribute) returns (google.protobuf.Empty) {}
+  // Drink the Potion identified by the provided ID for the Character bound to the logged user.
+  rpc Drink(Identifier) returns (google.protobuf.Empty) {}
+  // Move the Character bound to the logged user to the specified place.
+  rpc Move(Coordinates) returns (google.protobuf.Empty) {}
+  // Attack the entity identified by the provided ID.
+  rpc Attack(Identifier) returns (google.protobuf.Empty) {}
+  // Respawn the Character bound to the logged user.
+  rpc Respawn(google.protobuf.Empty) returns (google.protobuf.Empty) {}
+  // Cast a spell (provided by a rune) by the Character bound to the logged user.
+  rpc Cast(SpellAndTarget) returns (google.protobuf.Empty) {}
+  // Jump with the Character bound to the logged user (has to be provided by Boots).
+  rpc Jump(Coordinates) returns (google.protobuf.Empty) {}
+  // Send multiple commands to the Character bound to the logged user. The order of execution is defined in the message.
+  rpc Commands(CommandsBatch) returns (google.protobuf.Empty) {}
+  // Control monsters. Admin only.
+  rpc MonstersCommands(CommandsForMonsters) returns (google.protobuf.Empty) {}
+
+  // TODO: How to use stairs.
+  //  * this is probably just a condition for move.
+  // TODO: Stats? Those will be probably in Grafana (not sure if we need an rpc for that).
+}
+
+message AssignAttribute {
+  Attribute attribute = 1;
+}
+
+message GameStateParams {
+  // dafault false
+  optional bool ascii = 1;
+  // default false
+  optional bool events = 2;
+  // default true
+  optional bool blocking = 3;
+}
+
+message CommandsBatch {
+  repeated Identifier buy = 1;
+  repeated Identifier equip = 2;
+  repeated Identifier drink = 3;
+  optional Coordinates move = 4;
+  optional Coordinates jump = 5;
+  optional SpellAndTarget cast = 6;
+  optional Identifier attack = 7;
+  repeated AssignAttribute assign_attribute = 8;
+}
+
+message CommandsForMonsters {
+  // Monster ID with corresponding batch of commands.
+  map<string, CommandsBatch> commands = 1;
+}
+
+enum Element {
+  COLD = 0;
+  FIRE = 1;
+  LIGHTNING = 2;
+  POISON = 3;
+  LIFE = 4;
+}
+
+message DamageOverTime {
+  Element element = 1;
+  // DPS
+  float damage = 2;
+  int32 duration = 3;
+}
+
+enum Attribute {
+  STRENGTH = 0;
+  INTELLIGENCE = 1;
+  VITALITY = 2;
+  DEXTERITY = 3;
+}
+
+message AttributeValue {
+  Attribute attribute = 1;
+  float value = 2;
+}
+
+message Resistance {
+  Element element = 1;
+  float value = 2;
+}
+
+message Monster {
+  string id = 1;
+  string name = 2;
+  float health = 3;
+  int32 level = 4;
+  repeated AttributeValue attributes = 5;
+  repeated Resistance resistances = 6;
+  Items inventory = 7;
+  float mana = 8;
+}
+
+message Character {
+  string id = 1;
+  string name = 2;
+  float health = 3;
+  int32 level = 4;
+  repeated AttributeValue attributes = 5;
+  repeated Resistance resistances = 6;
+  Items inventory = 7;
+  int32 xp = 8;
+  int32 money = 9;
+  float mana = 10;
+  int32 free_skill_points = 11;
+}
+
+message Boost {
+  Attribute attribute = 1;
+  float value = 2;
+}
+
+message Weapon {
+  enum Type {
+    DAGGER = 0;
+    SWORD = 1;
+    WAND = 2;
+    AXE = 3;
+    MACE = 4;
+    CLAW = 5;
+    STAFF = 6;
+    SPEAR = 7;
+  }
+
+  string id = 1;
+  string name = 2;
+  bool one_hand = 3;
+  Type type = 4;
+  float min_damage = 5;
+  float max_damage = 6;
+  float weight = 7;
+  float price = 8;
+  repeated DamageOverTime damage_over_time = 9;
+  repeated AttributeValue requirements = 10;
+  repeated AttributeValue boosts = 11;
+  repeated Resistance resistances = 12;
+}
+
+message Rune {
+  enum Type {
+    HEAL = 0;
+    FIREBALL = 1;
+    ICE_NOVA = 2;
+    POISON_CLOUD = 3;
+    LIGHTNING_BOLT = 4;
+  }
+
+  string id = 1;
+  string name = 2;
+  Type type = 3;
+  optional float min_damage = 4;
+  optional float max_damage = 5;
+  float weight = 6;
+  float price = 7;
+  repeated DamageOverTime damage_over_time = 8;
+  repeated AttributeValue requirements = 9;
+  optional float min_heal = 10;
+  optional float max_heal = 11;
+  float mana_cost = 12;
+}
+
+message Armor {
+  enum Type {
+    SHIELD = 0;
+    HELMET = 1;
+    BODY_ARMOR = 2;
+    TROUSERS = 3;
+    BELT = 4;
+    BOOTS = 5;
+    GLOVES = 6;
+  }
+
+  string id = 1;
+  string name = 2;
+  Type type = 3;
+  float price = 4;
+  float weight = 5;
+  float defense = 6;
+  repeated AttributeValue requirements = 7;
+  repeated AttributeValue boosts = 8;
+  repeated Resistance resistances = 9;
+  optional Jump jump = 10;
+}
+
+message Jump {
+  float max_jump_distance = 1;
+  float mana_cost = 2;
+}
+
+message Potion {
+  string id = 1;
+  string name = 2;
+  float price = 3;
+  float weight = 4;
+  repeated AttributeValue boosts = 5;
+  repeated Resistance resistances = 6;
+  optional Heal heal = 7;
+}
+
+message Heal {
+  float heal = 1;
+  DamageOverTime damage_over_time = 8;
+}
+
+// TODO: Maybe add jewelery
+
+message Items {
+  repeated Weapon weapons = 1;
+  repeated Armor armors = 2;
+  repeated Potion potions = 3;
+  repeated Rune runes = 4;
+}
+
+// TODO this is temporary
+message Object {
+  string name = 1;
+  int32 position_x = 2;
+  int32 position_y = 3;
+}
+
+message Position {
+  int32 position_x = 2;
+  int32 position_y = 3;
+}
+
+message MapObjects {
+  Position position = 1;
+  repeated Monster monsters = 2;
+  repeated Character players = 3;
+  bool stairs = 4;
+  MapDecorations decorations = 5;
+  // TODO: chests are not impleted yet
+  // bool chest = 4;
+}
+
+message MapDecorations {
+  bool carpet = 1;
+  bool rug = 2;
+  bool door = 3;
+  bool anomally = 4;
+}
+
+message Level {
+  int32 level = 1;
+  repeated google.protobuf.ListValue free = 2;
+  MapObjects objects = 3;
+  repeated string ascii = 4;
+}
+
+message Map {
+  repeated Level levels = 1;
+}
+
+message Event {
+  enum Type {
+    DAMAGE = 0;
+  }
+
+  string message = 1;
+  optional Type type = 2;
+  optional Coordinates coordinates = 3;
+}
+
+message GameState {
+  Map map = 1;
+  Items items = 2;
+  optional Character character = 3;
+  optional Coordinates current_position = 4;
+  int64 tick = 5;
+  // List of events which occured in the previous tick. Useful for visualising effects and debugging.
+  repeated Event events = 6;
+}
+
+message User {
+  string username = 1;
+}
+
+message Identifier {
+  string id = 1;
+}
+
+message Coordinates {
+  int32 level = 1;
+  int32 position_x = 2;
+  int32 position_y = 3;
+}
+
+message SpellAndTarget {
+  Rune.Type spell = 1;
+  string target_id = 2; 
+}
