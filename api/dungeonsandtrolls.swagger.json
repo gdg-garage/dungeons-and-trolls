@@ -1,13 +1,17 @@
 {
   "swagger": "2.0",
   "info": {
-    "title": "proto/dungeonsandtrolls.proto",
-    "version": "version not set"
+    "title": "Dungeons and Trolls",
+    "version": "1.0"
   },
   "tags": [
     {
       "name": "DungeonsAndTrolls"
     }
+  ],
+  "host": "dt.garage-trip.cz",
+  "schemes": [
+    "https"
   ],
   "consumes": [
     "application/json"
@@ -27,6 +31,14 @@
               "type": "object",
               "properties": {}
             }
+          },
+          "403": {
+            "description": "Returned when the user does not have permission to access the resource.",
+            "schema": {}
+          },
+          "404": {
+            "description": "Returned when the resource does not exist.",
+            "schema": {}
           },
           "default": {
             "description": "An unexpected error response.",
@@ -62,6 +74,14 @@
               "properties": {}
             }
           },
+          "403": {
+            "description": "Returned when the user does not have permission to access the resource.",
+            "schema": {}
+          },
+          "404": {
+            "description": "Returned when the resource does not exist.",
+            "schema": {}
+          },
           "default": {
             "description": "An unexpected error response.",
             "schema": {
@@ -95,6 +115,14 @@
               "type": "object",
               "properties": {}
             }
+          },
+          "403": {
+            "description": "Returned when the user does not have permission to access the resource.",
+            "schema": {}
+          },
+          "404": {
+            "description": "Returned when the resource does not exist.",
+            "schema": {}
           },
           "default": {
             "description": "An unexpected error response.",
@@ -130,6 +158,14 @@
               "properties": {}
             }
           },
+          "403": {
+            "description": "Returned when the user does not have permission to access the resource.",
+            "schema": {}
+          },
+          "404": {
+            "description": "Returned when the resource does not exist.",
+            "schema": {}
+          },
           "default": {
             "description": "An unexpected error response.",
             "schema": {
@@ -163,6 +199,14 @@
               "type": "object",
               "properties": {}
             }
+          },
+          "403": {
+            "description": "Returned when the user does not have permission to access the resource.",
+            "schema": {}
+          },
+          "404": {
+            "description": "Returned when the resource does not exist.",
+            "schema": {}
           },
           "default": {
             "description": "An unexpected error response.",
@@ -198,6 +242,14 @@
               "properties": {}
             }
           },
+          "403": {
+            "description": "Returned when the user does not have permission to access the resource.",
+            "schema": {}
+          },
+          "404": {
+            "description": "Returned when the resource does not exist.",
+            "schema": {}
+          },
           "default": {
             "description": "An unexpected error response.",
             "schema": {
@@ -230,6 +282,14 @@
             "schema": {
               "$ref": "#/definitions/dungeonsandtrollsGameState"
             }
+          },
+          "403": {
+            "description": "Returned when the user does not have permission to access the resource.",
+            "schema": {}
+          },
+          "404": {
+            "description": "Returned when the resource does not exist.",
+            "schema": {}
           },
           "default": {
             "description": "An unexpected error response.",
@@ -278,6 +338,14 @@
               "properties": {}
             }
           },
+          "403": {
+            "description": "Returned when the user does not have permission to access the resource.",
+            "schema": {}
+          },
+          "404": {
+            "description": "Returned when the resource does not exist.",
+            "schema": {}
+          },
           "default": {
             "description": "An unexpected error response.",
             "schema": {
@@ -311,6 +379,14 @@
               "type": "object",
               "properties": {}
             }
+          },
+          "403": {
+            "description": "Returned when the user does not have permission to access the resource.",
+            "schema": {}
+          },
+          "404": {
+            "description": "Returned when the resource does not exist.",
+            "schema": {}
           },
           "default": {
             "description": "An unexpected error response.",
@@ -346,6 +422,14 @@
               "properties": {}
             }
           },
+          "403": {
+            "description": "Returned when the user does not have permission to access the resource.",
+            "schema": {}
+          },
+          "404": {
+            "description": "Returned when the resource does not exist.",
+            "schema": {}
+          },
           "default": {
             "description": "An unexpected error response.",
             "schema": {
@@ -380,6 +464,14 @@
               "properties": {}
             }
           },
+          "403": {
+            "description": "Returned when the user does not have permission to access the resource.",
+            "schema": {}
+          },
+          "404": {
+            "description": "Returned when the resource does not exist.",
+            "schema": {}
+          },
           "default": {
             "description": "An unexpected error response.",
             "schema": {
@@ -413,6 +505,14 @@
               "type": "object",
               "properties": {}
             }
+          },
+          "403": {
+            "description": "Returned when the user does not have permission to access the resource.",
+            "schema": {}
+          },
+          "404": {
+            "description": "Returned when the resource does not exist.",
+            "schema": {}
           },
           "default": {
             "description": "An unexpected error response.",
@@ -498,6 +598,14 @@
         "GLOVES"
       ],
       "default": "SHIELD"
+    },
+    "dungeonsandtrollsAssignAttribute": {
+      "type": "object",
+      "properties": {
+        "attribute": {
+          "$ref": "#/definitions/dungeonsandtrollsAttribute"
+        }
+      }
     },
     "dungeonsandtrollsAttribute": {
       "type": "string",
@@ -603,6 +711,12 @@
         },
         "attack": {
           "$ref": "#/definitions/dungeonsandtrollsIdentifier"
+        },
+        "assignAttribute": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/dungeonsandtrollsAssignAttribute"
+          }
         }
       }
     },
@@ -613,7 +727,8 @@
           "type": "object",
           "additionalProperties": {
             "$ref": "#/definitions/dungeonsandtrollsCommandsBatch"
-          }
+          },
+          "description": "Monster ID with corresponding batch of commands."
         }
       }
     },
@@ -1141,5 +1256,21 @@
         }
       }
     }
+  },
+  "securityDefinitions": {
+    "ApiKeyAuth": {
+      "type": "apiKey",
+      "name": "X-API-Key",
+      "in": "header"
+    }
+  },
+  "security": [
+    {
+      "ApiKeyAuth": []
+    }
+  ],
+  "externalDocs": {
+    "description": "More about Dungeons and trolls",
+    "url": "https://github.com/gdg-garage/dungeons-and-trolls"
   }
 }

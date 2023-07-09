@@ -67,6 +67,7 @@ message CommandsBatch {
 }
 
 message CommandsForMonsters {
+  // Monster ID with corresponding batch of commands.
   map<string, CommandsBatch> commands = 1;
 }
 
