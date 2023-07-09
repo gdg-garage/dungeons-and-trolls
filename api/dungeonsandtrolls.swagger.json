@@ -564,6 +564,10 @@
         "mana": {
           "type": "number",
           "format": "float"
+        },
+        "freeSkillPoints": {
+          "type": "integer",
+          "format": "int32"
         }
       }
     },
@@ -769,9 +773,13 @@
         }
       }
     },
-    "dungeonsandtrollsMap": {
+    "dungeonsandtrollsLevel": {
       "type": "object",
       "properties": {
+        "level": {
+          "type": "integer",
+          "format": "int32"
+        },
         "free": {
           "type": "array",
           "items": {
@@ -792,9 +800,40 @@
         }
       }
     },
+    "dungeonsandtrollsMap": {
+      "type": "object",
+      "properties": {
+        "levels": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/dungeonsandtrollsLevel"
+          }
+        }
+      }
+    },
+    "dungeonsandtrollsMapDecorations": {
+      "type": "object",
+      "properties": {
+        "carpet": {
+          "type": "boolean"
+        },
+        "rug": {
+          "type": "boolean"
+        },
+        "door": {
+          "type": "boolean"
+        },
+        "anomally": {
+          "type": "boolean"
+        }
+      }
+    },
     "dungeonsandtrollsMapObjects": {
       "type": "object",
       "properties": {
+        "position": {
+          "$ref": "#/definitions/dungeonsandtrollsPosition"
+        },
         "monsters": {
           "type": "array",
           "items": {
@@ -807,20 +846,14 @@
             "$ref": "#/definitions/dungeonsandtrollsCharacter"
           }
         },
-        "chests": {
-          "type": "array",
-          "items": {
-            "$ref": "#/definitions/dungeonsandtrollsObject"
-          }
-        },
         "stairs": {
-          "type": "array",
-          "items": {
-            "$ref": "#/definitions/dungeonsandtrollsObject"
-          }
+          "type": "boolean"
+        },
+        "decorations": {
+          "$ref": "#/definitions/dungeonsandtrollsMapDecorations",
+          "title": "TODO: chests are not impleted yet\n bool chest = 4;"
         }
-      },
-      "description": "TODO those should be identified by Coordinates."
+      }
     },
     "dungeonsandtrollsMonster": {
       "type": "object",
@@ -860,12 +893,9 @@
         }
       }
     },
-    "dungeonsandtrollsObject": {
+    "dungeonsandtrollsPosition": {
       "type": "object",
       "properties": {
-        "name": {
-          "type": "string"
-        },
         "positionX": {
           "type": "integer",
           "format": "int32"
@@ -874,8 +904,7 @@
           "type": "integer",
           "format": "int32"
         }
-      },
-      "title": "TODO this is temporary"
+      }
     },
     "dungeonsandtrollsPotion": {
       "type": "object",

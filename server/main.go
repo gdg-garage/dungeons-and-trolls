@@ -80,6 +80,9 @@ func (s *server) Buy(ctx context.Context, identifier *dungeonsandtrolls.Identifi
 func (s *server) Equip(ctx context.Context, identifier *dungeonsandtrolls.Identifier) (*emptypb.Empty, error) {
 	return nil, nil
 }
+func (s *server) AssignSkillPoint(ctx context.Context, identifier *dungeonsandtrolls.AssignAttribute) (*emptypb.Empty, error) {
+	return nil, nil
+}
 func (s *server) Drink(ctx context.Context, identifier *dungeonsandtrolls.Identifier) (*emptypb.Empty, error) {
 	return nil, nil
 }

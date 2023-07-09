@@ -18,6 +18,8 @@ service DungeonsAndTrolls {
   rpc Buy(Identifier) returns (google.protobuf.Empty) {}
   // Equip the Item identified by the provided ID for the Character bound to the logged user.
   rpc Equip(Identifier) returns (google.protobuf.Empty) {}
+  // Assign skill point to the attribute for the Character bound to the logged user.
+  rpc AssignSkillPoint(AssignAttribute) returns (google.protobuf.Empty) {}
   // Drink the Potion identified by the provided ID for the Character bound to the logged user.
   rpc Drink(Identifier) returns (google.protobuf.Empty) {}
   // Move the Character bound to the logged user to the specified place.
@@ -38,8 +40,10 @@ service DungeonsAndTrolls {
   // TODO: How to use stairs.
   //  * this is probably just a condition for move.
   // TODO: Stats? Those will be probably in Grafana (not sure if we need an rpc for that).
-  // TODO: A helper for knowing more info about a fight (like damage dealt) for the UI.
-  //  * This may be an optional field in the GameState with all the events which happened in the previous step. This may be good for visualization and also debugging. It should contain the event type.
+}
+
+message AssignAttribute {
+  Attribute attribute = 1;
 }
 
 message GameStateParams {
@@ -119,6 +123,7 @@ message Character {
   int32 xp = 8;
   int32 money = 9;
   float mana = 10;
+  int32 free_skill_points = 11;
 }
 
 message Boost {
@@ -234,23 +239,37 @@ message Object {
   int32 position_y = 3;
 }
 
-message MapDecorations {
-  repeated Object carpets = 1;
-  // TODO add other like rugs, doors, ...
+message Position {
+  int32 position_x = 2;
+  int32 position_y = 3;
 }
 
-// TODO those should be identified by Coordinates.
 message MapObjects {
-  repeated Monster monsters = 1;
-  repeated Character players = 2;
-  repeated Object chests = 3;
-  repeated Object stairs = 4;
+  Position position = 1;
+  repeated Monster monsters = 2;
+  repeated Character players = 3;
+  bool stairs = 4;
+  MapDecorations decorations = 5;
+  // TODO: chests are not impleted yet
+  // bool chest = 4;
+}
+
+message MapDecorations {
+  bool carpet = 1;
+  bool rug = 2;
+  bool door = 3;
+  bool anomally = 4;
+}
+
+message Level {
+  int32 level = 1;
+  repeated google.protobuf.ListValue free = 2;
+  MapObjects objects = 3;
+  repeated string ascii = 4;
 }
 
 message Map {
-  repeated google.protobuf.ListValue free = 1;
-  MapObjects objects = 2;
-  repeated string ascii = 3;
+  repeated Level levels = 1;
 }
 
 message Event {
