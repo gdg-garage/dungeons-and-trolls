@@ -28,16 +28,12 @@ message DamageOverTime {
   int32 duration = 3;
 }
 
-enum Attribute {
-  STRENGTH = 0;
-  INTELLIGENCE = 1;
-  VITALITY = 2;
-  DEXTERITY = 3;
-}
-
-message AttributeValue {
-  Attribute attribute = 1;
-  float value = 2;
+message Attributes {
+  float strength = 1;
+  float intelligence = 2;
+  float endurance = 3;
+  float willpower = 4;
+  float dexterity = 5;
 }
 
 message Resistance {
@@ -49,7 +45,7 @@ message Monster {
   string name = 1;
   float health = 2;
   int32 level = 3;
-  repeated AttributeValue attributes = 4;
+  repeated Attributes attributes = 4;
   repeated Resistance resistances = 5;
   repeated Items inventory = 6;
 }
@@ -58,16 +54,11 @@ message Player {
   string name = 1;
   float health = 2;
   int32 level = 3;
-  repeated AttributeValue attributes = 4;
+  repeated Attributes attributes = 4;
   repeated Resistance resistances = 5;
   repeated Items inventory = 6;
   int32 xp = 7;
   int32 money = 8;
-}
-
-message Boost {
-  Attribute attribute = 1;
-  float value = 2;
 }
 
 message Weapon {
@@ -90,8 +81,8 @@ message Weapon {
   float weight = 6;
   float price = 7;
   repeated DamageOverTime damage_over_time = 8;
-  repeated AttributeValue requirements = 9;
-  repeated AttributeValue boosts = 10;
+  repeated Attributes requirements = 9;
+  repeated Attributes boosts = 10;
   repeated Resistance resistances = 11;
 }
 
@@ -111,8 +102,8 @@ message Armor {
   float price = 3;
   float weight = 4;
   float defense = 5;
-  repeated AttributeValue requirements = 6;
-  repeated AttributeValue boosts = 7;
+  repeated Attributes requirements = 6;
+  repeated Attributes boosts = 7;
   repeated Resistance resistances = 8;
 }
 
