@@ -815,18 +815,6 @@
         }
       }
     },
-    "dungeonsandtrollsHeal": {
-      "type": "object",
-      "properties": {
-        "heal": {
-          "type": "number",
-          "format": "float"
-        },
-        "damageOverTime": {
-          "$ref": "#/definitions/dungeonsandtrollsDamageOverTime"
-        }
-      }
-    },
     "dungeonsandtrollsIdentifier": {
       "type": "object",
       "properties": {
@@ -848,12 +836,6 @@
           "type": "array",
           "items": {
             "$ref": "#/definitions/dungeonsandtrollsArmor"
-          }
-        },
-        "potions": {
-          "type": "array",
-          "items": {
-            "$ref": "#/definitions/dungeonsandtrollsPotion"
           }
         },
         "runes": {
@@ -999,40 +981,6 @@
         "positionY": {
           "type": "integer",
           "format": "int32"
-        }
-      }
-    },
-    "dungeonsandtrollsPotion": {
-      "type": "object",
-      "properties": {
-        "id": {
-          "type": "string"
-        },
-        "name": {
-          "type": "string"
-        },
-        "price": {
-          "type": "number",
-          "format": "float"
-        },
-        "weight": {
-          "type": "number",
-          "format": "float"
-        },
-        "boosts": {
-          "type": "array",
-          "items": {
-            "$ref": "#/definitions/dungeonsandtrollsAttributes"
-          }
-        },
-        "resistances": {
-          "type": "array",
-          "items": {
-            "$ref": "#/definitions/dungeonsandtrollsResistance"
-          }
-        },
-        "heal": {
-          "$ref": "#/definitions/dungeonsandtrollsHeal"
         }
       }
     },

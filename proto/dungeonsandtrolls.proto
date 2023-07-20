@@ -201,16 +201,6 @@ message Jump {
   float mana_cost = 2;
 }
 
-message Potion {
-  string id = 1;
-  string name = 2;
-  float price = 3;
-  float weight = 4;
-  repeated Attributes boosts = 5;
-  repeated Resistance resistances = 6;
-  optional Heal heal = 7;
-}
-
 message Heal {
   float heal = 1;
   DamageOverTime damage_over_time = 8;
@@ -221,8 +211,7 @@ message Heal {
 message Items {
   repeated Weapon weapons = 1;
   repeated Armor armors = 2;
-  repeated Potion potions = 3;
-  repeated Rune runes = 4;
+  repeated Rune runes = 3;
 }
 
 // TODO this is temporary
