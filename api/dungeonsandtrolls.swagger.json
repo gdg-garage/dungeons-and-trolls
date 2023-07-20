@@ -20,6 +20,48 @@
     "application/json"
   ],
   "paths": {
+    "/v1/assign-skill-points": {
+      "post": {
+        "summary": "Assign skill point to the attribute for the Character bound to the logged user.",
+        "operationId": "DungeonsAndTrolls_AssignSkillPoints",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "type": "object",
+              "properties": {}
+            }
+          },
+          "403": {
+            "description": "Returned when the user does not have permission to access the resource.",
+            "schema": {}
+          },
+          "404": {
+            "description": "Returned when the resource does not exist.",
+            "schema": {}
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/dungeonsandtrollsAttributes"
+            }
+          }
+        ],
+        "tags": [
+          "DungeonsAndTrolls"
+        ]
+      }
+    },
     "/v1/attack": {
       "post": {
         "summary": "Attack the entity identified by the provided ID.",
@@ -536,6 +578,48 @@
           "DungeonsAndTrolls"
         ]
       }
+    },
+    "/v1/yell": {
+      "post": {
+        "summary": "Cast a spell (provided by a rune) by the Character bound to the logged user.",
+        "operationId": "DungeonsAndTrolls_Yell",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "type": "object",
+              "properties": {}
+            }
+          },
+          "403": {
+            "description": "Returned when the user does not have permission to access the resource.",
+            "schema": {}
+          },
+          "404": {
+            "description": "Returned when the resource does not exist.",
+            "schema": {}
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/dungeonsandtrollsMessage"
+            }
+          }
+        ],
+        "tags": [
+          "DungeonsAndTrolls"
+        ]
+      }
     }
   },
   "definitions": {
@@ -590,7 +674,10 @@
           }
         },
         "inventory": {
-          "$ref": "#/definitions/dungeonsandtrollsItems"
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/dungeonsandtrollsItem"
+          }
         },
         "xp": {
           "type": "integer",
@@ -676,23 +763,6 @@
         }
       }
     },
-    "dungeonsandtrollsDamageOverTime": {
-      "type": "object",
-      "properties": {
-        "element": {
-          "$ref": "#/definitions/dungeonsandtrollsElement"
-        },
-        "damage": {
-          "type": "number",
-          "format": "float",
-          "title": "DPS"
-        },
-        "duration": {
-          "type": "integer",
-          "format": "int32"
-        }
-      }
-    },
     "dungeonsandtrollsElement": {
       "type": "string",
       "enum": [
@@ -734,7 +804,10 @@
           "$ref": "#/definitions/dungeonsandtrollsMap"
         },
         "items": {
-          "$ref": "#/definitions/dungeonsandtrollsItems"
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/dungeonsandtrollsItem"
+          }
         },
         "character": {
           "$ref": "#/definitions/dungeonsandtrollsCharacter"
@@ -847,23 +920,6 @@
       ],
       "default": "DAGGER"
     },
-    "dungeonsandtrollsItems": {
-      "type": "object",
-      "properties": {
-        "items": {
-          "type": "array",
-          "items": {
-            "$ref": "#/definitions/dungeonsandtrollsItem"
-          }
-        },
-        "runes": {
-          "type": "array",
-          "items": {
-            "$ref": "#/definitions/dungeonsandtrollsRune"
-          }
-        }
-      }
-    },
     "dungeonsandtrollsLevel": {
       "type": "object",
       "properties": {
@@ -946,6 +1002,14 @@
         }
       }
     },
+    "dungeonsandtrollsMessage": {
+      "type": "object",
+      "properties": {
+        "text": {
+          "type": "string"
+        }
+      }
+    },
     "dungeonsandtrollsMonster": {
       "type": "object",
       "properties": {
@@ -971,7 +1035,7 @@
         "inventory": {
           "type": "array",
           "items": {
-            "$ref": "#/definitions/dungeonsandtrollsItems"
+            "$ref": "#/definitions/dungeonsandtrollsItem"
           }
         }
       }
@@ -996,60 +1060,6 @@
           "$ref": "#/definitions/dungeonsandtrollsElement"
         },
         "value": {
-          "type": "number",
-          "format": "float"
-        }
-      }
-    },
-    "dungeonsandtrollsRune": {
-      "type": "object",
-      "properties": {
-        "id": {
-          "type": "string"
-        },
-        "name": {
-          "type": "string"
-        },
-        "type": {
-          "$ref": "#/definitions/dungeonsandtrollsRuneType"
-        },
-        "minDamage": {
-          "type": "number",
-          "format": "float"
-        },
-        "maxDamage": {
-          "type": "number",
-          "format": "float"
-        },
-        "weight": {
-          "type": "number",
-          "format": "float"
-        },
-        "price": {
-          "type": "number",
-          "format": "float"
-        },
-        "damageOverTime": {
-          "type": "array",
-          "items": {
-            "$ref": "#/definitions/dungeonsandtrollsDamageOverTime"
-          }
-        },
-        "requirements": {
-          "type": "array",
-          "items": {
-            "$ref": "#/definitions/dungeonsandtrollsAttributes"
-          }
-        },
-        "minHeal": {
-          "type": "number",
-          "format": "float"
-        },
-        "maxHeal": {
-          "type": "number",
-          "format": "float"
-        },
-        "manaCost": {
           "type": "number",
           "format": "float"
         }

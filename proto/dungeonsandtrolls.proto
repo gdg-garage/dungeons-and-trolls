@@ -19,7 +19,7 @@ service DungeonsAndTrolls {
   // Equip the Item identified by the provided ID for the Character bound to the logged user.
   rpc Equip(Identifier) returns (google.protobuf.Empty) {}
   // Assign skill point to the attribute for the Character bound to the logged user.
-  rpc AssignSkillPoint(Attributes) returns (google.protobuf.Empty) {}
+  rpc AssignSkillPoints(Attributes) returns (google.protobuf.Empty) {}
   // Drink the Potion identified by the provided ID for the Character bound to the logged user.
   rpc Drink(Identifier) returns (google.protobuf.Empty) {}
   // Move the Character bound to the logged user to the specified place.
@@ -32,6 +32,8 @@ service DungeonsAndTrolls {
   rpc Cast(SpellAndTarget) returns (google.protobuf.Empty) {}
   // Jump with the Character bound to the logged user (has to be provided by Boots).
   rpc Jump(Coordinates) returns (google.protobuf.Empty) {}
+  // Cast a spell (provided by a rune) by the Character bound to the logged user.
+  rpc Yell(Message) returns (google.protobuf.Empty) {}
   // Send multiple commands to the Character bound to the logged user. The order of execution is defined in the message.
   rpc Commands(CommandsBatch) returns (google.protobuf.Empty) {}
   // Control monsters. Admin only.
@@ -40,6 +42,10 @@ service DungeonsAndTrolls {
   // TODO: How to use stairs.
   //  * this is probably just a condition for move.
   // TODO: Stats? Those will be probably in Grafana (not sure if we need an rpc for that).
+}
+
+message Message {
+  string text = 1;
 }
 
 message GameStateParams {
@@ -60,6 +66,7 @@ message CommandsBatch {
   optional SpellAndTarget cast = 6;
   optional Identifier attack = 7;
   repeated Attributes assign_attribute = 8;
+  optional Message yell = 9;
 }
 
 message CommandsForMonsters {
@@ -108,7 +115,7 @@ message Monster {
   int32 level = 3;
   Attributes attributes = 4;
   repeated Resistance resistances = 5;
-  repeated Items inventory = 6;
+  repeated Item inventory = 6;
 }
 
 message Character {
@@ -118,7 +125,7 @@ message Character {
   int32 level = 4;
   Attributes attributes = 5;
   repeated Resistance resistances = 6;
-  Items inventory = 7;
+  repeated Item inventory = 7;
   int32 xp = 8;
   int32 money = 9;
   int32 free_skill_points = 10;
@@ -201,11 +208,6 @@ message Heal {
   DamageOverTime damage_over_time = 8;
 }
 
-message Items {
-  repeated Item items = 1;
-  repeated Rune runes = 2;
-}
-
 // TODO this is temporary
 message Object {
   string name = 1;
@@ -258,7 +260,7 @@ message Event {
 
 message GameState {
   Map map = 1;
-  Items items = 2;
+  repeated Item items = 2;
   optional Character character = 3;
   optional Coordinates current_position = 4;
   int64 tick = 5;

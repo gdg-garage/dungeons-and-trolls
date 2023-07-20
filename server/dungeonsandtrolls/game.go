@@ -8,17 +8,17 @@ import (
 
 const LoopTime = time.Second
 
-func CreateWeapon(name string, damage, weight float32) *Weapon {
-	return &Weapon{
+func CreateWeapon(name string, damage, weight float32) *Item {
+	return &Item{
 		//Item:   CreateItem(name),
-		MaxDamage: damage,
-		Weight:    weight,
+		//MaxDamage: damage,
+		Weight: &weight,
 	}
 }
 
 type Game struct {
 	Map    *ObsoleteMap          `json:"map"`
-	Items  Items                 `json:"items"`
+	Items  []*Item               `json:"items"`
 	Inputs map[string][]CommandI `json:"-"`
 	// Gained after kill (may be used in the next run)
 	Experience float32 `json:"-"`
@@ -44,8 +44,8 @@ func CreateGame() (*Game, error) {
 	p.Position = gameobject.Position{Level: 0, X: 4, Y: 4}
 
 	// Create some items
-	g.Items.Weapons = append(g.Items.Weapons, CreateWeapon("axe", 1.2, 4.2))
-	g.Items.Weapons = append(g.Items.Weapons, CreateWeapon("sword", 1.1, 2))
+	g.Items = append(g.Items, CreateWeapon("axe", 1.2, 4.2))
+	g.Items = append(g.Items, CreateWeapon("sword", 1.1, 2))
 
 	go g.gameLoop()
 

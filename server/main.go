@@ -80,7 +80,7 @@ func (s *server) Buy(ctx context.Context, identifier *dungeonsandtrolls.Identifi
 func (s *server) Equip(ctx context.Context, identifier *dungeonsandtrolls.Identifier) (*emptypb.Empty, error) {
 	return nil, nil
 }
-func (s *server) AssignSkillPoint(ctx context.Context, identifier *dungeonsandtrolls.Attributes) (*emptypb.Empty, error) {
+func (s *server) AssignSkillPoints(ctx context.Context, attributes *dungeonsandtrolls.Attributes) (*emptypb.Empty, error) {
 	return nil, nil
 }
 func (s *server) Drink(ctx context.Context, identifier *dungeonsandtrolls.Identifier) (*emptypb.Empty, error) {
@@ -105,6 +105,9 @@ func (s *server) Commands(ctx context.Context, commands *dungeonsandtrolls.Comma
 	return nil, nil
 }
 func (s *server) MonstersCommands(ctx context.Context, commands *dungeonsandtrolls.CommandsForMonsters) (*emptypb.Empty, error) {
+	return nil, nil
+}
+func (s *server) Yell(ctx context.Context, commands *dungeonsandtrolls.Message) (*emptypb.Empty, error) {
 	return nil, nil
 }
 

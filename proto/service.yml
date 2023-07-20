@@ -38,3 +38,9 @@ http:
     - selector: dungeonsandtrolls.DungeonsAndTrolls.MonstersCommands
       post: /v1/monsters-commands
       body: "*"
+    - selector: dungeonsandtrolls.DungeonsAndTrolls.Yell
+      post: /v1/yell
+      body: "*"
+    - selector: dungeonsandtrolls.DungeonsAndTrolls.AssignSkillPoints
+      post: /v1/assign-skill-points
+      body: "*"
