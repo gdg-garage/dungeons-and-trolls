@@ -760,9 +760,11 @@
         "FIRE",
         "LIGHTNING",
         "POISON",
-        "LIFE"
+        "LIFE",
+        "PHYSICAL"
       ],
-      "default": "COLD"
+      "default": "COLD",
+      "title": "- LIFE: TODO this probably should be removed"
     },
     "dungeonsandtrollsEvent": {
       "type": "object",

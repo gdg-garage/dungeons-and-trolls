@@ -72,7 +72,8 @@ enum Element {
   FIRE = 1;
   LIGHTNING = 2;
   POISON = 3;
-  LIFE = 4;
+  LIFE = 4; // TODO this probably should be removed
+  PHYSICAL = 5;
 }
 
 message DamageOverTime {
