@@ -74,7 +74,7 @@ func (s *server) Register(ctx context.Context, user *dungeonsandtrolls.User) (*e
 	return nil, nil
 }
 
-func (s *server) Buy(ctx context.Context, identifier *dungeonsandtrolls.Identifier) (*emptypb.Empty, error) {
+func (s *server) Buy(ctx context.Context, identifiers *dungeonsandtrolls.Identifiers) (*emptypb.Empty, error) {
 	return nil, nil
 }
 func (s *server) Equip(ctx context.Context, identifier *dungeonsandtrolls.Identifier) (*emptypb.Empty, error) {

@@ -137,7 +137,7 @@
             "in": "body",
             "required": true,
             "schema": {
-              "$ref": "#/definitions/dungeonsandtrollsIdentifier"
+              "$ref": "#/definitions/dungeonsandtrollsIdentifiers"
             }
           }
         ],
@@ -731,6 +731,9 @@
           "items": {
             "$ref": "#/definitions/dungeonsandtrollsAttributes"
           }
+        },
+        "yell": {
+          "$ref": "#/definitions/dungeonsandtrollsMessage"
         }
       }
     },
@@ -833,6 +836,17 @@
       "properties": {
         "id": {
           "type": "string"
+        }
+      }
+    },
+    "dungeonsandtrollsIdentifiers": {
+      "type": "object",
+      "properties": {
+        "ids": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
         }
       }
     },

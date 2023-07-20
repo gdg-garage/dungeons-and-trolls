@@ -103,7 +103,7 @@ func local_request_DungeonsAndTrolls_Register_0(ctx context.Context, marshaler r
 }
 
 func request_DungeonsAndTrolls_Buy_0(ctx context.Context, marshaler runtime.Marshaler, client DungeonsAndTrollsClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
-	var protoReq Identifier
+	var protoReq Identifiers
 	var metadata runtime.ServerMetadata
 
 	newReader, berr := utilities.IOReaderFactory(req.Body)
@@ -120,7 +120,7 @@ func request_DungeonsAndTrolls_Buy_0(ctx context.Context, marshaler runtime.Mars
 }
 
 func local_request_DungeonsAndTrolls_Buy_0(ctx context.Context, marshaler runtime.Marshaler, server DungeonsAndTrollsServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
-	var protoReq Identifier
+	var protoReq Identifiers
 	var metadata runtime.ServerMetadata
 
 	newReader, berr := utilities.IOReaderFactory(req.Body)

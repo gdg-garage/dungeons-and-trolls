@@ -15,7 +15,7 @@ service DungeonsAndTrolls {
   // Register provided User to the Game and create a character.
   rpc Register(User) returns (google.protobuf.Empty) {}
   // Buy the Item identified by the provided ID for the Character bound to the logged user.
-  rpc Buy(Identifier) returns (google.protobuf.Empty) {}
+  rpc Buy(Identifiers) returns (google.protobuf.Empty) {}
   // Equip the Item identified by the provided ID for the Character bound to the logged user.
   rpc Equip(Identifier) returns (google.protobuf.Empty) {}
   // Assign skill point to the attribute for the Character bound to the logged user.
@@ -274,6 +274,10 @@ message User {
 
 message Identifier {
   string id = 1;
+}
+
+message Identifiers {
+  repeated string ids = 1;
 }
 
 message Coordinates {

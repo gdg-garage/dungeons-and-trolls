@@ -25,7 +25,7 @@ const _ = grpc.SupportPackageIsVersion7
 type DungeonsAndTrollsClient interface {
 	Game(ctx context.Context, in *GameStateParams, opts ...grpc.CallOption) (*GameState, error)
 	Register(ctx context.Context, in *User, opts ...grpc.CallOption) (*emptypb.Empty, error)
-	Buy(ctx context.Context, in *Identifier, opts ...grpc.CallOption) (*emptypb.Empty, error)
+	Buy(ctx context.Context, in *Identifiers, opts ...grpc.CallOption) (*emptypb.Empty, error)
 	Equip(ctx context.Context, in *Identifier, opts ...grpc.CallOption) (*emptypb.Empty, error)
 	AssignSkillPoints(ctx context.Context, in *Attributes, opts ...grpc.CallOption) (*emptypb.Empty, error)
 	Drink(ctx context.Context, in *Identifier, opts ...grpc.CallOption) (*emptypb.Empty, error)
@@ -65,7 +65,7 @@ func (c *dungeonsAndTrollsClient) Register(ctx context.Context, in *User, opts .
 	return out, nil
 }
 
-func (c *dungeonsAndTrollsClient) Buy(ctx context.Context, in *Identifier, opts ...grpc.CallOption) (*emptypb.Empty, error) {
+func (c *dungeonsAndTrollsClient) Buy(ctx context.Context, in *Identifiers, opts ...grpc.CallOption) (*emptypb.Empty, error) {
 	out := new(emptypb.Empty)
 	err := c.cc.Invoke(ctx, "/dungeonsandtrolls.DungeonsAndTrolls/Buy", in, out, opts...)
 	if err != nil {
@@ -179,7 +179,7 @@ func (c *dungeonsAndTrollsClient) MonstersCommands(ctx context.Context, in *Comm
 type DungeonsAndTrollsServer interface {
 	Game(context.Context, *GameStateParams) (*GameState, error)
 	Register(context.Context, *User) (*emptypb.Empty, error)
-	Buy(context.Context, *Identifier) (*emptypb.Empty, error)
+	Buy(context.Context, *Identifiers) (*emptypb.Empty, error)
 	Equip(context.Context, *Identifier) (*emptypb.Empty, error)
 	AssignSkillPoints(context.Context, *Attributes) (*emptypb.Empty, error)
 	Drink(context.Context, *Identifier) (*emptypb.Empty, error)
@@ -204,7 +204,7 @@ func (UnimplementedDungeonsAndTrollsServer) Game(context.Context, *GameStatePara
 func (UnimplementedDungeonsAndTrollsServer) Register(context.Context, *User) (*emptypb.Empty, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method Register not implemented")
 }
-func (UnimplementedDungeonsAndTrollsServer) Buy(context.Context, *Identifier) (*emptypb.Empty, error) {
+func (UnimplementedDungeonsAndTrollsServer) Buy(context.Context, *Identifiers) (*emptypb.Empty, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method Buy not implemented")
 }
 func (UnimplementedDungeonsAndTrollsServer) Equip(context.Context, *Identifier) (*emptypb.Empty, error) {
@@ -290,7 +290,7 @@ func _DungeonsAndTrolls_Register_Handler(srv interface{}, ctx context.Context, d
 }
 
 func _DungeonsAndTrolls_Buy_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(Identifier)
+	in := new(Identifiers)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
@@ -302,7 +302,7 @@ func _DungeonsAndTrolls_Buy_Handler(srv interface{}, ctx context.Context, dec fu
 		FullMethod: "/dungeonsandtrolls.DungeonsAndTrolls/Buy",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(DungeonsAndTrollsServer).Buy(ctx, req.(*Identifier))
+		return srv.(DungeonsAndTrollsServer).Buy(ctx, req.(*Identifiers))
 	}
 	return interceptor(ctx, in, info, handler)
 }
