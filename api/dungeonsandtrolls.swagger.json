@@ -230,48 +230,6 @@
         ]
       }
     },
-    "/v1/drink": {
-      "post": {
-        "summary": "Drink the Potion identified by the provided ID for the Character bound to the logged user.",
-        "operationId": "DungeonsAndTrolls_Drink",
-        "responses": {
-          "200": {
-            "description": "A successful response.",
-            "schema": {
-              "type": "object",
-              "properties": {}
-            }
-          },
-          "403": {
-            "description": "Returned when the user does not have permission to access the resource.",
-            "schema": {}
-          },
-          "404": {
-            "description": "Returned when the resource does not exist.",
-            "schema": {}
-          },
-          "default": {
-            "description": "An unexpected error response.",
-            "schema": {
-              "$ref": "#/definitions/rpcStatus"
-            }
-          }
-        },
-        "parameters": [
-          {
-            "name": "body",
-            "in": "body",
-            "required": true,
-            "schema": {
-              "$ref": "#/definitions/dungeonsandtrollsIdentifier"
-            }
-          }
-        ],
-        "tags": [
-          "DungeonsAndTrolls"
-        ]
-      }
-    },
     "/v1/equip": {
       "post": {
         "summary": "Equip the Item identified by the provided ID for the Character bound to the logged user.",
@@ -454,7 +412,7 @@
     },
     "/v1/move": {
       "post": {
-        "summary": "Move the Character bound to the logged user to the specified place.",
+        "summary": "Drink the Potion identified by the provided ID for the Character bound to the logged user.",
         "operationId": "DungeonsAndTrolls_Move",
         "responses": {
           "200": {

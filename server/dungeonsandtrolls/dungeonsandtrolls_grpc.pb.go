@@ -28,7 +28,6 @@ type DungeonsAndTrollsClient interface {
 	Buy(ctx context.Context, in *Identifiers, opts ...grpc.CallOption) (*emptypb.Empty, error)
 	Equip(ctx context.Context, in *Identifier, opts ...grpc.CallOption) (*emptypb.Empty, error)
 	AssignSkillPoints(ctx context.Context, in *Attributes, opts ...grpc.CallOption) (*emptypb.Empty, error)
-	Drink(ctx context.Context, in *Identifier, opts ...grpc.CallOption) (*emptypb.Empty, error)
 	Move(ctx context.Context, in *Coordinates, opts ...grpc.CallOption) (*emptypb.Empty, error)
 	Attack(ctx context.Context, in *Identifier, opts ...grpc.CallOption) (*emptypb.Empty, error)
 	Respawn(ctx context.Context, in *emptypb.Empty, opts ...grpc.CallOption) (*emptypb.Empty, error)
@@ -86,15 +85,6 @@ func (c *dungeonsAndTrollsClient) Equip(ctx context.Context, in *Identifier, opt
 func (c *dungeonsAndTrollsClient) AssignSkillPoints(ctx context.Context, in *Attributes, opts ...grpc.CallOption) (*emptypb.Empty, error) {
 	out := new(emptypb.Empty)
 	err := c.cc.Invoke(ctx, "/dungeonsandtrolls.DungeonsAndTrolls/AssignSkillPoints", in, out, opts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
-}
-
-func (c *dungeonsAndTrollsClient) Drink(ctx context.Context, in *Identifier, opts ...grpc.CallOption) (*emptypb.Empty, error) {
-	out := new(emptypb.Empty)
-	err := c.cc.Invoke(ctx, "/dungeonsandtrolls.DungeonsAndTrolls/Drink", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -182,7 +172,6 @@ type DungeonsAndTrollsServer interface {
 	Buy(context.Context, *Identifiers) (*emptypb.Empty, error)
 	Equip(context.Context, *Identifier) (*emptypb.Empty, error)
 	AssignSkillPoints(context.Context, *Attributes) (*emptypb.Empty, error)
-	Drink(context.Context, *Identifier) (*emptypb.Empty, error)
 	Move(context.Context, *Coordinates) (*emptypb.Empty, error)
 	Attack(context.Context, *Identifier) (*emptypb.Empty, error)
 	Respawn(context.Context, *emptypb.Empty) (*emptypb.Empty, error)
@@ -212,9 +201,6 @@ func (UnimplementedDungeonsAndTrollsServer) Equip(context.Context, *Identifier) 
 }
 func (UnimplementedDungeonsAndTrollsServer) AssignSkillPoints(context.Context, *Attributes) (*emptypb.Empty, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method AssignSkillPoints not implemented")
-}
-func (UnimplementedDungeonsAndTrollsServer) Drink(context.Context, *Identifier) (*emptypb.Empty, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method Drink not implemented")
 }
 func (UnimplementedDungeonsAndTrollsServer) Move(context.Context, *Coordinates) (*emptypb.Empty, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method Move not implemented")
@@ -339,24 +325,6 @@ func _DungeonsAndTrolls_AssignSkillPoints_Handler(srv interface{}, ctx context.C
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(DungeonsAndTrollsServer).AssignSkillPoints(ctx, req.(*Attributes))
-	}
-	return interceptor(ctx, in, info, handler)
-}
-
-func _DungeonsAndTrolls_Drink_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(Identifier)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	if interceptor == nil {
-		return srv.(DungeonsAndTrollsServer).Drink(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: "/dungeonsandtrolls.DungeonsAndTrolls/Drink",
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(DungeonsAndTrollsServer).Drink(ctx, req.(*Identifier))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -531,10 +499,6 @@ var DungeonsAndTrolls_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "AssignSkillPoints",
 			Handler:    _DungeonsAndTrolls_AssignSkillPoints_Handler,
-		},
-		{
-			MethodName: "Drink",
-			Handler:    _DungeonsAndTrolls_Drink_Handler,
 		},
 		{
 			MethodName: "Move",

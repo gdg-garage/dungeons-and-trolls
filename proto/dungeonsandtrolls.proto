@@ -21,8 +21,6 @@ service DungeonsAndTrolls {
   // Assign skill point to the attribute for the Character bound to the logged user.
   rpc AssignSkillPoints(Attributes) returns (google.protobuf.Empty) {}
   // Drink the Potion identified by the provided ID for the Character bound to the logged user.
-  rpc Drink(Identifier) returns (google.protobuf.Empty) {}
-  // Move the Character bound to the logged user to the specified place.
   rpc Move(Coordinates) returns (google.protobuf.Empty) {}
   // Attack the entity identified by the provided ID.
   rpc Attack(Identifier) returns (google.protobuf.Empty) {}

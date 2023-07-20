@@ -83,9 +83,6 @@ func (s *server) Equip(ctx context.Context, identifier *dungeonsandtrolls.Identi
 func (s *server) AssignSkillPoints(ctx context.Context, attributes *dungeonsandtrolls.Attributes) (*emptypb.Empty, error) {
 	return nil, nil
 }
-func (s *server) Drink(ctx context.Context, identifier *dungeonsandtrolls.Identifier) (*emptypb.Empty, error) {
-	return nil, nil
-}
 func (s *server) Move(ctx context.Context, coordinates *dungeonsandtrolls.Coordinates) (*emptypb.Empty, error) {
 	return nil, nil
 }

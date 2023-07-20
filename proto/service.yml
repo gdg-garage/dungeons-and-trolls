@@ -14,9 +14,6 @@ http:
     - selector: dungeonsandtrolls.DungeonsAndTrolls.Equip
       post: /v1/equip
       body: "*"
-    - selector: dungeonsandtrolls.DungeonsAndTrolls.Drink
-      post: /v1/drink
-      body: "*"
     - selector: dungeonsandtrolls.DungeonsAndTrolls.Move
       post: /v1/move
       body: "*"
