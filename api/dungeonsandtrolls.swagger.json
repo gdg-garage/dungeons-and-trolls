@@ -146,48 +146,6 @@
         ]
       }
     },
-    "/v1/cast": {
-      "post": {
-        "summary": "Cast a spell (provided by a rune) by the Character bound to the logged user.",
-        "operationId": "DungeonsAndTrolls_Cast",
-        "responses": {
-          "200": {
-            "description": "A successful response.",
-            "schema": {
-              "type": "object",
-              "properties": {}
-            }
-          },
-          "403": {
-            "description": "Returned when the user does not have permission to access the resource.",
-            "schema": {}
-          },
-          "404": {
-            "description": "Returned when the resource does not exist.",
-            "schema": {}
-          },
-          "default": {
-            "description": "An unexpected error response.",
-            "schema": {
-              "$ref": "#/definitions/rpcStatus"
-            }
-          }
-        },
-        "parameters": [
-          {
-            "name": "body",
-            "in": "body",
-            "required": true,
-            "schema": {
-              "$ref": "#/definitions/dungeonsandtrollsSpellAndTarget"
-            }
-          }
-        ],
-        "tags": [
-          "DungeonsAndTrolls"
-        ]
-      }
-    },
     "/v1/commands": {
       "post": {
         "summary": "Send multiple commands to the Character bound to the logged user. The order of execution is defined in the message.",
@@ -301,7 +259,7 @@
         "parameters": [
           {
             "name": "ascii",
-            "description": "dafault false",
+            "description": "default false",
             "in": "query",
             "required": false,
             "type": "boolean"
@@ -537,6 +495,48 @@
         ]
       }
     },
+    "/v1/skill": {
+      "post": {
+        "summary": "Cast a spell (provided by a rune) by the Character bound to the logged user.",
+        "operationId": "DungeonsAndTrolls_Skill",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "type": "object",
+              "properties": {}
+            }
+          },
+          "403": {
+            "description": "Returned when the user does not have permission to access the resource.",
+            "schema": {}
+          },
+          "404": {
+            "description": "Returned when the resource does not exist.",
+            "schema": {}
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/dungeonsandtrollsSkillUse"
+            }
+          }
+        ],
+        "tags": [
+          "DungeonsAndTrolls"
+        ]
+      }
+    },
     "/v1/yell": {
       "post": {
         "summary": "Cast a spell (provided by a rune) by the Character bound to the logged user.",
@@ -628,7 +628,7 @@
         "resistances": {
           "type": "array",
           "items": {
-            "$ref": "#/definitions/dungeonsandtrollsResistance"
+            "$ref": "#/definitions/dungeonsandtrollsElements"
           }
         },
         "inventory": {
@@ -679,7 +679,7 @@
           "$ref": "#/definitions/dungeonsandtrollsCoordinates"
         },
         "cast": {
-          "$ref": "#/definitions/dungeonsandtrollsSpellAndTarget"
+          "$ref": "#/definitions/dungeonsandtrollsSkillUse"
         },
         "attack": {
           "$ref": "#/definitions/dungeonsandtrollsIdentifier"
@@ -724,18 +724,58 @@
         }
       }
     },
-    "dungeonsandtrollsElement": {
-      "type": "string",
-      "enum": [
-        "COLD",
-        "FIRE",
-        "LIGHTNING",
-        "POISON",
-        "LIFE",
-        "PHYSICAL"
-      ],
-      "default": "COLD",
-      "title": "- LIFE: TODO this probably should be removed"
+    "dungeonsandtrollsEffect": {
+      "type": "object",
+      "properties": {
+        "minDamage": {
+          "$ref": "#/definitions/dungeonsandtrollsElements"
+        },
+        "maxDamage": {
+          "$ref": "#/definitions/dungeonsandtrollsElements"
+        },
+        "duration": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "areaOfEffect": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "boosts": {
+          "$ref": "#/definitions/dungeonsandtrollsAttributes"
+        },
+        "minStats": {
+          "$ref": "#/definitions/dungeonsandtrollsStats"
+        },
+        "maxStats": {
+          "$ref": "#/definitions/dungeonsandtrollsStats"
+        }
+      }
+    },
+    "dungeonsandtrollsElements": {
+      "type": "object",
+      "properties": {
+        "cold": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "fire": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "lightning": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "poison": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "physical": {
+          "type": "integer",
+          "format": "int32"
+        }
+      }
     },
     "dungeonsandtrollsEvent": {
       "type": "object",
@@ -754,7 +794,8 @@
     "dungeonsandtrollsEventType": {
       "type": "string",
       "enum": [
-        "DAMAGE"
+        "DAMAGE",
+        "MESSAGE"
       ],
       "default": "DAMAGE"
     },
@@ -785,7 +826,7 @@
           "items": {
             "$ref": "#/definitions/dungeonsandtrollsEvent"
           },
-          "description": "List of events which occured in the previous tick. Useful for visualising effects and debugging."
+          "description": "List of events which occurred in the previous tick. Useful for visualising effects and debugging."
         }
       }
     },
@@ -828,30 +869,26 @@
           "type": "number",
           "format": "float"
         },
-        "defense": {
-          "type": "number",
-          "format": "float"
-        },
         "requirements": {
-          "type": "array",
-          "items": {
-            "$ref": "#/definitions/dungeonsandtrollsAttributes"
-          }
+          "$ref": "#/definitions/dungeonsandtrollsAttributes"
         },
         "boosts": {
-          "type": "array",
-          "items": {
-            "$ref": "#/definitions/dungeonsandtrollsAttributes"
-          }
+          "$ref": "#/definitions/dungeonsandtrollsAttributes"
         },
         "resistances": {
           "type": "array",
           "items": {
-            "$ref": "#/definitions/dungeonsandtrollsResistance"
+            "$ref": "#/definitions/dungeonsandtrollsElements"
           }
         },
         "visualType": {
           "$ref": "#/definitions/dungeonsandtrollsItemVisualType"
+        },
+        "skills": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/dungeonsandtrollsSkill"
+          }
         }
       }
     },
@@ -942,7 +979,7 @@
         "door": {
           "type": "boolean"
         },
-        "anomally": {
+        "anomaly": {
           "type": "boolean"
         }
       }
@@ -966,11 +1003,20 @@
           }
         },
         "stairs": {
-          "type": "boolean"
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/dungeonsandtrollsShortcut"
+          }
+        },
+        "portals": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/dungeonsandtrollsShortcut"
+          }
         },
         "decorations": {
           "$ref": "#/definitions/dungeonsandtrollsMapDecorations",
-          "title": "TODO: chests are not impleted yet\n bool chest = 4;"
+          "title": "TODO: chests are not implemented yet\n bool chest = 4;"
         }
       }
     },
@@ -985,6 +1031,9 @@
     "dungeonsandtrollsMonster": {
       "type": "object",
       "properties": {
+        "id": {
+          "type": "string"
+        },
         "name": {
           "type": "string"
         },
@@ -1001,13 +1050,19 @@
         "resistances": {
           "type": "array",
           "items": {
-            "$ref": "#/definitions/dungeonsandtrollsResistance"
+            "$ref": "#/definitions/dungeonsandtrollsElements"
           }
         },
         "inventory": {
           "type": "array",
           "items": {
             "$ref": "#/definitions/dungeonsandtrollsItem"
+          }
+        },
+        "effects": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/dungeonsandtrollsEffect"
           }
         }
       }
@@ -1025,37 +1080,62 @@
         }
       }
     },
-    "dungeonsandtrollsResistance": {
+    "dungeonsandtrollsShortcut": {
       "type": "object",
       "properties": {
-        "element": {
-          "$ref": "#/definitions/dungeonsandtrollsElement"
-        },
-        "value": {
-          "type": "number",
-          "format": "float"
+        "leadsTo": {
+          "$ref": "#/definitions/dungeonsandtrollsCoordinates"
         }
       }
     },
-    "dungeonsandtrollsRuneType": {
-      "type": "string",
-      "enum": [
-        "HEAL",
-        "FIREBALL",
-        "ICE_NOVA",
-        "POISON_CLOUD",
-        "LIGHTNING_BOLT"
-      ],
-      "default": "HEAL"
-    },
-    "dungeonsandtrollsSpellAndTarget": {
+    "dungeonsandtrollsSkill": {
       "type": "object",
       "properties": {
-        "spell": {
-          "$ref": "#/definitions/dungeonsandtrollsRuneType"
+        "id": {
+          "type": "string"
+        },
+        "name": {
+          "type": "string"
+        },
+        "effects": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/dungeonsandtrollsEffect"
+          }
+        },
+        "requirements": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/dungeonsandtrollsAttributes"
+          }
+        },
+        "cost": {
+          "$ref": "#/definitions/dungeonsandtrollsStats"
+        },
+        "requiresLineOfSight": {
+          "type": "boolean"
+        },
+        "maxDistance": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "maxMoveDistance": {
+          "type": "integer",
+          "format": "int32"
+        }
+      }
+    },
+    "dungeonsandtrollsSkillUse": {
+      "type": "object",
+      "properties": {
+        "skill": {
+          "$ref": "#/definitions/dungeonsandtrollsSkill"
         },
         "targetId": {
           "type": "string"
+        },
+        "location": {
+          "$ref": "#/definitions/dungeonsandtrollsPosition"
         }
       }
     },

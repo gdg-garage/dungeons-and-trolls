@@ -23,8 +23,8 @@ http:
     - selector: dungeonsandtrolls.DungeonsAndTrolls.Respawn
       post: /v1/respawn
       body: "*"
-    - selector: dungeonsandtrolls.DungeonsAndTrolls.Cast
-      post: /v1/cast
+    - selector: dungeonsandtrolls.DungeonsAndTrolls.Skill
+      post: /v1/skill
       body: "*"
     - selector: dungeonsandtrolls.DungeonsAndTrolls.Jump
       post: /v1/jump

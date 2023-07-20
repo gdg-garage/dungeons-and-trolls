@@ -27,7 +27,7 @@ service DungeonsAndTrolls {
   // Respawn the Character bound to the logged user.
   rpc Respawn(google.protobuf.Empty) returns (google.protobuf.Empty) {}
   // Cast a spell (provided by a rune) by the Character bound to the logged user.
-  rpc Cast(SpellAndTarget) returns (google.protobuf.Empty) {}
+  rpc Skill(SkillUse) returns (google.protobuf.Empty) {}
   // Jump with the Character bound to the logged user (has to be provided by Boots).
   rpc Jump(Coordinates) returns (google.protobuf.Empty) {}
   // Cast a spell (provided by a rune) by the Character bound to the logged user.
@@ -36,6 +36,9 @@ service DungeonsAndTrolls {
   rpc Commands(CommandsBatch) returns (google.protobuf.Empty) {}
   // Control monsters. Admin only.
   rpc MonstersCommands(CommandsForMonsters) returns (google.protobuf.Empty) {}
+
+  // TODO teleport home
+  // maybe it is enough that you can always move to the 0 floor
 
   // TODO: How to use stairs.
   //  * this is probably just a condition for move.
@@ -47,7 +50,7 @@ message Message {
 }
 
 message GameStateParams {
-  // dafault false
+  // default false
   optional bool ascii = 1;
   // default false
   optional bool events = 2;
@@ -61,7 +64,7 @@ message CommandsBatch {
   repeated Identifier drink = 3;
   optional Coordinates move = 4;
   optional Coordinates jump = 5;
-  optional SpellAndTarget cast = 6;
+  optional SkillUse cast = 6;
   optional Identifier attack = 7;
   repeated Attributes assign_attribute = 8;
   optional Message yell = 9;
@@ -72,20 +75,22 @@ message CommandsForMonsters {
   map<string, CommandsBatch> commands = 1;
 }
 
-enum Element {
-  COLD = 0;
-  FIRE = 1;
-  LIGHTNING = 2;
-  POISON = 3;
-  LIFE = 4; // TODO this probably should be removed
-  PHYSICAL = 5;
+message Elements {
+  int32 cold = 1;
+  int32 fire = 2;
+  int32 lightning = 3;
+  int32 poison = 4;
+  int32 physical = 5;
 }
 
-message DamageOverTime {
-  Element element = 1;
-  // DPS
-  float damage = 2;
+message Effect {
+  Elements min_damage = 1;
+  Elements max_damage = 2;
   int32 duration = 3;
+  optional int32 area_of_effect = 4;
+  optional Attributes boosts = 5;
+  Stats min_stats = 6;
+  Stats max_stats = 7;
 }
 
 message Attributes {
@@ -102,18 +107,15 @@ message Stats {
   float stamina = 3;
 }
 
-message Resistance {
-  Element element = 1;
-  float value = 2;
-}
-
 message Monster {
-  string name = 1;
-  Stats stats = 2;
-  int32 level = 3;
-  Attributes attributes = 4;
-  repeated Resistance resistances = 5;
-  repeated Item inventory = 6;
+  string id = 1;
+  string name = 2;
+  Stats stats = 3;
+  int32 level = 4;
+  Attributes attributes = 5;
+  repeated Elements resistances = 6;
+  repeated Item inventory = 7;
+  repeated Effect effects = 8;
 }
 
 message Character {
@@ -122,11 +124,22 @@ message Character {
   Stats stats = 3;
   int32 level = 4;
   Attributes attributes = 5;
-  repeated Resistance resistances = 6;
+  repeated Elements resistances = 6;
   repeated Item inventory = 7;
   int32 xp = 8;
   int32 money = 9;
   int32 free_skill_points = 10;
+}
+
+message Skill {
+  string id = 1;
+  string name = 2;
+  repeated Effect effects = 8;
+  repeated Attributes requirements = 9;
+  Stats cost = 10;
+  bool requires_line_of_sight = 11;
+  int32 max_distance = 12;
+  int32 max_move_distance = 13;
 }
 
 enum ItemVisualType {
@@ -148,29 +161,6 @@ enum ItemVisualType {
   RING = 15;
 }
 
-message Rune {
-  enum Type {
-    HEAL = 0;
-    FIREBALL = 1;
-    ICE_NOVA = 2;
-    POISON_CLOUD = 3;
-    LIGHTNING_BOLT = 4;
-  }
-
-  string id = 1;
-  string name = 2;
-  Type type = 3;
-  optional float min_damage = 4;
-  optional float max_damage = 5;
-  optional float weight = 6;
-  float price = 7;
-  repeated DamageOverTime damage_over_time = 8;
-  repeated Attributes requirements = 9;
-  optional float min_heal = 10;
-  optional float max_heal = 11;
-  float mana_cost = 12;
-}
-
 message Item {
   enum Type {
     SHIELD = 0;
@@ -189,21 +179,16 @@ message Item {
   Type type = 3;
   float price = 4;
   optional float weight = 5;
-  float defense = 6;
-  repeated Attributes requirements = 7;
-  repeated Attributes boosts = 8;
-  repeated Resistance resistances = 9;
-  optional ItemVisualType visual_type = 10;
+  Attributes requirements = 6;
+  Attributes boosts = 7;
+  repeated Elements resistances = 8;
+  optional ItemVisualType visual_type = 9;
+  repeated Skill skills = 10;
 }
 
 message Jump {
   float max_jump_distance = 1;
   float mana_cost = 2;
-}
-
-message Heal {
-  float heal = 1;
-  DamageOverTime damage_over_time = 8;
 }
 
 // TODO this is temporary
@@ -218,13 +203,18 @@ message Position {
   int32 position_y = 3;
 }
 
+message Shortcut {
+  optional Coordinates leads_to = 1;
+}
+
 message MapObjects {
   Position position = 1;
   repeated Monster monsters = 2;
   repeated Character players = 3;
-  bool stairs = 4;
-  MapDecorations decorations = 5;
-  // TODO: chests are not impleted yet
+  repeated Shortcut stairs = 4;
+  repeated Shortcut portals = 5;
+  MapDecorations decorations = 6;
+  // TODO: chests are not implemented yet
   // bool chest = 4;
 }
 
@@ -232,7 +222,7 @@ message MapDecorations {
   bool carpet = 1;
   bool rug = 2;
   bool door = 3;
-  bool anomally = 4;
+  bool anomaly = 4;
 }
 
 message Level {
@@ -249,6 +239,7 @@ message Map {
 message Event {
   enum Type {
     DAMAGE = 0;
+    MESSAGE = 1;
   }
 
   string message = 1;
@@ -262,7 +253,7 @@ message GameState {
   optional Character character = 3;
   optional Coordinates current_position = 4;
   int64 tick = 5;
-  // List of events which occured in the previous tick. Useful for visualising effects and debugging.
+  // List of events which occurred in the previous tick. Useful for visualising effects and debugging.
   repeated Event events = 6;
 }
 
@@ -284,7 +275,8 @@ message Coordinates {
   int32 position_y = 3;
 }
 
-message SpellAndTarget {
-  Rune.Type spell = 1;
-  string target_id = 2; 
+message SkillUse {
+  Skill skill = 1;
+  optional string target_id = 2;
+  optional Position location = 3;
 }
