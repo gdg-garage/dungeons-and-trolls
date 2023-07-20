@@ -4,15 +4,16 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
+	"io"
+	"net"
+	"net/http"
+
 	"github.com/gdg-garage/dungeons-and-trolls/server/dungeonsandtrolls"
 	"github.com/grpc-ecosystem/grpc-gateway/v2/runtime"
 	"github.com/rs/zerolog/log"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials/insecure"
 	"google.golang.org/protobuf/types/known/emptypb"
-	"io"
-	"net"
-	"net/http"
 )
 
 func gameHandler(game *dungeonsandtrolls.Game, w http.ResponseWriter, r *http.Request) {
@@ -65,8 +66,46 @@ type server struct {
 }
 
 // SayHello implements dungeonsandtrolls.GameServer
-func (s *server) Game(ctx context.Context, _ *emptypb.Empty) (*dungeonsandtrolls.GameState, error) {
+func (s *server) Game(ctx context.Context, params *dungeonsandtrolls.GameStateParams) (*dungeonsandtrolls.GameState, error) {
 	return &dungeonsandtrolls.GameState{}, nil
+}
+
+func (s *server) Register(ctx context.Context, user *dungeonsandtrolls.User) (*emptypb.Empty, error) {
+	return nil, nil
+}
+
+func (s *server) Buy(ctx context.Context, identifier *dungeonsandtrolls.Identifier) (*emptypb.Empty, error) {
+	return nil, nil
+}
+func (s *server) Equip(ctx context.Context, identifier *dungeonsandtrolls.Identifier) (*emptypb.Empty, error) {
+	return nil, nil
+}
+func (s *server) AssignSkillPoint(ctx context.Context, identifier *dungeonsandtrolls.Attributes) (*emptypb.Empty, error) {
+	return nil, nil
+}
+func (s *server) Drink(ctx context.Context, identifier *dungeonsandtrolls.Identifier) (*emptypb.Empty, error) {
+	return nil, nil
+}
+func (s *server) Move(ctx context.Context, coordinates *dungeonsandtrolls.Coordinates) (*emptypb.Empty, error) {
+	return nil, nil
+}
+func (s *server) Attack(ctx context.Context, identifier *dungeonsandtrolls.Identifier) (*emptypb.Empty, error) {
+	return nil, nil
+}
+func (s *server) Respawn(ctx context.Context, _ *emptypb.Empty) (*emptypb.Empty, error) {
+	return nil, nil
+}
+func (s *server) Cast(ctx context.Context, spell *dungeonsandtrolls.SpellAndTarget) (*emptypb.Empty, error) {
+	return nil, nil
+}
+func (s *server) Jump(ctx context.Context, coordinates *dungeonsandtrolls.Coordinates) (*emptypb.Empty, error) {
+	return nil, nil
+}
+func (s *server) Commands(ctx context.Context, commands *dungeonsandtrolls.CommandsBatch) (*emptypb.Empty, error) {
+	return nil, nil
+}
+func (s *server) MonstersCommands(ctx context.Context, commands *dungeonsandtrolls.CommandsForMonsters) (*emptypb.Empty, error) {
+	return nil, nil
 }
 
 func main() {

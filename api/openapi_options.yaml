@@ -1,0 +1,31 @@
+openapiOptions:
+  file:
+    - file: "proto/dungeonsandtrolls.proto"
+      option:
+        info:
+          title: Dungeons and Trolls
+          version: "1.0"
+        schemes:
+          - HTTPS
+        consumes:
+          - application/json
+        produces:
+          - application/json
+        responses:
+          "403":
+            description: Returned when the user does not have permission to access the resource.
+          "404":
+            description: Returned when the resource does not exist.
+        securityDefinitions:
+          security:
+            ApiKeyAuth:
+              type: TYPE_API_KEY
+              name: X-API-Key
+              in: IN_HEADER
+        security:
+          - securityRequirement:
+              ApiKeyAuth: {}
+        externalDocs:
+          description: More about Dungeons and trolls
+          url: https://github.com/gdg-garage/dungeons-and-trolls
+        host: dt.garage-trip.cz

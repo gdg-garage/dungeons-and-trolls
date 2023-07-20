@@ -1,13 +1,17 @@
 {
   "swagger": "2.0",
   "info": {
-    "title": "proto/dungeonsandtrolls.proto",
-    "version": "version not set"
+    "title": "Dungeons and Trolls",
+    "version": "1.0"
   },
   "tags": [
     {
       "name": "DungeonsAndTrolls"
     }
+  ],
+  "host": "dt.garage-trip.cz",
+  "schemes": [
+    "https"
   ],
   "consumes": [
     "application/json"
@@ -16,6 +20,258 @@
     "application/json"
   ],
   "paths": {
+    "/v1/attack": {
+      "post": {
+        "summary": "Attack the entity identified by the provided ID.",
+        "operationId": "DungeonsAndTrolls_Attack",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "type": "object",
+              "properties": {}
+            }
+          },
+          "403": {
+            "description": "Returned when the user does not have permission to access the resource.",
+            "schema": {}
+          },
+          "404": {
+            "description": "Returned when the resource does not exist.",
+            "schema": {}
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/dungeonsandtrollsIdentifier"
+            }
+          }
+        ],
+        "tags": [
+          "DungeonsAndTrolls"
+        ]
+      }
+    },
+    "/v1/buy": {
+      "post": {
+        "summary": "Buy the Item identified by the provided ID for the Character bound to the logged user.",
+        "operationId": "DungeonsAndTrolls_Buy",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "type": "object",
+              "properties": {}
+            }
+          },
+          "403": {
+            "description": "Returned when the user does not have permission to access the resource.",
+            "schema": {}
+          },
+          "404": {
+            "description": "Returned when the resource does not exist.",
+            "schema": {}
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/dungeonsandtrollsIdentifier"
+            }
+          }
+        ],
+        "tags": [
+          "DungeonsAndTrolls"
+        ]
+      }
+    },
+    "/v1/cast": {
+      "post": {
+        "summary": "Cast a spell (provided by a rune) by the Character bound to the logged user.",
+        "operationId": "DungeonsAndTrolls_Cast",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "type": "object",
+              "properties": {}
+            }
+          },
+          "403": {
+            "description": "Returned when the user does not have permission to access the resource.",
+            "schema": {}
+          },
+          "404": {
+            "description": "Returned when the resource does not exist.",
+            "schema": {}
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/dungeonsandtrollsSpellAndTarget"
+            }
+          }
+        ],
+        "tags": [
+          "DungeonsAndTrolls"
+        ]
+      }
+    },
+    "/v1/commands": {
+      "post": {
+        "summary": "Send multiple commands to the Character bound to the logged user. The order of execution is defined in the message.",
+        "operationId": "DungeonsAndTrolls_Commands",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "type": "object",
+              "properties": {}
+            }
+          },
+          "403": {
+            "description": "Returned when the user does not have permission to access the resource.",
+            "schema": {}
+          },
+          "404": {
+            "description": "Returned when the resource does not exist.",
+            "schema": {}
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/dungeonsandtrollsCommandsBatch"
+            }
+          }
+        ],
+        "tags": [
+          "DungeonsAndTrolls"
+        ]
+      }
+    },
+    "/v1/drink": {
+      "post": {
+        "summary": "Drink the Potion identified by the provided ID for the Character bound to the logged user.",
+        "operationId": "DungeonsAndTrolls_Drink",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "type": "object",
+              "properties": {}
+            }
+          },
+          "403": {
+            "description": "Returned when the user does not have permission to access the resource.",
+            "schema": {}
+          },
+          "404": {
+            "description": "Returned when the resource does not exist.",
+            "schema": {}
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/dungeonsandtrollsIdentifier"
+            }
+          }
+        ],
+        "tags": [
+          "DungeonsAndTrolls"
+        ]
+      }
+    },
+    "/v1/equip": {
+      "post": {
+        "summary": "Equip the Item identified by the provided ID for the Character bound to the logged user.",
+        "operationId": "DungeonsAndTrolls_Equip",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "type": "object",
+              "properties": {}
+            }
+          },
+          "403": {
+            "description": "Returned when the user does not have permission to access the resource.",
+            "schema": {}
+          },
+          "404": {
+            "description": "Returned when the resource does not exist.",
+            "schema": {}
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/dungeonsandtrollsIdentifier"
+            }
+          }
+        ],
+        "tags": [
+          "DungeonsAndTrolls"
+        ]
+      }
+    },
     "/v1/game": {
       "get": {
         "summary": "Sends all info about the game.",
@@ -27,6 +283,14 @@
               "$ref": "#/definitions/dungeonsandtrollsGameState"
             }
           },
+          "403": {
+            "description": "Returned when the user does not have permission to access the resource.",
+            "schema": {}
+          },
+          "404": {
+            "description": "Returned when the resource does not exist.",
+            "schema": {}
+          },
           "default": {
             "description": "An unexpected error response.",
             "schema": {
@@ -34,6 +298,240 @@
             }
           }
         },
+        "parameters": [
+          {
+            "name": "ascii",
+            "description": "dafault false",
+            "in": "query",
+            "required": false,
+            "type": "boolean"
+          },
+          {
+            "name": "events",
+            "description": "default false",
+            "in": "query",
+            "required": false,
+            "type": "boolean"
+          },
+          {
+            "name": "blocking",
+            "description": "default true",
+            "in": "query",
+            "required": false,
+            "type": "boolean"
+          }
+        ],
+        "tags": [
+          "DungeonsAndTrolls"
+        ]
+      }
+    },
+    "/v1/jump": {
+      "post": {
+        "summary": "Jump with the Character bound to the logged user (has to be provided by Boots).",
+        "operationId": "DungeonsAndTrolls_Jump",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "type": "object",
+              "properties": {}
+            }
+          },
+          "403": {
+            "description": "Returned when the user does not have permission to access the resource.",
+            "schema": {}
+          },
+          "404": {
+            "description": "Returned when the resource does not exist.",
+            "schema": {}
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/dungeonsandtrollsCoordinates"
+            }
+          }
+        ],
+        "tags": [
+          "DungeonsAndTrolls"
+        ]
+      }
+    },
+    "/v1/monsters-commands": {
+      "post": {
+        "summary": "Control monsters. Admin only.",
+        "operationId": "DungeonsAndTrolls_MonstersCommands",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "type": "object",
+              "properties": {}
+            }
+          },
+          "403": {
+            "description": "Returned when the user does not have permission to access the resource.",
+            "schema": {}
+          },
+          "404": {
+            "description": "Returned when the resource does not exist.",
+            "schema": {}
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/dungeonsandtrollsCommandsForMonsters"
+            }
+          }
+        ],
+        "tags": [
+          "DungeonsAndTrolls"
+        ]
+      }
+    },
+    "/v1/move": {
+      "post": {
+        "summary": "Move the Character bound to the logged user to the specified place.",
+        "operationId": "DungeonsAndTrolls_Move",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "type": "object",
+              "properties": {}
+            }
+          },
+          "403": {
+            "description": "Returned when the user does not have permission to access the resource.",
+            "schema": {}
+          },
+          "404": {
+            "description": "Returned when the resource does not exist.",
+            "schema": {}
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/dungeonsandtrollsCoordinates"
+            }
+          }
+        ],
+        "tags": [
+          "DungeonsAndTrolls"
+        ]
+      }
+    },
+    "/v1/register": {
+      "post": {
+        "summary": "Register provided User to the Game and create a character.",
+        "operationId": "DungeonsAndTrolls_Register",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "type": "object",
+              "properties": {}
+            }
+          },
+          "403": {
+            "description": "Returned when the user does not have permission to access the resource.",
+            "schema": {}
+          },
+          "404": {
+            "description": "Returned when the resource does not exist.",
+            "schema": {}
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/dungeonsandtrollsUser"
+            }
+          }
+        ],
+        "tags": [
+          "DungeonsAndTrolls"
+        ]
+      }
+    },
+    "/v1/respawn": {
+      "post": {
+        "summary": "Respawn the Character bound to the logged user.",
+        "operationId": "DungeonsAndTrolls_Respawn",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "type": "object",
+              "properties": {}
+            }
+          },
+          "403": {
+            "description": "Returned when the user does not have permission to access the resource.",
+            "schema": {}
+          },
+          "404": {
+            "description": "Returned when the resource does not exist.",
+            "schema": {}
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "properties": {}
+            }
+          }
+        ],
         "tags": [
           "DungeonsAndTrolls"
         ]
@@ -44,6 +542,9 @@
     "dungeonsandtrollsArmor": {
       "type": "object",
       "properties": {
+        "id": {
+          "type": "string"
+        },
         "name": {
           "type": "string"
         },
@@ -65,13 +566,13 @@
         "requirements": {
           "type": "array",
           "items": {
-            "$ref": "#/definitions/dungeonsandtrollsAttributeValue"
+            "$ref": "#/definitions/dungeonsandtrollsAttributes"
           }
         },
         "boosts": {
           "type": "array",
           "items": {
-            "$ref": "#/definitions/dungeonsandtrollsAttributeValue"
+            "$ref": "#/definitions/dungeonsandtrollsAttributes"
           }
         },
         "resistances": {
@@ -79,6 +580,9 @@
           "items": {
             "$ref": "#/definitions/dungeonsandtrollsResistance"
           }
+        },
+        "jump": {
+          "$ref": "#/definitions/dungeonsandtrollsJump"
         }
       }
     },
@@ -95,25 +599,148 @@
       ],
       "default": "SHIELD"
     },
-    "dungeonsandtrollsAttribute": {
-      "type": "string",
-      "enum": [
-        "STRENGTH",
-        "INTELLIGENCE",
-        "VITALITY",
-        "DEXTERITY"
-      ],
-      "default": "STRENGTH"
-    },
-    "dungeonsandtrollsAttributeValue": {
+    "dungeonsandtrollsAttributes": {
       "type": "object",
       "properties": {
-        "attribute": {
-          "$ref": "#/definitions/dungeonsandtrollsAttribute"
+        "strength": {
+          "type": "integer",
+          "format": "int32"
         },
-        "value": {
+        "intelligence": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "endurance": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "willpower": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "dexterity": {
+          "type": "integer",
+          "format": "int32"
+        }
+      }
+    },
+    "dungeonsandtrollsCharacter": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "name": {
+          "type": "string"
+        },
+        "health": {
           "type": "number",
           "format": "float"
+        },
+        "level": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "attributes": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/dungeonsandtrollsAttributes"
+          }
+        },
+        "resistances": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/dungeonsandtrollsResistance"
+          }
+        },
+        "inventory": {
+          "$ref": "#/definitions/dungeonsandtrollsItems"
+        },
+        "xp": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "money": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "mana": {
+          "type": "number",
+          "format": "float"
+        },
+        "freeSkillPoints": {
+          "type": "integer",
+          "format": "int32"
+        }
+      }
+    },
+    "dungeonsandtrollsCommandsBatch": {
+      "type": "object",
+      "properties": {
+        "buy": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/dungeonsandtrollsIdentifier"
+          }
+        },
+        "equip": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/dungeonsandtrollsIdentifier"
+          }
+        },
+        "drink": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/dungeonsandtrollsIdentifier"
+          }
+        },
+        "move": {
+          "$ref": "#/definitions/dungeonsandtrollsCoordinates"
+        },
+        "jump": {
+          "$ref": "#/definitions/dungeonsandtrollsCoordinates"
+        },
+        "cast": {
+          "$ref": "#/definitions/dungeonsandtrollsSpellAndTarget"
+        },
+        "attack": {
+          "$ref": "#/definitions/dungeonsandtrollsIdentifier"
+        },
+        "assignAttribute": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/dungeonsandtrollsAttributes"
+          }
+        }
+      }
+    },
+    "dungeonsandtrollsCommandsForMonsters": {
+      "type": "object",
+      "properties": {
+        "commands": {
+          "type": "object",
+          "additionalProperties": {
+            "$ref": "#/definitions/dungeonsandtrollsCommandsBatch"
+          },
+          "description": "Monster ID with corresponding batch of commands."
+        }
+      }
+    },
+    "dungeonsandtrollsCoordinates": {
+      "type": "object",
+      "properties": {
+        "level": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "positionX": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "positionY": {
+          "type": "integer",
+          "format": "int32"
         }
       }
     },
@@ -140,9 +767,31 @@
         "COLD",
         "FIRE",
         "LIGHTNING",
-        "POISON"
+        "POISON",
+        "LIFE"
       ],
       "default": "COLD"
+    },
+    "dungeonsandtrollsEvent": {
+      "type": "object",
+      "properties": {
+        "message": {
+          "type": "string"
+        },
+        "type": {
+          "$ref": "#/definitions/dungeonsandtrollsEventType"
+        },
+        "coordinates": {
+          "$ref": "#/definitions/dungeonsandtrollsCoordinates"
+        }
+      }
+    },
+    "dungeonsandtrollsEventType": {
+      "type": "string",
+      "enum": [
+        "DAMAGE"
+      ],
+      "default": "DAMAGE"
     },
     "dungeonsandtrollsGameState": {
       "type": "object",
@@ -152,6 +801,43 @@
         },
         "items": {
           "$ref": "#/definitions/dungeonsandtrollsItems"
+        },
+        "character": {
+          "$ref": "#/definitions/dungeonsandtrollsCharacter"
+        },
+        "currentPosition": {
+          "$ref": "#/definitions/dungeonsandtrollsCoordinates"
+        },
+        "tick": {
+          "type": "string",
+          "format": "int64"
+        },
+        "events": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/dungeonsandtrollsEvent"
+          },
+          "description": "List of events which occured in the previous tick. Useful for visualising effects and debugging."
+        }
+      }
+    },
+    "dungeonsandtrollsHeal": {
+      "type": "object",
+      "properties": {
+        "heal": {
+          "type": "number",
+          "format": "float"
+        },
+        "damageOverTime": {
+          "$ref": "#/definitions/dungeonsandtrollsDamageOverTime"
+        }
+      }
+    },
+    "dungeonsandtrollsIdentifier": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string"
         }
       }
     },
@@ -169,12 +855,41 @@
           "items": {
             "$ref": "#/definitions/dungeonsandtrollsArmor"
           }
+        },
+        "potions": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/dungeonsandtrollsPotion"
+          }
+        },
+        "runes": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/dungeonsandtrollsRune"
+          }
         }
       }
     },
-    "dungeonsandtrollsMap": {
+    "dungeonsandtrollsJump": {
       "type": "object",
       "properties": {
+        "maxJumpDistance": {
+          "type": "number",
+          "format": "float"
+        },
+        "manaCost": {
+          "type": "number",
+          "format": "float"
+        }
+      }
+    },
+    "dungeonsandtrollsLevel": {
+      "type": "object",
+      "properties": {
+        "level": {
+          "type": "integer",
+          "format": "int32"
+        },
         "free": {
           "type": "array",
           "items": {
@@ -186,12 +901,49 @@
         },
         "objects": {
           "$ref": "#/definitions/dungeonsandtrollsMapObjects"
+        },
+        "ascii": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "dungeonsandtrollsMap": {
+      "type": "object",
+      "properties": {
+        "levels": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/dungeonsandtrollsLevel"
+          }
+        }
+      }
+    },
+    "dungeonsandtrollsMapDecorations": {
+      "type": "object",
+      "properties": {
+        "carpet": {
+          "type": "boolean"
+        },
+        "rug": {
+          "type": "boolean"
+        },
+        "door": {
+          "type": "boolean"
+        },
+        "anomally": {
+          "type": "boolean"
         }
       }
     },
     "dungeonsandtrollsMapObjects": {
       "type": "object",
       "properties": {
+        "position": {
+          "$ref": "#/definitions/dungeonsandtrollsPosition"
+        },
         "monsters": {
           "type": "array",
           "items": {
@@ -201,20 +953,15 @@
         "players": {
           "type": "array",
           "items": {
-            "$ref": "#/definitions/dungeonsandtrollsPlayer"
-          }
-        },
-        "chests": {
-          "type": "array",
-          "items": {
-            "$ref": "#/definitions/dungeonsandtrollsObject"
+            "$ref": "#/definitions/dungeonsandtrollsCharacter"
           }
         },
         "stairs": {
-          "type": "array",
-          "items": {
-            "$ref": "#/definitions/dungeonsandtrollsObject"
-          }
+          "type": "boolean"
+        },
+        "decorations": {
+          "$ref": "#/definitions/dungeonsandtrollsMapDecorations",
+          "title": "TODO: chests are not impleted yet\n bool chest = 4;"
         }
       }
     },
@@ -235,7 +982,7 @@
         "attributes": {
           "type": "array",
           "items": {
-            "$ref": "#/definitions/dungeonsandtrollsAttributeValue"
+            "$ref": "#/definitions/dungeonsandtrollsAttributes"
           }
         },
         "resistances": {
@@ -252,12 +999,9 @@
         }
       }
     },
-    "dungeonsandtrollsObject": {
+    "dungeonsandtrollsPosition": {
       "type": "object",
       "properties": {
-        "name": {
-          "type": "string"
-        },
         "positionX": {
           "type": "integer",
           "format": "int32"
@@ -266,27 +1010,29 @@
           "type": "integer",
           "format": "int32"
         }
-      },
-      "title": "TODO this is temporary"
+      }
     },
-    "dungeonsandtrollsPlayer": {
+    "dungeonsandtrollsPotion": {
       "type": "object",
       "properties": {
+        "id": {
+          "type": "string"
+        },
         "name": {
           "type": "string"
         },
-        "health": {
+        "price": {
           "type": "number",
           "format": "float"
         },
-        "level": {
-          "type": "integer",
-          "format": "int32"
+        "weight": {
+          "type": "number",
+          "format": "float"
         },
-        "attributes": {
+        "boosts": {
           "type": "array",
           "items": {
-            "$ref": "#/definitions/dungeonsandtrollsAttributeValue"
+            "$ref": "#/definitions/dungeonsandtrollsAttributes"
           }
         },
         "resistances": {
@@ -295,19 +1041,8 @@
             "$ref": "#/definitions/dungeonsandtrollsResistance"
           }
         },
-        "inventory": {
-          "type": "array",
-          "items": {
-            "$ref": "#/definitions/dungeonsandtrollsItems"
-          }
-        },
-        "xp": {
-          "type": "integer",
-          "format": "int32"
-        },
-        "money": {
-          "type": "integer",
-          "format": "int32"
+        "heal": {
+          "$ref": "#/definitions/dungeonsandtrollsHeal"
         }
       }
     },
@@ -323,9 +1058,96 @@
         }
       }
     },
+    "dungeonsandtrollsRune": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "name": {
+          "type": "string"
+        },
+        "type": {
+          "$ref": "#/definitions/dungeonsandtrollsRuneType"
+        },
+        "minDamage": {
+          "type": "number",
+          "format": "float"
+        },
+        "maxDamage": {
+          "type": "number",
+          "format": "float"
+        },
+        "weight": {
+          "type": "number",
+          "format": "float"
+        },
+        "price": {
+          "type": "number",
+          "format": "float"
+        },
+        "damageOverTime": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/dungeonsandtrollsDamageOverTime"
+          }
+        },
+        "requirements": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/dungeonsandtrollsAttributes"
+          }
+        },
+        "minHeal": {
+          "type": "number",
+          "format": "float"
+        },
+        "maxHeal": {
+          "type": "number",
+          "format": "float"
+        },
+        "manaCost": {
+          "type": "number",
+          "format": "float"
+        }
+      }
+    },
+    "dungeonsandtrollsRuneType": {
+      "type": "string",
+      "enum": [
+        "HEAL",
+        "FIREBALL",
+        "ICE_NOVA",
+        "POISON_CLOUD",
+        "LIGHTNING_BOLT"
+      ],
+      "default": "HEAL"
+    },
+    "dungeonsandtrollsSpellAndTarget": {
+      "type": "object",
+      "properties": {
+        "spell": {
+          "$ref": "#/definitions/dungeonsandtrollsRuneType"
+        },
+        "targetId": {
+          "type": "string"
+        }
+      }
+    },
+    "dungeonsandtrollsUser": {
+      "type": "object",
+      "properties": {
+        "username": {
+          "type": "string"
+        }
+      }
+    },
     "dungeonsandtrollsWeapon": {
       "type": "object",
       "properties": {
+        "id": {
+          "type": "string"
+        },
         "name": {
           "type": "string"
         },
@@ -360,13 +1182,13 @@
         "requirements": {
           "type": "array",
           "items": {
-            "$ref": "#/definitions/dungeonsandtrollsAttributeValue"
+            "$ref": "#/definitions/dungeonsandtrollsAttributes"
           }
         },
         "boosts": {
           "type": "array",
           "items": {
-            "$ref": "#/definitions/dungeonsandtrollsAttributeValue"
+            "$ref": "#/definitions/dungeonsandtrollsAttributes"
           }
         },
         "resistances": {
@@ -425,5 +1247,21 @@
         }
       }
     }
+  },
+  "securityDefinitions": {
+    "ApiKeyAuth": {
+      "type": "apiKey",
+      "name": "X-API-Key",
+      "in": "header"
+    }
+  },
+  "security": [
+    {
+      "ApiKeyAuth": []
+    }
+  ],
+  "externalDocs": {
+    "description": "More about Dungeons and trolls",
+    "url": "https://github.com/gdg-garage/dungeons-and-trolls"
   }
 }

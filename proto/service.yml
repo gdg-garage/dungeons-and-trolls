@@ -5,3 +5,36 @@ http:
   rules:
     - selector: dungeonsandtrolls.DungeonsAndTrolls.Game
       get: "/v1/game"
+    - selector: dungeonsandtrolls.DungeonsAndTrolls.Register
+      post: /v1/register
+      body: "*"
+    - selector: dungeonsandtrolls.DungeonsAndTrolls.Buy
+      post: /v1/buy
+      body: "*"
+    - selector: dungeonsandtrolls.DungeonsAndTrolls.Equip
+      post: /v1/equip
+      body: "*"
+    - selector: dungeonsandtrolls.DungeonsAndTrolls.Drink
+      post: /v1/drink
+      body: "*"
+    - selector: dungeonsandtrolls.DungeonsAndTrolls.Move
+      post: /v1/move
+      body: "*"
+    - selector: dungeonsandtrolls.DungeonsAndTrolls.Attack
+      post: /v1/attack
+      body: "*"
+    - selector: dungeonsandtrolls.DungeonsAndTrolls.Respawn
+      post: /v1/respawn
+      body: "*"
+    - selector: dungeonsandtrolls.DungeonsAndTrolls.Cast
+      post: /v1/cast
+      body: "*"
+    - selector: dungeonsandtrolls.DungeonsAndTrolls.Jump
+      post: /v1/jump
+      body: "*"
+    - selector: dungeonsandtrolls.DungeonsAndTrolls.Commands
+      post: /v1/commands
+      body: "*"
+    - selector: dungeonsandtrolls.DungeonsAndTrolls.MonstersCommands
+      post: /v1/monsters-commands
+      body: "*"
