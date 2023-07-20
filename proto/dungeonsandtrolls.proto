@@ -90,6 +90,12 @@ message Attributes {
   int32 dexterity = 5;
 }
 
+message Stats {
+  float health = 1;
+  float mana = 2;
+  float stamina = 3;
+}
+
 message Resistance {
   Element element = 1;
   float value = 2;
@@ -97,7 +103,7 @@ message Resistance {
 
 message Monster {
   string name = 1;
-  float health = 2;
+  Stats stats = 2;
   int32 level = 3;
   repeated Attributes attributes = 4;
   repeated Resistance resistances = 5;
@@ -107,15 +113,14 @@ message Monster {
 message Character {
   string id = 1;
   string name = 2;
-  float health = 3;
+  Stats stats = 3;
   int32 level = 4;
   repeated Attributes attributes = 5;
   repeated Resistance resistances = 6;
   Items inventory = 7;
   int32 xp = 8;
   int32 money = 9;
-  float mana = 10;
-  int32 free_skill_points = 11;
+  int32 free_skill_points = 10;
 }
 
 message Weapon {

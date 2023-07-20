@@ -633,9 +633,8 @@
         "name": {
           "type": "string"
         },
-        "health": {
-          "type": "number",
-          "format": "float"
+        "stats": {
+          "$ref": "#/definitions/dungeonsandtrollsStats"
         },
         "level": {
           "type": "integer",
@@ -663,10 +662,6 @@
         "money": {
           "type": "integer",
           "format": "int32"
-        },
-        "mana": {
-          "type": "number",
-          "format": "float"
         },
         "freeSkillPoints": {
           "type": "integer",
@@ -971,9 +966,8 @@
         "name": {
           "type": "string"
         },
-        "health": {
-          "type": "number",
-          "format": "float"
+        "stats": {
+          "$ref": "#/definitions/dungeonsandtrollsStats"
         },
         "level": {
           "type": "integer",
@@ -1131,6 +1125,23 @@
         },
         "targetId": {
           "type": "string"
+        }
+      }
+    },
+    "dungeonsandtrollsStats": {
+      "type": "object",
+      "properties": {
+        "health": {
+          "type": "number",
+          "format": "float"
+        },
+        "mana": {
+          "type": "number",
+          "format": "float"
+        },
+        "stamina": {
+          "type": "number",
+          "format": "float"
         }
       }
     },
