@@ -124,30 +124,23 @@ message Character {
   int32 free_skill_points = 10;
 }
 
-message Weapon {
-  enum Type {
-    DAGGER = 0;
-    SWORD = 1;
-    WAND = 2;
-    AXE = 3;
-    MACE = 4;
-    CLAW = 5;
-    STAFF = 6;
-    SPEAR = 7;
-  }
-
-  string id = 1;
-  string name = 2;
-  bool one_hand = 3;
-  Type type = 4;
-  float min_damage = 5;
-  float max_damage = 6;
-  float weight = 7;
-  float price = 8;
-  repeated DamageOverTime damage_over_time = 9;
-  repeated Attributes requirements = 10;
-  repeated Attributes boosts = 11;
-  repeated Resistance resistances = 12;
+enum ItemVisualType {
+  DAGGER = 0;
+  SWORD = 1;
+  WAND = 2;
+  AXE = 3;
+  MACE = 4;
+  CLAW = 5;
+  STAFF = 6;
+  SPEAR = 7;
+  SHIELD = 8;
+  HELMET = 9;
+  BODY_ARMOR= 10;
+  TROUSERS = 11;
+  BELT = 12;
+  BOOTS = 13;
+  GLOVES = 14;
+  RING = 15;
 }
 
 message Rune {
@@ -164,7 +157,7 @@ message Rune {
   Type type = 3;
   optional float min_damage = 4;
   optional float max_damage = 5;
-  float weight = 6;
+  optional float weight = 6;
   float price = 7;
   repeated DamageOverTime damage_over_time = 8;
   repeated Attributes requirements = 9;
@@ -173,7 +166,7 @@ message Rune {
   float mana_cost = 12;
 }
 
-message Armor {
+message Item {
   enum Type {
     SHIELD = 0;
     HELMET = 1;
@@ -182,18 +175,20 @@ message Armor {
     BELT = 4;
     BOOTS = 5;
     GLOVES = 6;
+    RING = 7;
+    WEAPON = 8;
   }
 
   string id = 1;
   string name = 2;
   Type type = 3;
   float price = 4;
-  float weight = 5;
+  optional float weight = 5;
   float defense = 6;
   repeated Attributes requirements = 7;
   repeated Attributes boosts = 8;
   repeated Resistance resistances = 9;
-  optional Jump jump = 10;
+  optional ItemVisualType visual_type = 10;
 }
 
 message Jump {
@@ -206,12 +201,9 @@ message Heal {
   DamageOverTime damage_over_time = 8;
 }
 
-// TODO: Maybe add jewelery
-
 message Items {
-  repeated Weapon weapons = 1;
-  repeated Armor armors = 2;
-  repeated Rune runes = 3;
+  repeated Item items = 1;
+  repeated Rune runes = 2;
 }
 
 // TODO this is temporary
