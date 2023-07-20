@@ -641,10 +641,7 @@
           "format": "int32"
         },
         "attributes": {
-          "type": "array",
-          "items": {
-            "$ref": "#/definitions/dungeonsandtrollsAttributes"
-          }
+          "$ref": "#/definitions/dungeonsandtrollsAttributes"
         },
         "resistances": {
           "type": "array",
@@ -974,10 +971,7 @@
           "format": "int32"
         },
         "attributes": {
-          "type": "array",
-          "items": {
-            "$ref": "#/definitions/dungeonsandtrollsAttributes"
-          }
+          "$ref": "#/definitions/dungeonsandtrollsAttributes"
         },
         "resistances": {
           "type": "array",

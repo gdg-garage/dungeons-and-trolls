@@ -105,7 +105,7 @@ message Monster {
   string name = 1;
   Stats stats = 2;
   int32 level = 3;
-  repeated Attributes attributes = 4;
+  Attributes attributes = 4;
   repeated Resistance resistances = 5;
   repeated Items inventory = 6;
 }
@@ -115,7 +115,7 @@ message Character {
   string name = 2;
   Stats stats = 3;
   int32 level = 4;
-  repeated Attributes attributes = 5;
+  Attributes attributes = 5;
   repeated Resistance resistances = 6;
   Items inventory = 7;
   int32 xp = 8;
