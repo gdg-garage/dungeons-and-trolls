@@ -62,51 +62,9 @@
         ]
       }
     },
-    "/v1/attack": {
-      "post": {
-        "summary": "Attack the entity identified by the provided ID.",
-        "operationId": "DungeonsAndTrolls_Attack",
-        "responses": {
-          "200": {
-            "description": "A successful response.",
-            "schema": {
-              "type": "object",
-              "properties": {}
-            }
-          },
-          "403": {
-            "description": "Returned when the user does not have permission to access the resource.",
-            "schema": {}
-          },
-          "404": {
-            "description": "Returned when the resource does not exist.",
-            "schema": {}
-          },
-          "default": {
-            "description": "An unexpected error response.",
-            "schema": {
-              "$ref": "#/definitions/rpcStatus"
-            }
-          }
-        },
-        "parameters": [
-          {
-            "name": "body",
-            "in": "body",
-            "required": true,
-            "schema": {
-              "$ref": "#/definitions/dungeonsandtrollsIdentifier"
-            }
-          }
-        ],
-        "tags": [
-          "DungeonsAndTrolls"
-        ]
-      }
-    },
     "/v1/buy": {
       "post": {
-        "summary": "Buy the Item identified by the provided ID for the Character bound to the logged user.",
+        "summary": "Buy Items identified by the provided ID for the Character bound to the logged user.",
         "operationId": "DungeonsAndTrolls_Buy",
         "responses": {
           "200": {
@@ -190,7 +148,7 @@
     },
     "/v1/equip": {
       "post": {
-        "summary": "Equip the Item identified by the provided ID for the Character bound to the logged user.",
+        "summary": "Equip the Item identified by the provided ID for the Character bound to the logged user (unused).",
         "operationId": "DungeonsAndTrolls_Equip",
         "responses": {
           "200": {
@@ -284,48 +242,6 @@
         ]
       }
     },
-    "/v1/jump": {
-      "post": {
-        "summary": "Jump with the Character bound to the logged user (has to be provided by Boots).",
-        "operationId": "DungeonsAndTrolls_Jump",
-        "responses": {
-          "200": {
-            "description": "A successful response.",
-            "schema": {
-              "type": "object",
-              "properties": {}
-            }
-          },
-          "403": {
-            "description": "Returned when the user does not have permission to access the resource.",
-            "schema": {}
-          },
-          "404": {
-            "description": "Returned when the resource does not exist.",
-            "schema": {}
-          },
-          "default": {
-            "description": "An unexpected error response.",
-            "schema": {
-              "$ref": "#/definitions/rpcStatus"
-            }
-          }
-        },
-        "parameters": [
-          {
-            "name": "body",
-            "in": "body",
-            "required": true,
-            "schema": {
-              "$ref": "#/definitions/dungeonsandtrollsCoordinates"
-            }
-          }
-        ],
-        "tags": [
-          "DungeonsAndTrolls"
-        ]
-      }
-    },
     "/v1/monsters-commands": {
       "post": {
         "summary": "Control monsters. Admin only.",
@@ -370,7 +286,7 @@
     },
     "/v1/move": {
       "post": {
-        "summary": "Drink the Potion identified by the provided ID for the Character bound to the logged user.",
+        "summary": "Move the Character bound to the logged user to the specified place.",
         "operationId": "DungeonsAndTrolls_Move",
         "responses": {
           "200": {
@@ -497,7 +413,7 @@
     },
     "/v1/skill": {
       "post": {
-        "summary": "Cast a spell (provided by a rune) by the Character bound to the logged user.",
+        "summary": "Use a skill (provided by an item) by the Character bound to the logged user.",
         "operationId": "DungeonsAndTrolls_Skill",
         "responses": {
           "200": {
@@ -539,7 +455,7 @@
     },
     "/v1/yell": {
       "post": {
-        "summary": "Cast a spell (provided by a rune) by the Character bound to the logged user.",
+        "summary": "The Character bound to the logged user yells a messages (visible for everyone).",
         "operationId": "DungeonsAndTrolls_Yell",
         "responses": {
           "200": {
@@ -666,23 +582,11 @@
             "$ref": "#/definitions/dungeonsandtrollsIdentifier"
           }
         },
-        "drink": {
-          "type": "array",
-          "items": {
-            "$ref": "#/definitions/dungeonsandtrollsIdentifier"
-          }
-        },
         "move": {
           "$ref": "#/definitions/dungeonsandtrollsCoordinates"
         },
-        "jump": {
-          "$ref": "#/definitions/dungeonsandtrollsCoordinates"
-        },
-        "cast": {
+        "skill": {
           "$ref": "#/definitions/dungeonsandtrollsSkillUse"
-        },
-        "attack": {
-          "$ref": "#/definitions/dungeonsandtrollsIdentifier"
         },
         "assignAttribute": {
           "type": "array",
@@ -988,7 +892,7 @@
       "type": "object",
       "properties": {
         "position": {
-          "$ref": "#/definitions/dungeonsandtrollsPosition"
+          "$ref": "#/definitions/dungeonsandtrollsCoordinates"
         },
         "monsters": {
           "type": "array",
@@ -1015,7 +919,13 @@
           }
         },
         "decorations": {
-          "$ref": "#/definitions/dungeonsandtrollsMapDecorations",
+          "$ref": "#/definitions/dungeonsandtrollsMapDecorations"
+        },
+        "effects": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/dungeonsandtrollsEffect"
+          },
           "title": "TODO: chests are not implemented yet\n bool chest = 4;"
         }
       }
@@ -1067,19 +977,6 @@
         }
       }
     },
-    "dungeonsandtrollsPosition": {
-      "type": "object",
-      "properties": {
-        "positionX": {
-          "type": "integer",
-          "format": "int32"
-        },
-        "positionY": {
-          "type": "integer",
-          "format": "int32"
-        }
-      }
-    },
     "dungeonsandtrollsShortcut": {
       "type": "object",
       "properties": {
@@ -1128,14 +1025,14 @@
     "dungeonsandtrollsSkillUse": {
       "type": "object",
       "properties": {
-        "skill": {
-          "$ref": "#/definitions/dungeonsandtrollsSkill"
+        "skillId": {
+          "type": "string"
         },
         "targetId": {
           "type": "string"
         },
         "location": {
-          "$ref": "#/definitions/dungeonsandtrollsPosition"
+          "$ref": "#/definitions/dungeonsandtrollsCoordinates"
         }
       }
     },

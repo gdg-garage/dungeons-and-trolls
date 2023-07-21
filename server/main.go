@@ -78,7 +78,7 @@ func (s *server) Buy(ctx context.Context, identifiers *dungeonsandtrolls.Identif
 	return nil, nil
 }
 func (s *server) Equip(ctx context.Context, identifier *dungeonsandtrolls.Identifier) (*emptypb.Empty, error) {
-	return nil, nil
+	return nil, fmt.Errorf("not implemented")
 }
 func (s *server) AssignSkillPoints(ctx context.Context, attributes *dungeonsandtrolls.Attributes) (*emptypb.Empty, error) {
 	return nil, nil
@@ -86,16 +86,10 @@ func (s *server) AssignSkillPoints(ctx context.Context, attributes *dungeonsandt
 func (s *server) Move(ctx context.Context, coordinates *dungeonsandtrolls.Coordinates) (*emptypb.Empty, error) {
 	return nil, nil
 }
-func (s *server) Attack(ctx context.Context, identifier *dungeonsandtrolls.Identifier) (*emptypb.Empty, error) {
-	return nil, nil
-}
 func (s *server) Respawn(ctx context.Context, _ *emptypb.Empty) (*emptypb.Empty, error) {
 	return nil, nil
 }
-func (s *server) Cast(ctx context.Context, spell *dungeonsandtrolls.SpellAndTarget) (*emptypb.Empty, error) {
-	return nil, nil
-}
-func (s *server) Jump(ctx context.Context, coordinates *dungeonsandtrolls.Coordinates) (*emptypb.Empty, error) {
+func (s *server) Skill(ctx context.Context, spell *dungeonsandtrolls.SkillUse) (*emptypb.Empty, error) {
 	return nil, nil
 }
 func (s *server) Commands(ctx context.Context, commands *dungeonsandtrolls.CommandsBatch) (*emptypb.Empty, error) {

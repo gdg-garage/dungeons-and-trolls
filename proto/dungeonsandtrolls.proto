@@ -14,23 +14,19 @@ service DungeonsAndTrolls {
   rpc Game(GameStateParams) returns (GameState) {}
   // Register provided User to the Game and create a character.
   rpc Register(User) returns (google.protobuf.Empty) {}
-  // Buy the Item identified by the provided ID for the Character bound to the logged user.
+  // Buy Items identified by the provided ID for the Character bound to the logged user.
   rpc Buy(Identifiers) returns (google.protobuf.Empty) {}
-  // Equip the Item identified by the provided ID for the Character bound to the logged user.
+  // Equip the Item identified by the provided ID for the Character bound to the logged user (unused).
   rpc Equip(Identifier) returns (google.protobuf.Empty) {}
   // Assign skill point to the attribute for the Character bound to the logged user.
   rpc AssignSkillPoints(Attributes) returns (google.protobuf.Empty) {}
-  // Drink the Potion identified by the provided ID for the Character bound to the logged user.
+  // Move the Character bound to the logged user to the specified place.
   rpc Move(Coordinates) returns (google.protobuf.Empty) {}
-  // Attack the entity identified by the provided ID.
-  rpc Attack(Identifier) returns (google.protobuf.Empty) {}
   // Respawn the Character bound to the logged user.
   rpc Respawn(google.protobuf.Empty) returns (google.protobuf.Empty) {}
-  // Cast a spell (provided by a rune) by the Character bound to the logged user.
+  // Use a skill (provided by an item) by the Character bound to the logged user.
   rpc Skill(SkillUse) returns (google.protobuf.Empty) {}
-  // Jump with the Character bound to the logged user (has to be provided by Boots).
-  rpc Jump(Coordinates) returns (google.protobuf.Empty) {}
-  // Cast a spell (provided by a rune) by the Character bound to the logged user.
+  // The Character bound to the logged user yells a messages (visible for everyone).
   rpc Yell(Message) returns (google.protobuf.Empty) {}
   // Send multiple commands to the Character bound to the logged user. The order of execution is defined in the message.
   rpc Commands(CommandsBatch) returns (google.protobuf.Empty) {}
@@ -61,13 +57,10 @@ message GameStateParams {
 message CommandsBatch {
   repeated Identifier buy = 1;
   repeated Identifier equip = 2;
-  repeated Identifier drink = 3;
-  optional Coordinates move = 4;
-  optional Coordinates jump = 5;
-  optional SkillUse cast = 6;
-  optional Identifier attack = 7;
-  repeated Attributes assign_attribute = 8;
-  optional Message yell = 9;
+  optional Coordinates move = 3;
+  optional SkillUse skill = 4;
+  repeated Attributes assign_attribute = 5;
+  optional Message yell = 6;
 }
 
 message CommandsForMonsters {
@@ -134,12 +127,12 @@ message Character {
 message Skill {
   string id = 1;
   string name = 2;
-  repeated Effect effects = 8;
-  repeated Attributes requirements = 9;
-  Stats cost = 10;
-  bool requires_line_of_sight = 11;
-  int32 max_distance = 12;
-  int32 max_move_distance = 13;
+  repeated Effect effects = 3;
+  repeated Attributes requirements = 4;
+  Stats cost = 5;
+  bool requires_line_of_sight = 6;
+  int32 max_distance = 7;
+  int32 max_move_distance = 8;
 }
 
 enum ItemVisualType {
@@ -198,22 +191,18 @@ message Object {
   int32 position_y = 3;
 }
 
-message Position {
-  int32 position_x = 2;
-  int32 position_y = 3;
-}
-
 message Shortcut {
   optional Coordinates leads_to = 1;
 }
 
 message MapObjects {
-  Position position = 1;
+  Coordinates position = 1;
   repeated Monster monsters = 2;
   repeated Character players = 3;
   repeated Shortcut stairs = 4;
   repeated Shortcut portals = 5;
   MapDecorations decorations = 6;
+  repeated Effect effects = 7;
   // TODO: chests are not implemented yet
   // bool chest = 4;
 }
@@ -270,13 +259,13 @@ message Identifiers {
 }
 
 message Coordinates {
-  int32 level = 1;
+  optional int32 level = 1;
   int32 position_x = 2;
   int32 position_y = 3;
 }
 
 message SkillUse {
-  Skill skill = 1;
+  string skill_id = 1;
   optional string target_id = 2;
-  optional Position location = 3;
+  optional Coordinates location = 3;
 }

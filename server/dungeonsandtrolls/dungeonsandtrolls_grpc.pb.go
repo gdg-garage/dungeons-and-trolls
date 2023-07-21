@@ -29,10 +29,8 @@ type DungeonsAndTrollsClient interface {
 	Equip(ctx context.Context, in *Identifier, opts ...grpc.CallOption) (*emptypb.Empty, error)
 	AssignSkillPoints(ctx context.Context, in *Attributes, opts ...grpc.CallOption) (*emptypb.Empty, error)
 	Move(ctx context.Context, in *Coordinates, opts ...grpc.CallOption) (*emptypb.Empty, error)
-	Attack(ctx context.Context, in *Identifier, opts ...grpc.CallOption) (*emptypb.Empty, error)
 	Respawn(ctx context.Context, in *emptypb.Empty, opts ...grpc.CallOption) (*emptypb.Empty, error)
 	Skill(ctx context.Context, in *SkillUse, opts ...grpc.CallOption) (*emptypb.Empty, error)
-	Jump(ctx context.Context, in *Coordinates, opts ...grpc.CallOption) (*emptypb.Empty, error)
 	Yell(ctx context.Context, in *Message, opts ...grpc.CallOption) (*emptypb.Empty, error)
 	Commands(ctx context.Context, in *CommandsBatch, opts ...grpc.CallOption) (*emptypb.Empty, error)
 	MonstersCommands(ctx context.Context, in *CommandsForMonsters, opts ...grpc.CallOption) (*emptypb.Empty, error)
@@ -100,15 +98,6 @@ func (c *dungeonsAndTrollsClient) Move(ctx context.Context, in *Coordinates, opt
 	return out, nil
 }
 
-func (c *dungeonsAndTrollsClient) Attack(ctx context.Context, in *Identifier, opts ...grpc.CallOption) (*emptypb.Empty, error) {
-	out := new(emptypb.Empty)
-	err := c.cc.Invoke(ctx, "/dungeonsandtrolls.DungeonsAndTrolls/Attack", in, out, opts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
-}
-
 func (c *dungeonsAndTrollsClient) Respawn(ctx context.Context, in *emptypb.Empty, opts ...grpc.CallOption) (*emptypb.Empty, error) {
 	out := new(emptypb.Empty)
 	err := c.cc.Invoke(ctx, "/dungeonsandtrolls.DungeonsAndTrolls/Respawn", in, out, opts...)
@@ -121,15 +110,6 @@ func (c *dungeonsAndTrollsClient) Respawn(ctx context.Context, in *emptypb.Empty
 func (c *dungeonsAndTrollsClient) Skill(ctx context.Context, in *SkillUse, opts ...grpc.CallOption) (*emptypb.Empty, error) {
 	out := new(emptypb.Empty)
 	err := c.cc.Invoke(ctx, "/dungeonsandtrolls.DungeonsAndTrolls/Skill", in, out, opts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
-}
-
-func (c *dungeonsAndTrollsClient) Jump(ctx context.Context, in *Coordinates, opts ...grpc.CallOption) (*emptypb.Empty, error) {
-	out := new(emptypb.Empty)
-	err := c.cc.Invoke(ctx, "/dungeonsandtrolls.DungeonsAndTrolls/Jump", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -173,10 +153,8 @@ type DungeonsAndTrollsServer interface {
 	Equip(context.Context, *Identifier) (*emptypb.Empty, error)
 	AssignSkillPoints(context.Context, *Attributes) (*emptypb.Empty, error)
 	Move(context.Context, *Coordinates) (*emptypb.Empty, error)
-	Attack(context.Context, *Identifier) (*emptypb.Empty, error)
 	Respawn(context.Context, *emptypb.Empty) (*emptypb.Empty, error)
 	Skill(context.Context, *SkillUse) (*emptypb.Empty, error)
-	Jump(context.Context, *Coordinates) (*emptypb.Empty, error)
 	Yell(context.Context, *Message) (*emptypb.Empty, error)
 	Commands(context.Context, *CommandsBatch) (*emptypb.Empty, error)
 	MonstersCommands(context.Context, *CommandsForMonsters) (*emptypb.Empty, error)
@@ -205,17 +183,11 @@ func (UnimplementedDungeonsAndTrollsServer) AssignSkillPoints(context.Context, *
 func (UnimplementedDungeonsAndTrollsServer) Move(context.Context, *Coordinates) (*emptypb.Empty, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method Move not implemented")
 }
-func (UnimplementedDungeonsAndTrollsServer) Attack(context.Context, *Identifier) (*emptypb.Empty, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method Attack not implemented")
-}
 func (UnimplementedDungeonsAndTrollsServer) Respawn(context.Context, *emptypb.Empty) (*emptypb.Empty, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method Respawn not implemented")
 }
 func (UnimplementedDungeonsAndTrollsServer) Skill(context.Context, *SkillUse) (*emptypb.Empty, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method Skill not implemented")
-}
-func (UnimplementedDungeonsAndTrollsServer) Jump(context.Context, *Coordinates) (*emptypb.Empty, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method Jump not implemented")
 }
 func (UnimplementedDungeonsAndTrollsServer) Yell(context.Context, *Message) (*emptypb.Empty, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method Yell not implemented")
@@ -347,24 +319,6 @@ func _DungeonsAndTrolls_Move_Handler(srv interface{}, ctx context.Context, dec f
 	return interceptor(ctx, in, info, handler)
 }
 
-func _DungeonsAndTrolls_Attack_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(Identifier)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	if interceptor == nil {
-		return srv.(DungeonsAndTrollsServer).Attack(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: "/dungeonsandtrolls.DungeonsAndTrolls/Attack",
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(DungeonsAndTrollsServer).Attack(ctx, req.(*Identifier))
-	}
-	return interceptor(ctx, in, info, handler)
-}
-
 func _DungeonsAndTrolls_Respawn_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(emptypb.Empty)
 	if err := dec(in); err != nil {
@@ -397,24 +351,6 @@ func _DungeonsAndTrolls_Skill_Handler(srv interface{}, ctx context.Context, dec 
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(DungeonsAndTrollsServer).Skill(ctx, req.(*SkillUse))
-	}
-	return interceptor(ctx, in, info, handler)
-}
-
-func _DungeonsAndTrolls_Jump_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(Coordinates)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	if interceptor == nil {
-		return srv.(DungeonsAndTrollsServer).Jump(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: "/dungeonsandtrolls.DungeonsAndTrolls/Jump",
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(DungeonsAndTrollsServer).Jump(ctx, req.(*Coordinates))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -505,20 +441,12 @@ var DungeonsAndTrolls_ServiceDesc = grpc.ServiceDesc{
 			Handler:    _DungeonsAndTrolls_Move_Handler,
 		},
 		{
-			MethodName: "Attack",
-			Handler:    _DungeonsAndTrolls_Attack_Handler,
-		},
-		{
 			MethodName: "Respawn",
 			Handler:    _DungeonsAndTrolls_Respawn_Handler,
 		},
 		{
 			MethodName: "Skill",
 			Handler:    _DungeonsAndTrolls_Skill_Handler,
-		},
-		{
-			MethodName: "Jump",
-			Handler:    _DungeonsAndTrolls_Jump_Handler,
 		},
 		{
 			MethodName: "Yell",
