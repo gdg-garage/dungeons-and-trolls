@@ -4,6 +4,8 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
+	"github.com/gdg-garage/dungeons-and-trolls/server/dungeonsandtrolls/api"
+	"github.com/gdg-garage/dungeons-and-trolls/server/dungeonsandtrolls/handlers"
 	"io"
 	"net"
 	"net/http"
@@ -62,43 +64,47 @@ func addDefaultHeaders(fn http.HandlerFunc) http.HandlerFunc {
 }
 
 type server struct {
-	dungeonsandtrolls.UnsafeDungeonsAndTrollsServer
+	api.UnsafeDungeonsAndTrollsServer
+	G *dungeonsandtrolls.Game
 }
 
-// SayHello implements dungeonsandtrolls.GameServer
-func (s *server) Game(ctx context.Context, params *dungeonsandtrolls.GameStateParams) (*dungeonsandtrolls.GameState, error) {
-	return &dungeonsandtrolls.GameState{}, nil
+func (s *server) Game(ctx context.Context, params *api.GameStateParams) (*api.GameState, error) {
+	return &api.GameState{}, nil
 }
 
-func (s *server) Register(ctx context.Context, user *dungeonsandtrolls.User) (*emptypb.Empty, error) {
+func (s *server) Register(ctx context.Context, user *api.User) (*api.Registration, error) {
+	r, err := handlers.RegisterUser(s.G, user)
+	if err != nil {
+		return nil, err
+	}
+	return r, nil
+}
+
+func (s *server) Buy(ctx context.Context, identifiers *api.Identifiers) (*emptypb.Empty, error) {
 	return nil, nil
 }
-
-func (s *server) Buy(ctx context.Context, identifiers *dungeonsandtrolls.Identifiers) (*emptypb.Empty, error) {
-	return nil, nil
-}
-func (s *server) Equip(ctx context.Context, identifier *dungeonsandtrolls.Identifier) (*emptypb.Empty, error) {
+func (s *server) Equip(ctx context.Context, identifier *api.Identifier) (*emptypb.Empty, error) {
 	return nil, fmt.Errorf("not implemented")
 }
-func (s *server) AssignSkillPoints(ctx context.Context, attributes *dungeonsandtrolls.Attributes) (*emptypb.Empty, error) {
+func (s *server) AssignSkillPoints(ctx context.Context, attributes *api.Attributes) (*emptypb.Empty, error) {
 	return nil, nil
 }
-func (s *server) Move(ctx context.Context, coordinates *dungeonsandtrolls.Coordinates) (*emptypb.Empty, error) {
+func (s *server) Move(ctx context.Context, coordinates *api.Coordinates) (*emptypb.Empty, error) {
 	return nil, nil
 }
 func (s *server) Respawn(ctx context.Context, _ *emptypb.Empty) (*emptypb.Empty, error) {
 	return nil, nil
 }
-func (s *server) Skill(ctx context.Context, spell *dungeonsandtrolls.SkillUse) (*emptypb.Empty, error) {
+func (s *server) Skill(ctx context.Context, spell *api.SkillUse) (*emptypb.Empty, error) {
 	return nil, nil
 }
-func (s *server) Commands(ctx context.Context, commands *dungeonsandtrolls.CommandsBatch) (*emptypb.Empty, error) {
+func (s *server) Commands(ctx context.Context, commands *api.CommandsBatch) (*emptypb.Empty, error) {
 	return nil, nil
 }
-func (s *server) MonstersCommands(ctx context.Context, commands *dungeonsandtrolls.CommandsForMonsters) (*emptypb.Empty, error) {
+func (s *server) MonstersCommands(ctx context.Context, commands *api.CommandsForMonsters) (*emptypb.Empty, error) {
 	return nil, nil
 }
-func (s *server) Yell(ctx context.Context, commands *dungeonsandtrolls.Message) (*emptypb.Empty, error) {
+func (s *server) Yell(ctx context.Context, commands *api.Message) (*emptypb.Empty, error) {
 	return nil, nil
 }
 
@@ -120,7 +126,7 @@ func main() {
 		log.Fatal().Msgf("failed to listen: %v", err)
 	}
 	s := grpc.NewServer()
-	dungeonsandtrolls.RegisterDungeonsAndTrollsServer(s, &server{})
+	api.RegisterDungeonsAndTrollsServer(s, &server{G: g})
 	log.Printf("server listening at %v", lis.Addr())
 
 	go func() {
@@ -143,7 +149,7 @@ func main() {
 
 	gwmux := runtime.NewServeMux()
 	// Register Greeter
-	err = dungeonsandtrolls.RegisterDungeonsAndTrollsHandler(context.Background(), gwmux, conn)
+	err = api.RegisterDungeonsAndTrollsHandler(context.Background(), gwmux, conn)
 	if err != nil {
 		log.Fatal().Msgf("Failed to register gateway: %s", err)
 	}

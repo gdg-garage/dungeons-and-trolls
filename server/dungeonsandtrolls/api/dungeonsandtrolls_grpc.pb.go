@@ -4,7 +4,7 @@
 // - protoc             v3.21.10
 // source: proto/dungeonsandtrolls.proto
 
-package dungeonsandtrolls
+package api
 
 import (
 	context "context"
@@ -24,7 +24,7 @@ const _ = grpc.SupportPackageIsVersion7
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type DungeonsAndTrollsClient interface {
 	Game(ctx context.Context, in *GameStateParams, opts ...grpc.CallOption) (*GameState, error)
-	Register(ctx context.Context, in *User, opts ...grpc.CallOption) (*emptypb.Empty, error)
+	Register(ctx context.Context, in *User, opts ...grpc.CallOption) (*Registration, error)
 	Buy(ctx context.Context, in *Identifiers, opts ...grpc.CallOption) (*emptypb.Empty, error)
 	Equip(ctx context.Context, in *Identifier, opts ...grpc.CallOption) (*emptypb.Empty, error)
 	AssignSkillPoints(ctx context.Context, in *Attributes, opts ...grpc.CallOption) (*emptypb.Empty, error)
@@ -53,8 +53,8 @@ func (c *dungeonsAndTrollsClient) Game(ctx context.Context, in *GameStateParams,
 	return out, nil
 }
 
-func (c *dungeonsAndTrollsClient) Register(ctx context.Context, in *User, opts ...grpc.CallOption) (*emptypb.Empty, error) {
-	out := new(emptypb.Empty)
+func (c *dungeonsAndTrollsClient) Register(ctx context.Context, in *User, opts ...grpc.CallOption) (*Registration, error) {
+	out := new(Registration)
 	err := c.cc.Invoke(ctx, "/dungeonsandtrolls.DungeonsAndTrolls/Register", in, out, opts...)
 	if err != nil {
 		return nil, err
@@ -148,7 +148,7 @@ func (c *dungeonsAndTrollsClient) MonstersCommands(ctx context.Context, in *Comm
 // for forward compatibility
 type DungeonsAndTrollsServer interface {
 	Game(context.Context, *GameStateParams) (*GameState, error)
-	Register(context.Context, *User) (*emptypb.Empty, error)
+	Register(context.Context, *User) (*Registration, error)
 	Buy(context.Context, *Identifiers) (*emptypb.Empty, error)
 	Equip(context.Context, *Identifier) (*emptypb.Empty, error)
 	AssignSkillPoints(context.Context, *Attributes) (*emptypb.Empty, error)
@@ -168,7 +168,7 @@ type UnimplementedDungeonsAndTrollsServer struct {
 func (UnimplementedDungeonsAndTrollsServer) Game(context.Context, *GameStateParams) (*GameState, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method Game not implemented")
 }
-func (UnimplementedDungeonsAndTrollsServer) Register(context.Context, *User) (*emptypb.Empty, error) {
+func (UnimplementedDungeonsAndTrollsServer) Register(context.Context, *User) (*Registration, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method Register not implemented")
 }
 func (UnimplementedDungeonsAndTrollsServer) Buy(context.Context, *Identifiers) (*emptypb.Empty, error) {

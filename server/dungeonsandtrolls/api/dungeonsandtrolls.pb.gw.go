@@ -2,11 +2,11 @@
 // source: proto/dungeonsandtrolls.proto
 
 /*
-Package dungeonsandtrolls is a reverse proxy.
+Package api is a reverse proxy.
 
 It translates gRPC into RESTful JSON APIs.
 */
-package dungeonsandtrolls
+package api
 
 import (
 	"context"

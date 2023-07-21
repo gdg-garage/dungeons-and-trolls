@@ -1,9 +1,5 @@
 package gameobject
 
-import (
-	"github.com/google/uuid"
-)
-
 type Id interface {
 	GetId() string
 }
@@ -16,7 +12,7 @@ type Item struct {
 func CreateItem(name string) *Item {
 	return &Item{
 		Name: name,
-		Id:   uuid.New().String(),
+		Id:   GetNewId(),
 	}
 }
 

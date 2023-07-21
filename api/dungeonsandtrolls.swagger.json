@@ -334,8 +334,7 @@
           "200": {
             "description": "A successful response.",
             "schema": {
-              "type": "object",
-              "properties": {}
+              "$ref": "#/definitions/dungeonsandtrollsRegistration"
             }
           },
           "403": {
@@ -974,6 +973,14 @@
           "items": {
             "$ref": "#/definitions/dungeonsandtrollsEffect"
           }
+        }
+      }
+    },
+    "dungeonsandtrollsRegistration": {
+      "type": "object",
+      "properties": {
+        "apiKey": {
+          "type": "string"
         }
       }
     },

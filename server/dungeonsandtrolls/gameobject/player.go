@@ -1,22 +1,30 @@
 package gameobject
 
+import (
+	"github.com/gdg-garage/dungeons-and-trolls/server/dungeonsandtrolls/api"
+)
+
 type Position struct {
 	Level, X, Y int
 }
 
 type Player struct {
 	GameObject `json:",inline"`
-	Name       string   `json:"name"`
-	Health     float32  `json:"health"`
-	Items      []Item   `json:"items"`
-	Money      float32  `json:"money"`
-	Experience float32  `json:"experience"`
-	Position   Position `json:"-"`
+	Position   Position         `json:"-"`
+	MovingTo   *api.Coordinates `json:"-"`
+	Character  api.Character    `json:"-"`
+}
+
+func (p *Player) GetId() string {
+	return p.Character.Id
 }
 
 func CreatePlayer(name string) *Player {
 	return &Player{
-		Name: name,
+		Character: api.Character{
+			Name: name,
+			Id:   GetNewId(),
+		},
 		GameObject: GameObject{
 			Type: "Player",
 		},

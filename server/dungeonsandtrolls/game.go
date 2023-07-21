@@ -1,6 +1,7 @@
 package dungeonsandtrolls
 
 import (
+	"github.com/gdg-garage/dungeons-and-trolls/server/dungeonsandtrolls/api"
 	"time"
 
 	"github.com/gdg-garage/dungeons-and-trolls/server/dungeonsandtrolls/gameobject"
@@ -8,8 +9,8 @@ import (
 
 const LoopTime = time.Second
 
-func CreateWeapon(name string, damage, weight float32) *Item {
-	return &Item{
+func CreateWeapon(name string, damage, weight float32) *api.Item {
+	return &api.Item{
 		//Item:   CreateItem(name),
 		//MaxDamage: damage,
 		Weight: &weight,
@@ -18,28 +19,38 @@ func CreateWeapon(name string, damage, weight float32) *Item {
 
 type Game struct {
 	Map    *ObsoleteMap          `json:"map"`
-	Items  []*Item               `json:"items"`
+	Items  []*api.Item           `json:"items"`
 	Inputs map[string][]CommandI `json:"-"`
 	// Gained after kill (may be used in the next run)
 	Experience float32 `json:"-"`
 	// Gained after kill (may be used in the next run)
-	Money   float32 `json:"-"`
-	players map[string]*gameobject.Player
+	Money       float32                       `json:"-"`
+	Players     map[string]*gameobject.Player `json:"-"`
+	IdToName    map[string]string             `json:"-"`
+	ApiToPlayer map[string]*gameobject.Player `json:"-"`
+	Game        api.GameState
+}
+
+func NewGame() *Game {
+	return &Game{
+		Inputs:      map[string][]CommandI{},
+		Players:     map[string]*gameobject.Player{},
+		IdToName:    map[string]string{},
+		ApiToPlayer: map[string]*gameobject.Player{},
+	}
 }
 
 func CreateGame() (*Game, error) {
-	g := Game{
-		Inputs:  map[string][]CommandI{},
-		players: map[string]*gameobject.Player{},
-	}
+	g := NewGame()
 	m, err := CreateMap()
 	if err != nil {
 		return nil, err
 	}
 	g.Map = m
 	// place player
-	p := gameobject.CreatePlayer("player 1")
-	g.players["player 1"] = p
+	playerName := "player 1"
+	p := gameobject.CreatePlayer(playerName)
+	g.Players[playerName] = p
 	(*g.Map)[0][4][4].SetChildren(append((*g.Map)[0][4][4].GetChildren(), p))
 	p.Position = gameobject.Position{Level: 0, X: 4, Y: 4}
 
@@ -49,7 +60,7 @@ func CreateGame() (*Game, error) {
 
 	go g.gameLoop()
 
-	return &g, nil
+	return g, nil
 }
 
 func (g *Game) gameLoop() {
@@ -60,9 +71,15 @@ func (g *Game) gameLoop() {
 	}
 }
 
+func (g *Game) AddPlayer(player *gameobject.Player, registration *api.Registration) {
+	g.Players[player.Character.Name] = player
+	g.IdToName[player.Character.Id] = player.GetId()
+	g.ApiToPlayer[*registration.ApiKey] = player
+}
+
 func (g *Game) processCommands() {
 	for playerId, commands := range g.Inputs {
-		p := g.players[playerId]
+		p := g.Players[playerId]
 		for _, command := range commands {
 			switch command.GetType() {
 			case "Move":

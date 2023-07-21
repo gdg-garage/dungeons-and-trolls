@@ -1,5 +1,7 @@
 package gameobject
 
+import "github.com/google/uuid"
+
 type GameObject struct {
 	Type     string      `json:"type"`
 	Children []Interface `json:"children"`
@@ -26,4 +28,8 @@ func (g *GameObject) GetChildren() []Interface {
 
 func (g *GameObject) SetChildren(children []Interface) {
 	g.Children = children
+}
+
+func GetNewId() string {
+	return uuid.New().String()
 }

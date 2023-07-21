@@ -1,6 +1,6 @@
 syntax = "proto3";
 
-option go_package = "github.com/gdg-garage/dungeons-and-trolls/server/dungeonsandtrolls";
+option go_package = "github.com/gdg-garage/dungeons-and-trolls/server/dungeonsandtrolls/api";
 
 package dungeonsandtrolls;
 
@@ -13,7 +13,7 @@ service DungeonsAndTrolls {
   // Sends all info about the game.
   rpc Game(GameStateParams) returns (GameState) {}
   // Register provided User to the Game and create a character.
-  rpc Register(User) returns (google.protobuf.Empty) {}
+  rpc Register(User) returns (Registration) {}
   // Buy Items identified by the provided ID for the Character bound to the logged user.
   rpc Buy(Identifiers) returns (google.protobuf.Empty) {}
   // Equip the Item identified by the provided ID for the Character bound to the logged user (unused).
@@ -268,4 +268,8 @@ message SkillUse {
   string skill_id = 1;
   optional string target_id = 2;
   optional Coordinates location = 3;
+}
+
+message Registration {
+  optional string api_key = 1;
 }
