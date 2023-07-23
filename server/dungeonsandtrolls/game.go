@@ -9,18 +9,9 @@ import (
 
 const LoopTime = time.Second
 
-func CreateWeapon(name string, damage, weight float32) *api.Item {
-	return &api.Item{
-		//Item:   CreateItem(name),
-		//MaxDamage: damage,
-		Weight: &weight,
-	}
-}
-
 type Game struct {
 	Map    *ObsoleteMap          `json:"map"`
-	Items  []*api.Item           `json:"items"`
-	Inputs map[string][]CommandI `json:"-"`
+	Inputs map[string][]CommandI `json:"-"` // TODO deprecated
 	// Gained after kill (may be used in the next run)
 	Experience float32 `json:"-"`
 	// Gained after kill (may be used in the next run)
@@ -55,8 +46,8 @@ func CreateGame() (*Game, error) {
 	p.Position = gameobject.Position{Level: 0, X: 4, Y: 4}
 
 	// Create some items
-	g.Items = append(g.Items, CreateWeapon("axe", 1.2, 4.2))
-	g.Items = append(g.Items, CreateWeapon("sword", 1.1, 2))
+	g.AddItem(gameobject.CreateWeapon("axe", 12, 42))
+	g.AddItem(gameobject.CreateWeapon("sword", 11, 20))
 
 	go g.gameLoop()
 
@@ -67,6 +58,7 @@ func (g *Game) gameLoop() {
 	for {
 		startTime := time.Now()
 		g.processCommands()
+		g.Game.Tick++
 		time.Sleep(LoopTime - (time.Now().Sub(startTime)))
 	}
 }
@@ -75,6 +67,10 @@ func (g *Game) AddPlayer(player *gameobject.Player, registration *api.Registrati
 	g.Players[player.Character.Name] = player
 	g.IdToName[player.Character.Id] = player.GetId()
 	g.ApiToPlayer[*registration.ApiKey] = player
+}
+
+func (g *Game) AddItem(item *api.Item) {
+	g.Game.Items = append(g.Game.Items, item)
 }
 
 func (g *Game) processCommands() {

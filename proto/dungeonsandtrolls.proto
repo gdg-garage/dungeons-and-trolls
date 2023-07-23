@@ -59,7 +59,7 @@ message CommandsBatch {
   repeated Identifier equip = 2;
   optional Coordinates move = 3;
   optional SkillUse skill = 4;
-  repeated Attributes assign_attribute = 5;
+  Attributes assign_attribute = 5;
   optional Message yell = 6;
 }
 
@@ -111,7 +111,7 @@ message Monster {
   Stats stats = 3;
   int32 level = 4;
   Attributes attributes = 5;
-  repeated Elements resistances = 6;
+  Elements resistances = 6;
   repeated Item inventory = 7;
   repeated Effect effects = 8;
   int32 xp = 9;
@@ -124,7 +124,7 @@ message Character {
   Stats stats = 3;
   int32 level = 4;
   Attributes attributes = 5;
-  repeated Elements resistances = 6;
+  Elements resistances = 6;
   repeated Item inventory = 7;
   int32 xp = 8;
   int32 money = 9;
@@ -135,7 +135,7 @@ message Skill {
   string id = 1;
   string name = 2;
   repeated Effect effects = 3;
-  repeated Attributes requirements = 4;
+  Attributes requirements = 4;
   Stats cost = 5;
   bool requires_line_of_sight = 6;
   int32 max_distance = 7;
@@ -181,7 +181,7 @@ message Item {
   optional float weight = 5;
   Attributes requirements = 6;
   Attributes boosts = 7;
-  repeated Elements resistances = 8;
+  Elements resistances = 8;
   optional ItemVisualType visual_type = 9;
   repeated Skill skills = 10;
 }

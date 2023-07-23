@@ -541,10 +541,7 @@
           "$ref": "#/definitions/dungeonsandtrollsAttributes"
         },
         "resistances": {
-          "type": "array",
-          "items": {
-            "$ref": "#/definitions/dungeonsandtrollsElements"
-          }
+          "$ref": "#/definitions/dungeonsandtrollsElements"
         },
         "inventory": {
           "type": "array",
@@ -588,10 +585,7 @@
           "$ref": "#/definitions/dungeonsandtrollsSkillUse"
         },
         "assignAttribute": {
-          "type": "array",
-          "items": {
-            "$ref": "#/definitions/dungeonsandtrollsAttributes"
-          }
+          "$ref": "#/definitions/dungeonsandtrollsAttributes"
         },
         "yell": {
           "$ref": "#/definitions/dungeonsandtrollsMessage"
@@ -779,10 +773,7 @@
           "$ref": "#/definitions/dungeonsandtrollsAttributes"
         },
         "resistances": {
-          "type": "array",
-          "items": {
-            "$ref": "#/definitions/dungeonsandtrollsElements"
-          }
+          "$ref": "#/definitions/dungeonsandtrollsElements"
         },
         "visualType": {
           "$ref": "#/definitions/dungeonsandtrollsItemVisualType"
@@ -957,10 +948,7 @@
           "$ref": "#/definitions/dungeonsandtrollsAttributes"
         },
         "resistances": {
-          "type": "array",
-          "items": {
-            "$ref": "#/definitions/dungeonsandtrollsElements"
-          }
+          "$ref": "#/definitions/dungeonsandtrollsElements"
         },
         "inventory": {
           "type": "array",
@@ -1028,10 +1016,7 @@
           }
         },
         "requirements": {
-          "type": "array",
-          "items": {
-            "$ref": "#/definitions/dungeonsandtrollsAttributes"
-          }
+          "$ref": "#/definitions/dungeonsandtrollsAttributes"
         },
         "cost": {
           "$ref": "#/definitions/dungeonsandtrollsStats"

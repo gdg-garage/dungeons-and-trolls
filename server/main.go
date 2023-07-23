@@ -69,7 +69,7 @@ type server struct {
 }
 
 func (s *server) Game(ctx context.Context, params *api.GameStateParams) (*api.GameState, error) {
-	return &api.GameState{}, nil
+	return &s.G.Game, nil
 }
 
 func (s *server) Register(ctx context.Context, user *api.User) (*api.Registration, error) {
