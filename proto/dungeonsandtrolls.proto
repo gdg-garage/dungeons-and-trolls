@@ -100,6 +100,11 @@ message Stats {
   float stamina = 3;
 }
 
+message Rewards {
+  optional int32 xp = 1;
+  optional int32 money = 2;
+}
+
 message Monster {
   string id = 1;
   string name = 2;
@@ -109,6 +114,8 @@ message Monster {
   repeated Elements resistances = 6;
   repeated Item inventory = 7;
   repeated Effect effects = 8;
+  int32 xp = 9;
+  optional Rewards rewards = 10;
 }
 
 message Character {

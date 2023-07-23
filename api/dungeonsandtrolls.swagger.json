@@ -973,6 +973,13 @@
           "items": {
             "$ref": "#/definitions/dungeonsandtrollsEffect"
           }
+        },
+        "xp": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "rewards": {
+          "$ref": "#/definitions/dungeonsandtrollsRewards"
         }
       }
     },
@@ -981,6 +988,19 @@
       "properties": {
         "apiKey": {
           "type": "string"
+        }
+      }
+    },
+    "dungeonsandtrollsRewards": {
+      "type": "object",
+      "properties": {
+        "xp": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "money": {
+          "type": "integer",
+          "format": "int32"
         }
       }
     },
