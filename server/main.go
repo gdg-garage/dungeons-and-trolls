@@ -81,8 +81,9 @@ func (s *server) Register(ctx context.Context, user *api.User) (*api.Registratio
 }
 
 func (s *server) Buy(ctx context.Context, identifiers *api.Identifiers) (*emptypb.Empty, error) {
-	return nil, nil
+	return &emptypb.Empty{}, handlers.Buy(s.G, identifiers)
 }
+
 func (s *server) Equip(ctx context.Context, identifier *api.Identifier) (*emptypb.Empty, error) {
 	return nil, fmt.Errorf("not implemented")
 }

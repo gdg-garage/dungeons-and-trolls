@@ -554,12 +554,18 @@
           "format": "int32"
         },
         "money": {
-          "type": "integer",
-          "format": "int32"
+          "type": "number",
+          "format": "float"
         },
         "freeSkillPoints": {
           "type": "integer",
           "format": "int32"
+        },
+        "equip": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/dungeonsandtrollsItem"
+          }
         }
       }
     },
@@ -968,6 +974,12 @@
         },
         "rewards": {
           "$ref": "#/definitions/dungeonsandtrollsRewards"
+        },
+        "equip": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/dungeonsandtrollsItem"
+          }
         }
       }
     },

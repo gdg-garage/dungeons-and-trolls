@@ -116,6 +116,7 @@ message Monster {
   repeated Effect effects = 8;
   int32 xp = 9;
   optional Rewards rewards = 10;
+  repeated Item equip = 11;
 }
 
 message Character {
@@ -127,8 +128,9 @@ message Character {
   Elements resistances = 6;
   repeated Item inventory = 7;
   int32 xp = 8;
-  int32 money = 9;
+  float money = 9;
   int32 free_skill_points = 10;
+  repeated Item equip = 11;
 }
 
 message Skill {

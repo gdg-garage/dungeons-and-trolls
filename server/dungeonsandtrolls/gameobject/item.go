@@ -2,32 +2,13 @@ package gameobject
 
 import "github.com/gdg-garage/dungeons-and-trolls/server/dungeonsandtrolls/api"
 
-type Id interface {
-	GetId() string
-}
-
-type Item struct {
-	Name string `json:"name"`
-	Id   string `json:"id"`
-}
-
-func CreateItem(name string) *Item {
-	return &Item{
-		Name: name,
-		Id:   GetNewId(),
-	}
-}
-
-func (i *Item) GetId() string {
-	return i.Id
-}
-
 func CreateWeapon(name string, minDamage, maxDamage int32) *api.Item {
 	return &api.Item{
 		//Item:   CreateItem(name),
-		Type: api.Item_WEAPON,
-		Id:   GetNewId(),
-		Name: name,
+		Name:  name,
+		Type:  api.Item_WEAPON,
+		Id:    GetNewId(),
+		Price: 1,
 		Skills: []*api.Skill{
 			{
 				Id:          GetNewId(),
