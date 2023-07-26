@@ -4,6 +4,7 @@ import (
 	"errors"
 	"github.com/gdg-garage/dungeons-and-trolls/server/dungeonsandtrolls/api"
 	"github.com/gdg-garage/dungeons-and-trolls/server/dungeonsandtrolls/gameobject"
+	"github.com/rs/zerolog/log"
 	"google.golang.org/protobuf/types/known/structpb"
 	"time"
 )
@@ -81,6 +82,7 @@ func (g *Game) gameLoop() {
 		startTime := time.Now()
 		g.processCommands()
 		g.Game.Tick++
+		g.Game.Events = []*api.Event{}
 		time.Sleep(LoopTime - (time.Now().Sub(startTime)))
 	}
 }
@@ -94,6 +96,11 @@ func (g *Game) AddPlayer(player *gameobject.Player, registration *api.Registrati
 func (g *Game) AddItem(item *api.Item) {
 	g.Game.Items = append(g.Game.Items, item)
 	g.IdToItem[item.Id] = item
+}
+
+func (g *Game) LogEvent(event *api.Event) {
+	g.Game.Events = append(g.Game.Events, event)
+	log.Info().Msgf(event.String())
 }
 
 func (g *Game) processCommands() {

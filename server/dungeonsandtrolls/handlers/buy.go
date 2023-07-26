@@ -21,6 +21,7 @@ func Buy(game *dungeonsandtrolls.Game, identifiers *api.Identifiers) error {
 	if err != nil {
 		return err
 	}
+	// TODO check player is located on the 0th floor
 	// TODO lock
 	err = validateIdentifiers(game, identifiers)
 	if err != nil {
@@ -29,8 +30,13 @@ func Buy(game *dungeonsandtrolls.Game, identifiers *api.Identifiers) error {
 	for _, itemId := range identifiers.Ids {
 		item := game.IdToItem[itemId]
 		p.Character.Money -= item.Price
+		buyEvent := api.Event_BUY
+		game.LogEvent(&api.Event{
+			Type: &buyEvent,
+			Message: fmt.Sprintf("Character %s (%s) bought item %s (%s)",
+				p.Character.Id, p.Character.Name, itemId, item.Name)})
 		// Buying also means equip in the version without inventory
-		p.Equip(item)
+		Equip(game, item, p)
 	}
 	return nil
 }

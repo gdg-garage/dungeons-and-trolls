@@ -698,7 +698,9 @@
       "type": "string",
       "enum": [
         "DAMAGE",
-        "MESSAGE"
+        "MESSAGE",
+        "BUY",
+        "EQUIP"
       ],
       "default": "DAMAGE"
     },

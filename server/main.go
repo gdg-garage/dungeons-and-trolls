@@ -105,8 +105,9 @@ func (s *server) Commands(ctx context.Context, commands *api.CommandsBatch) (*em
 func (s *server) MonstersCommands(ctx context.Context, commands *api.CommandsForMonsters) (*emptypb.Empty, error) {
 	return nil, nil
 }
-func (s *server) Yell(ctx context.Context, commands *api.Message) (*emptypb.Empty, error) {
-	return nil, nil
+
+func (s *server) Yell(ctx context.Context, message *api.Message) (*emptypb.Empty, error) {
+	return &emptypb.Empty{}, handlers.Yell(s.G, message)
 }
 
 func main() {

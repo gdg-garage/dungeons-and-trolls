@@ -238,6 +238,8 @@ message Event {
   enum Type {
     DAMAGE = 0;
     MESSAGE = 1;
+    BUY = 2;
+    EQUIP = 3;
   }
 
   string message = 1;
