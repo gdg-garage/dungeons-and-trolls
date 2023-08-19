@@ -11,3 +11,6 @@ clean:
 
 test:
 	go test ./...
+
+download-generator:
+	@cd generator; python3 download_latest.py
