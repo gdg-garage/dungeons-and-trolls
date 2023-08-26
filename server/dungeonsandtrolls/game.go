@@ -2,11 +2,13 @@ package dungeonsandtrolls
 
 import (
 	"errors"
+	"time"
+
 	"github.com/gdg-garage/dungeons-and-trolls/server/dungeonsandtrolls/api"
 	"github.com/gdg-garage/dungeons-and-trolls/server/dungeonsandtrolls/gameobject"
+	"github.com/gdg-garage/dungeons-and-trolls/server/generator"
 	"github.com/rs/zerolog/log"
 	"google.golang.org/protobuf/types/known/structpb"
-	"time"
 )
 
 const LoopTime = time.Second
@@ -67,6 +69,8 @@ func CreateGame() (*Game, error) {
 			},
 		},
 	}
+
+	generator.Generate_level(1, 2, 2)
 
 	// Create some items
 	g.AddItem(gameobject.CreateWeapon("axe", 12, 42))
