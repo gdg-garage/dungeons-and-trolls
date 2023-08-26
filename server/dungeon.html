@@ -1,0 +1,585 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>D&T dungeon</title>
+
+<style>
+.floor {
+	font-family: monospace;
+	white-space: pre;
+	cursor: default;
+	transform: translateX(50%) scaleX(2);
+}
+.floor span {
+	cursor: crosshair;
+}
+</style>
+</head>
+<body>
+<h2>Floor 1</h2>
+<div class="floor">
+<span data-json="{
+&quot;x&quot;:0,
+&quot;y&quot;:0,
+&quot;type&quot;:&quot;wall&quot;}">┼</span><span data-json="{
+&quot;x&quot;:1,
+&quot;y&quot;:0,
+&quot;type&quot;:&quot;wall&quot;}">┴</span><span data-json="{
+&quot;x&quot;:2,
+&quot;y&quot;:0,
+&quot;type&quot;:&quot;wall&quot;}">┴</span><span data-json="{
+&quot;x&quot;:3,
+&quot;y&quot;:0,
+&quot;type&quot;:&quot;wall&quot;}">┴</span><span data-json="{
+&quot;x&quot;:4,
+&quot;y&quot;:0,
+&quot;type&quot;:&quot;wall&quot;}">┴</span><span data-json="{
+&quot;x&quot;:5,
+&quot;y&quot;:0,
+&quot;type&quot;:&quot;wall&quot;}">┴</span><span data-json="{
+&quot;x&quot;:6,
+&quot;y&quot;:0,
+&quot;type&quot;:&quot;wall&quot;}">┴</span><span data-json="{
+&quot;x&quot;:7,
+&quot;y&quot;:0,
+&quot;type&quot;:&quot;wall&quot;}">┴</span><span data-json="{
+&quot;x&quot;:8,
+&quot;y&quot;:0,
+&quot;type&quot;:&quot;wall&quot;}">┴</span><span data-json="{
+&quot;x&quot;:9,
+&quot;y&quot;:0,
+&quot;type&quot;:&quot;wall&quot;}">┴</span><span data-json="{
+&quot;x&quot;:10,
+&quot;y&quot;:0,
+&quot;type&quot;:&quot;wall&quot;}">┴</span><span data-json="{
+&quot;x&quot;:11,
+&quot;y&quot;:0,
+&quot;type&quot;:&quot;wall&quot;}">┼</span>
+<span data-json="{
+&quot;x&quot;:0,
+&quot;y&quot;:1,
+&quot;type&quot;:&quot;wall&quot;}">┤</span>       <span data-json="{
+&quot;x&quot;:8,
+&quot;y&quot;:1,
+&quot;type&quot;:&quot;monster&quot;,
+&quot;data&quot;:[
+{
+&quot;class&quot;:&quot;monster&quot;,
+&quot;name&quot;:&quot;Barbarian With Dexterous Helmet&quot;,
+&quot;icon&quot;:&quot;barbarian&quot;,
+&quot;algorithm&quot;:&quot;default&quot;,
+&quot;faction&quot;:&quot;outlaw&quot;,
+&quot;attributes&quot;:{&quot;strength&quot;:0,&quot;dexterity&quot;:0,&quot;constitution&quot;:0,&quot;life&quot;:47,&quot;stamina&quot;:42},
+&quot;equippedItems&quot;:[
+{
+&quot;class&quot;:&quot;item&quot;,
+&quot;name&quot;:&quot;Strengthening Sword With Strong Attack&quot;,
+&quot;slot&quot;:&quot;mainHand&quot;,
+&quot;attributes&quot;:{&quot;strength&quot;:3},
+&quot;skills&quot;:[
+{
+&quot;class&quot;:&quot;skill&quot;,
+&quot;name&quot;:&quot;Strong Attack&quot;,
+&quot;target&quot;:&quot;character&quot;,
+&quot;cost&quot;:{&quot;stamina&quot;:9},
+&quot;range&quot;:{&quot;scalar&quot;:1},
+&quot;damageAmount&quot;:{&quot;strength&quot;:0.80802613},
+&quot;damageType&quot;:&quot;slash&quot;}],
+&quot;buyPrice&quot;:0},
+{
+&quot;class&quot;:&quot;item&quot;,
+&quot;name&quot;:&quot;Dexterous Helmet With Loud Warcry&quot;,
+&quot;slot&quot;:&quot;head&quot;,
+&quot;attributes&quot;:{&quot;dexterity&quot;:5},
+&quot;skills&quot;:[
+{
+&quot;class&quot;:&quot;skill&quot;,
+&quot;name&quot;:&quot;Loud Warcry&quot;,
+&quot;cost&quot;:{&quot;stamina&quot;:24},
+&quot;radius&quot;:{&quot;scalar&quot;:3.013139},
+&quot;duration&quot;:{&quot;scalar&quot;:3.7367096},
+&quot;casterAttributes&quot;:{&quot;strength&quot;:{&quot;constitution&quot;:0.054364096}},
+&quot;targetFlags&quot;:[
+&quot;stun&quot;]}],
+&quot;buyPrice&quot;:0},
+{
+&quot;class&quot;:&quot;item&quot;,
+&quot;name&quot;:&quot;Strengthening Leather Mail With Refreshing Rest&quot;,
+&quot;slot&quot;:&quot;body&quot;,
+&quot;attributes&quot;:{&quot;strength&quot;:2,&quot;constitution&quot;:2,&quot;slashArmor&quot;:3},
+&quot;skills&quot;:[
+{
+&quot;class&quot;:&quot;skill&quot;,
+&quot;name&quot;:&quot;Sticky Poison Vial&quot;,
+&quot;target&quot;:&quot;position&quot;,
+&quot;cost&quot;:{&quot;stamina&quot;:19},
+&quot;range&quot;:{&quot;dexterity&quot;:0.07830473,&quot;scalar&quot;:4},
+&quot;radius&quot;:{&quot;scalar&quot;:2.5576992},
+&quot;duration&quot;:{&quot;scalar&quot;:7.8863854},
+&quot;damageAmount&quot;:{&quot;scalar&quot;:3.420527},
+&quot;damageType&quot;:&quot;poison&quot;,
+&quot;targetFlags&quot;:[
+&quot;groundEffect&quot;]},
+{
+&quot;class&quot;:&quot;skill&quot;,
+&quot;name&quot;:&quot;Refreshing Rest&quot;,
+&quot;casterAttributes&quot;:{&quot;stamina&quot;:{&quot;constitution&quot;:0.80895877}},
+&quot;casterFlags&quot;:[
+&quot;alone&quot;]}],
+&quot;buyPrice&quot;:0},
+{
+&quot;class&quot;:&quot;item&quot;,
+&quot;name&quot;:&quot;Strengthening Shoes With Enduring Walk&quot;,
+&quot;slot&quot;:&quot;legs&quot;,
+&quot;attributes&quot;:{&quot;strength&quot;:7},
+&quot;skills&quot;:[
+{
+&quot;class&quot;:&quot;skill&quot;,
+&quot;name&quot;:&quot;Enduring Walk&quot;,
+&quot;target&quot;:&quot;position&quot;,
+&quot;cost&quot;:{&quot;stamina&quot;:5},
+&quot;range&quot;:{&quot;constitution&quot;:0.085414365,&quot;scalar&quot;:1}}],
+&quot;buyPrice&quot;:0}],
+&quot;score&quot;:47140}
+]}">@</span> <span data-json="{
+&quot;x&quot;:10,
+&quot;y&quot;:1,
+&quot;type&quot;:&quot;stairs&quot;}">#</span><span data-json="{
+&quot;x&quot;:11,
+&quot;y&quot;:1,
+&quot;type&quot;:&quot;wall&quot;}">├</span>
+<span data-json="{
+&quot;x&quot;:0,
+&quot;y&quot;:2,
+&quot;type&quot;:&quot;wall&quot;}">┤</span>          <span data-json="{
+&quot;x&quot;:11,
+&quot;y&quot;:2,
+&quot;type&quot;:&quot;wall&quot;}">├</span>
+<span data-json="{
+&quot;x&quot;:0,
+&quot;y&quot;:3,
+&quot;type&quot;:&quot;wall&quot;}">┤</span>          <span data-json="{
+&quot;x&quot;:11,
+&quot;y&quot;:3,
+&quot;type&quot;:&quot;wall&quot;}">├</span>
+<span data-json="{
+&quot;x&quot;:0,
+&quot;y&quot;:4,
+&quot;type&quot;:&quot;wall&quot;}">┤</span><span data-json="{
+&quot;x&quot;:1,
+&quot;y&quot;:4,
+&quot;type&quot;:&quot;spawn&quot;}">S</span>         <span data-json="{
+&quot;x&quot;:11,
+&quot;y&quot;:4,
+&quot;type&quot;:&quot;wall&quot;}">├</span>
+<span data-json="{
+&quot;x&quot;:0,
+&quot;y&quot;:5,
+&quot;type&quot;:&quot;wall&quot;}">┼</span><span data-json="{
+&quot;x&quot;:1,
+&quot;y&quot;:5,
+&quot;type&quot;:&quot;wall&quot;}">┬</span><span data-json="{
+&quot;x&quot;:2,
+&quot;y&quot;:5,
+&quot;type&quot;:&quot;wall&quot;}">┬</span><span data-json="{
+&quot;x&quot;:3,
+&quot;y&quot;:5,
+&quot;type&quot;:&quot;wall&quot;}">┬</span><span data-json="{
+&quot;x&quot;:4,
+&quot;y&quot;:5,
+&quot;type&quot;:&quot;wall&quot;}">┬</span><span data-json="{
+&quot;x&quot;:5,
+&quot;y&quot;:5,
+&quot;type&quot;:&quot;wall&quot;}">┬</span><span data-json="{
+&quot;x&quot;:6,
+&quot;y&quot;:5,
+&quot;type&quot;:&quot;wall&quot;}">┬</span><span data-json="{
+&quot;x&quot;:7,
+&quot;y&quot;:5,
+&quot;type&quot;:&quot;wall&quot;}">┬</span><span data-json="{
+&quot;x&quot;:8,
+&quot;y&quot;:5,
+&quot;type&quot;:&quot;wall&quot;}">┬</span><span data-json="{
+&quot;x&quot;:9,
+&quot;y&quot;:5,
+&quot;type&quot;:&quot;wall&quot;}">┬</span><span data-json="{
+&quot;x&quot;:10,
+&quot;y&quot;:5,
+&quot;type&quot;:&quot;wall&quot;}">┬</span><span data-json="{
+&quot;x&quot;:11,
+&quot;y&quot;:5,
+&quot;type&quot;:&quot;wall&quot;}">┼</span>
+</div>
+monsters: 1<br>
+<hr>
+<h2>Floor 2</h2>
+<div class="floor">
+<span data-json="{
+&quot;x&quot;:0,
+&quot;y&quot;:0,
+&quot;type&quot;:&quot;wall&quot;}">┼</span><span data-json="{
+&quot;x&quot;:1,
+&quot;y&quot;:0,
+&quot;type&quot;:&quot;wall&quot;}">┴</span><span data-json="{
+&quot;x&quot;:2,
+&quot;y&quot;:0,
+&quot;type&quot;:&quot;wall&quot;}">┴</span><span data-json="{
+&quot;x&quot;:3,
+&quot;y&quot;:0,
+&quot;type&quot;:&quot;wall&quot;}">┴</span><span data-json="{
+&quot;x&quot;:4,
+&quot;y&quot;:0,
+&quot;type&quot;:&quot;wall&quot;}">┴</span><span data-json="{
+&quot;x&quot;:5,
+&quot;y&quot;:0,
+&quot;type&quot;:&quot;wall&quot;}">┴</span><span data-json="{
+&quot;x&quot;:6,
+&quot;y&quot;:0,
+&quot;type&quot;:&quot;wall&quot;}">┴</span><span data-json="{
+&quot;x&quot;:7,
+&quot;y&quot;:0,
+&quot;type&quot;:&quot;wall&quot;}">┴</span><span data-json="{
+&quot;x&quot;:8,
+&quot;y&quot;:0,
+&quot;type&quot;:&quot;wall&quot;}">┴</span><span data-json="{
+&quot;x&quot;:9,
+&quot;y&quot;:0,
+&quot;type&quot;:&quot;wall&quot;}">┴</span><span data-json="{
+&quot;x&quot;:10,
+&quot;y&quot;:0,
+&quot;type&quot;:&quot;wall&quot;}">┴</span><span data-json="{
+&quot;x&quot;:11,
+&quot;y&quot;:0,
+&quot;type&quot;:&quot;wall&quot;}">┴</span><span data-json="{
+&quot;x&quot;:12,
+&quot;y&quot;:0,
+&quot;type&quot;:&quot;wall&quot;}">┴</span><span data-json="{
+&quot;x&quot;:13,
+&quot;y&quot;:0,
+&quot;type&quot;:&quot;wall&quot;}">┴</span><span data-json="{
+&quot;x&quot;:14,
+&quot;y&quot;:0,
+&quot;type&quot;:&quot;wall&quot;}">┼</span>
+<span data-json="{
+&quot;x&quot;:0,
+&quot;y&quot;:1,
+&quot;type&quot;:&quot;wall&quot;}">┤</span><span data-json="{
+&quot;x&quot;:1,
+&quot;y&quot;:1,
+&quot;type&quot;:&quot;spawn&quot;}">S</span>            <span data-json="{
+&quot;x&quot;:14,
+&quot;y&quot;:1,
+&quot;type&quot;:&quot;wall&quot;}">├</span>
+<span data-json="{
+&quot;x&quot;:0,
+&quot;y&quot;:2,
+&quot;type&quot;:&quot;wall&quot;}">┤</span>             <span data-json="{
+&quot;x&quot;:14,
+&quot;y&quot;:2,
+&quot;type&quot;:&quot;wall&quot;}">├</span>
+<span data-json="{
+&quot;x&quot;:0,
+&quot;y&quot;:3,
+&quot;type&quot;:&quot;wall&quot;}">┤</span>           <span data-json="{
+&quot;x&quot;:12,
+&quot;y&quot;:3,
+&quot;type&quot;:&quot;monster&quot;,
+&quot;data&quot;:[
+{
+&quot;class&quot;:&quot;monster&quot;,
+&quot;name&quot;:&quot;Barbarian With Strengthening Boots&quot;,
+&quot;icon&quot;:&quot;barbarian&quot;,
+&quot;algorithm&quot;:&quot;default&quot;,
+&quot;faction&quot;:&quot;outlaw&quot;,
+&quot;attributes&quot;:{&quot;strength&quot;:1,&quot;intelligence&quot;:0,&quot;constitution&quot;:0,&quot;life&quot;:46,&quot;stamina&quot;:35},
+&quot;equippedItems&quot;:[
+{
+&quot;class&quot;:&quot;item&quot;,
+&quot;name&quot;:&quot;Strengthening Sword With Strong Attack&quot;,
+&quot;slot&quot;:&quot;mainHand&quot;,
+&quot;attributes&quot;:{&quot;strength&quot;:3},
+&quot;skills&quot;:[
+{
+&quot;class&quot;:&quot;skill&quot;,
+&quot;name&quot;:&quot;Strong Attack&quot;,
+&quot;target&quot;:&quot;character&quot;,
+&quot;cost&quot;:{&quot;stamina&quot;:10},
+&quot;range&quot;:{&quot;scalar&quot;:1},
+&quot;damageAmount&quot;:{&quot;strength&quot;:1.0012181},
+&quot;damageType&quot;:&quot;slash&quot;}],
+&quot;buyPrice&quot;:0},
+{
+&quot;class&quot;:&quot;item&quot;,
+&quot;name&quot;:&quot;Skilled Dagger With Strong Attack&quot;,
+&quot;slot&quot;:&quot;offHand&quot;,
+&quot;attributes&quot;:{&quot;strength&quot;:1},
+&quot;skills&quot;:[
+{
+&quot;class&quot;:&quot;skill&quot;,
+&quot;name&quot;:&quot;Energetic Shock Nova&quot;,
+&quot;cost&quot;:{&quot;mana&quot;:26},
+&quot;radius&quot;:{&quot;scalar&quot;:3.5236115},
+&quot;damageAmount&quot;:{&quot;intelligence&quot;:0.26575032},
+&quot;damageType&quot;:&quot;electric&quot;},
+{
+&quot;class&quot;:&quot;skill&quot;,
+&quot;name&quot;:&quot;Strong Attack&quot;,
+&quot;target&quot;:&quot;character&quot;,
+&quot;cost&quot;:{&quot;stamina&quot;:7},
+&quot;range&quot;:{&quot;scalar&quot;:1},
+&quot;damageAmount&quot;:{&quot;strength&quot;:0.29181325},
+&quot;damageType&quot;:&quot;slash&quot;}],
+&quot;buyPrice&quot;:0},
+{
+&quot;class&quot;:&quot;item&quot;,
+&quot;name&quot;:&quot;Dexterous Helmet&quot;,
+&quot;slot&quot;:&quot;head&quot;,
+&quot;attributes&quot;:{&quot;dexterity&quot;:5},
+&quot;buyPrice&quot;:0},
+{
+&quot;class&quot;:&quot;item&quot;,
+&quot;name&quot;:&quot;Strengthening Leather Mail&quot;,
+&quot;slot&quot;:&quot;body&quot;,
+&quot;attributes&quot;:{&quot;strength&quot;:4,&quot;slashArmor&quot;:5},
+&quot;skills&quot;:[
+{
+&quot;class&quot;:&quot;skill&quot;,
+&quot;name&quot;:&quot;Rest&quot;,
+&quot;casterAttributes&quot;:{&quot;stamina&quot;:{&quot;constitution&quot;:0.37146124}},
+&quot;casterFlags&quot;:[
+&quot;alone&quot;]}],
+&quot;buyPrice&quot;:0},
+{
+&quot;class&quot;:&quot;item&quot;,
+&quot;name&quot;:&quot;Strengthening Boots With Expansive Stomp&quot;,
+&quot;slot&quot;:&quot;legs&quot;,
+&quot;attributes&quot;:{&quot;strength&quot;:8},
+&quot;skills&quot;:[
+{
+&quot;class&quot;:&quot;skill&quot;,
+&quot;name&quot;:&quot;Expansive Stomp&quot;,
+&quot;cost&quot;:{&quot;stamina&quot;:29},
+&quot;radius&quot;:{&quot;scalar&quot;:3.9172137},
+&quot;damageAmount&quot;:{&quot;strength&quot;:0.23877537},
+&quot;damageType&quot;:&quot;slash&quot;,
+&quot;targetFlags&quot;:[
+&quot;knockback&quot;]},
+{
+&quot;class&quot;:&quot;skill&quot;,
+&quot;name&quot;:&quot;Enduring Walk&quot;,
+&quot;target&quot;:&quot;position&quot;,
+&quot;cost&quot;:{&quot;stamina&quot;:5},
+&quot;range&quot;:{&quot;constitution&quot;:0.089840986,&quot;scalar&quot;:1}}],
+&quot;buyPrice&quot;:0},
+{
+&quot;class&quot;:&quot;item&quot;,
+&quot;name&quot;:&quot;Constitutional Dagger With Thrifty Attack&quot;,
+&quot;slot&quot;:&quot;neck&quot;,
+&quot;attributes&quot;:{&quot;constitution&quot;:2},
+&quot;skills&quot;:[
+{
+&quot;class&quot;:&quot;skill&quot;,
+&quot;name&quot;:&quot;Thrifty Attack&quot;,
+&quot;target&quot;:&quot;character&quot;,
+&quot;cost&quot;:{&quot;stamina&quot;:6},
+&quot;range&quot;:{&quot;scalar&quot;:1},
+&quot;damageAmount&quot;:{&quot;strength&quot;:0.17692134},
+&quot;damageType&quot;:&quot;slash&quot;}],
+&quot;buyPrice&quot;:0}],
+&quot;score&quot;:158471}
+]}">@</span> <span data-json="{
+&quot;x&quot;:14,
+&quot;y&quot;:3,
+&quot;type&quot;:&quot;wall&quot;}">├</span>
+<span data-json="{
+&quot;x&quot;:0,
+&quot;y&quot;:4,
+&quot;type&quot;:&quot;wall&quot;}">┤</span>    <span data-json="{
+&quot;x&quot;:5,
+&quot;y&quot;:4,
+&quot;type&quot;:&quot;monster&quot;,
+&quot;data&quot;:[
+{
+&quot;class&quot;:&quot;monster&quot;,
+&quot;name&quot;:&quot;Barbarian With Dexterous Helmet&quot;,
+&quot;icon&quot;:&quot;barbarian&quot;,
+&quot;algorithm&quot;:&quot;default&quot;,
+&quot;faction&quot;:&quot;outlaw&quot;,
+&quot;attributes&quot;:{&quot;strength&quot;:1,&quot;constitution&quot;:0,&quot;life&quot;:51,&quot;stamina&quot;:48},
+&quot;equippedItems&quot;:[
+{
+&quot;class&quot;:&quot;item&quot;,
+&quot;name&quot;:&quot;Strengthening Sword With Strong Attack&quot;,
+&quot;slot&quot;:&quot;mainHand&quot;,
+&quot;attributes&quot;:{&quot;strength&quot;:3},
+&quot;skills&quot;:[
+{
+&quot;class&quot;:&quot;skill&quot;,
+&quot;name&quot;:&quot;Strong Attack&quot;,
+&quot;target&quot;:&quot;character&quot;,
+&quot;cost&quot;:{&quot;stamina&quot;:10},
+&quot;range&quot;:{&quot;scalar&quot;:1},
+&quot;damageAmount&quot;:{&quot;strength&quot;:0.95833755},
+&quot;damageType&quot;:&quot;slash&quot;}],
+&quot;buyPrice&quot;:0},
+{
+&quot;class&quot;:&quot;item&quot;,
+&quot;name&quot;:&quot;Skilled Dagger With Strong Attack&quot;,
+&quot;slot&quot;:&quot;offHand&quot;,
+&quot;attributes&quot;:{&quot;strength&quot;:2},
+&quot;skills&quot;:[
+{
+&quot;class&quot;:&quot;skill&quot;,
+&quot;name&quot;:&quot;Strengthening Warcry&quot;,
+&quot;cost&quot;:{&quot;stamina&quot;:26},
+&quot;radius&quot;:{&quot;scalar&quot;:2.388756},
+&quot;duration&quot;:{&quot;scalar&quot;:2.1103804},
+&quot;casterAttributes&quot;:{&quot;strength&quot;:{&quot;constitution&quot;:0.07154621}},
+&quot;targetFlags&quot;:[
+&quot;stun&quot;]},
+{
+&quot;class&quot;:&quot;skill&quot;,
+&quot;name&quot;:&quot;Strong Attack&quot;,
+&quot;target&quot;:&quot;character&quot;,
+&quot;cost&quot;:{&quot;stamina&quot;:7},
+&quot;range&quot;:{&quot;scalar&quot;:1},
+&quot;damageAmount&quot;:{&quot;strength&quot;:0.546053},
+&quot;damageType&quot;:&quot;slash&quot;}],
+&quot;buyPrice&quot;:0},
+{
+&quot;class&quot;:&quot;item&quot;,
+&quot;name&quot;:&quot;Dexterous Helmet With Raging Berserk&quot;,
+&quot;slot&quot;:&quot;head&quot;,
+&quot;attributes&quot;:{&quot;dexterity&quot;:6},
+&quot;skills&quot;:[
+{
+&quot;class&quot;:&quot;skill&quot;,
+&quot;name&quot;:&quot;Raging Berserk&quot;,
+&quot;cost&quot;:{&quot;life&quot;:14},
+&quot;targetAttributes&quot;:{&quot;stamina&quot;:{&quot;scalar&quot;:23.975258}}}],
+&quot;buyPrice&quot;:0},
+{
+&quot;class&quot;:&quot;item&quot;,
+&quot;name&quot;:&quot;Slashproof Leather Mail With Refreshing Rest&quot;,
+&quot;slot&quot;:&quot;body&quot;,
+&quot;attributes&quot;:{&quot;slashArmor&quot;:10},
+&quot;skills&quot;:[
+{
+&quot;class&quot;:&quot;skill&quot;,
+&quot;name&quot;:&quot;Refreshing Rest&quot;,
+&quot;casterAttributes&quot;:{&quot;stamina&quot;:{&quot;constitution&quot;:0.8720298}},
+&quot;casterFlags&quot;:[
+&quot;alone&quot;]}],
+&quot;buyPrice&quot;:0},
+{
+&quot;class&quot;:&quot;item&quot;,
+&quot;name&quot;:&quot;Strengthening Shoes&quot;,
+&quot;slot&quot;:&quot;legs&quot;,
+&quot;attributes&quot;:{&quot;strength&quot;:5},
+&quot;skills&quot;:[
+{
+&quot;class&quot;:&quot;skill&quot;,
+&quot;name&quot;:&quot;Enduring Walk&quot;,
+&quot;target&quot;:&quot;position&quot;,
+&quot;cost&quot;:{&quot;stamina&quot;:5},
+&quot;range&quot;:{&quot;constitution&quot;:0.05085348,&quot;scalar&quot;:1}}],
+&quot;buyPrice&quot;:0}],
+&quot;onDeath&quot;:[
+{
+&quot;class&quot;:&quot;item&quot;,
+&quot;name&quot;:&quot;Strengthening Dagger&quot;,
+&quot;slot&quot;:&quot;offHand&quot;,
+&quot;attributes&quot;:{&quot;strength&quot;:2},
+&quot;skills&quot;:[
+{
+&quot;class&quot;:&quot;skill&quot;,
+&quot;name&quot;:&quot;Thrifty Attack&quot;,
+&quot;target&quot;:&quot;character&quot;,
+&quot;cost&quot;:{&quot;stamina&quot;:6},
+&quot;range&quot;:{&quot;scalar&quot;:1},
+&quot;damageAmount&quot;:{&quot;strength&quot;:0.11900537},
+&quot;damageType&quot;:&quot;slash&quot;}],
+&quot;buyPrice&quot;:0}
+],
+&quot;score&quot;:52497}
+]}">@</span>        <span data-json="{
+&quot;x&quot;:14,
+&quot;y&quot;:4,
+&quot;type&quot;:&quot;wall&quot;}">├</span>
+<span data-json="{
+&quot;x&quot;:0,
+&quot;y&quot;:5,
+&quot;type&quot;:&quot;wall&quot;}">┤</span>            <span data-json="{
+&quot;x&quot;:13,
+&quot;y&quot;:5,
+&quot;type&quot;:&quot;stairs&quot;}">#</span><span data-json="{
+&quot;x&quot;:14,
+&quot;y&quot;:5,
+&quot;type&quot;:&quot;wall&quot;}">├</span>
+<span data-json="{
+&quot;x&quot;:0,
+&quot;y&quot;:6,
+&quot;type&quot;:&quot;wall&quot;}">┼</span><span data-json="{
+&quot;x&quot;:1,
+&quot;y&quot;:6,
+&quot;type&quot;:&quot;wall&quot;}">┬</span><span data-json="{
+&quot;x&quot;:2,
+&quot;y&quot;:6,
+&quot;type&quot;:&quot;wall&quot;}">┬</span><span data-json="{
+&quot;x&quot;:3,
+&quot;y&quot;:6,
+&quot;type&quot;:&quot;wall&quot;}">┬</span><span data-json="{
+&quot;x&quot;:4,
+&quot;y&quot;:6,
+&quot;type&quot;:&quot;wall&quot;}">┬</span><span data-json="{
+&quot;x&quot;:5,
+&quot;y&quot;:6,
+&quot;type&quot;:&quot;wall&quot;}">┬</span><span data-json="{
+&quot;x&quot;:6,
+&quot;y&quot;:6,
+&quot;type&quot;:&quot;wall&quot;}">┬</span><span data-json="{
+&quot;x&quot;:7,
+&quot;y&quot;:6,
+&quot;type&quot;:&quot;wall&quot;}">┬</span><span data-json="{
+&quot;x&quot;:8,
+&quot;y&quot;:6,
+&quot;type&quot;:&quot;wall&quot;}">┬</span><span data-json="{
+&quot;x&quot;:9,
+&quot;y&quot;:6,
+&quot;type&quot;:&quot;wall&quot;}">┬</span><span data-json="{
+&quot;x&quot;:10,
+&quot;y&quot;:6,
+&quot;type&quot;:&quot;wall&quot;}">┬</span><span data-json="{
+&quot;x&quot;:11,
+&quot;y&quot;:6,
+&quot;type&quot;:&quot;wall&quot;}">┬</span><span data-json="{
+&quot;x&quot;:12,
+&quot;y&quot;:6,
+&quot;type&quot;:&quot;wall&quot;}">┬</span><span data-json="{
+&quot;x&quot;:13,
+&quot;y&quot;:6,
+&quot;type&quot;:&quot;wall&quot;}">┬</span><span data-json="{
+&quot;x&quot;:14,
+&quot;y&quot;:6,
+&quot;type&quot;:&quot;wall&quot;}">┼</span>
+</div>
+monsters: 2<br>
+<hr>
+
+<dialog id="dialog">
+<pre>
+<code id="code">
+</code>
+</pre>
+</dialog>
+</body>
+
+<script>
+document.body.addEventListener("click", function(event) {
+	let d = event.target.getAttribute("data-json");
+	if (!d)
+		return;
+	document.getElementById("code").innerHTML = JSON.stringify(JSON.parse(d), null, 10);
+	document.getElementById("dialog").showModal();
+});
+</script>

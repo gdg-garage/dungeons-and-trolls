@@ -1,0 +1,6 @@
+25           274920346560               info log                  cage version: release, linux, 64 bit, built at: Aug 16 2023 14:02:02
+1093         274920346560               info log                  process id: 109
+2865         274920346560               info log                  current time: 2023-08-19 23:23:13 (+0000)
+3160         274920346560               info log                  executable path: /app/generator/dntgenerator
+3415         274920346560               info log                  working directory: /app
+42915        dntgenerator               info log                  total duration: 0 days, 0 hours, 0 minutes, 0 seconds and 42728 microseconds
