@@ -4,13 +4,13 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
-	"github.com/gdg-garage/dungeons-and-trolls/server/dungeonsandtrolls/api"
-	"github.com/gdg-garage/dungeons-and-trolls/server/dungeonsandtrolls/handlers"
 	"io"
 	"net"
 	"net/http"
 
 	"github.com/gdg-garage/dungeons-and-trolls/server/dungeonsandtrolls"
+	"github.com/gdg-garage/dungeons-and-trolls/server/dungeonsandtrolls/api"
+	"github.com/gdg-garage/dungeons-and-trolls/server/dungeonsandtrolls/handlers"
 	"github.com/grpc-ecosystem/grpc-gateway/v2/runtime"
 	"github.com/rs/zerolog/log"
 	"google.golang.org/grpc"
@@ -111,9 +111,13 @@ func (s *server) Yell(ctx context.Context, message *api.Message) (*emptypb.Empty
 }
 
 func main() {
+	// err := discord.SendAPIKeyToUser("API KEY", "tivvit")
+	// if err != nil {
+	// 	log.Fatal().Err(err).Msg("")
+	// }
 	g, err := dungeonsandtrolls.CreateGame()
 	if err != nil {
-		log.Fatal().Err(err)
+		log.Fatal().Err(err).Msg("")
 	}
 
 	http.HandleFunc("/", addDefaultHeaders(func(w http.ResponseWriter, r *http.Request) {
