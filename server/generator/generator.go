@@ -1,7 +1,6 @@
 package generator
 
 import (
-	"fmt"
 	"os"
 	"os/exec"
 	"strconv"
@@ -13,7 +12,7 @@ import (
 const binary = "./generator/dntgenerator"
 const outfile = "/tmp/level.json"
 
-func Generate_level(start int, end int, max int) {
+func Generate_level(start int, end int, max int) string {
 	cmd := exec.Command(binary, "-s", strconv.Itoa(start), "-e", strconv.Itoa(end), "-m", strconv.Itoa(max), "-j", outfile)
 
 	stderr := &strings.Builder{}
@@ -28,5 +27,5 @@ func Generate_level(start int, end int, max int) {
 	if err != nil {
 		log.Fatal().Msgf("failed to read generated file %s: %v", outfile, err)
 	}
-	fmt.Print(string(dat))
+	return string(dat)
 }

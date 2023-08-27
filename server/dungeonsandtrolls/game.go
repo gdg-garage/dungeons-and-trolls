@@ -7,6 +7,7 @@ import (
 
 	"github.com/gdg-garage/dungeons-and-trolls/server/dungeonsandtrolls/api"
 	"github.com/gdg-garage/dungeons-and-trolls/server/dungeonsandtrolls/gameobject"
+	"github.com/gdg-garage/dungeons-and-trolls/server/dungeonsandtrolls/utils"
 	"github.com/gdg-garage/dungeons-and-trolls/server/generator"
 	"github.com/rs/zerolog/log"
 	"google.golang.org/protobuf/types/known/structpb"
@@ -20,22 +21,25 @@ type Game struct {
 	// Gained after kill (may be used in the next run)
 	Experience float32 `json:"-"`
 	// Gained after kill (may be used in the next run)
-	Money          float32                       `json:"-"`
-	Players        map[string]*gameobject.Player `json:"-"`
-	IdToName       map[string]string             `json:"-"`
-	IdToItem       map[string]*api.Item          `json:"-"`
-	ApiKeyToPlayer map[string]*gameobject.Player `json:"-"`
-	generatorLock  sync.Mutex
-	Game           api.GameState
+	Money           float32                       `json:"-"`
+	Players         map[string]*gameobject.Player `json:"-"`
+	IdToName        map[string]string             `json:"-"`
+	IdToItem        map[string]*api.Item          `json:"-"`
+	ApiKeyToPlayer  map[string]*gameobject.Player `json:"-"`
+	generatorLock   sync.Mutex
+	gameLock        sync.Mutex
+	maxLevelReached int
+	Game            api.GameState
 }
 
 func NewGame() *Game {
 	return &Game{
-		Inputs:         map[string][]CommandI{},
-		Players:        map[string]*gameobject.Player{},
-		IdToName:       map[string]string{},
-		ApiKeyToPlayer: map[string]*gameobject.Player{},
-		IdToItem:       map[string]*api.Item{},
+		Inputs:          map[string][]CommandI{},
+		Players:         map[string]*gameobject.Player{},
+		IdToName:        map[string]string{},
+		ApiKeyToPlayer:  map[string]*gameobject.Player{},
+		IdToItem:        map[string]*api.Item{},
+		maxLevelReached: 1,
 		Game: api.GameState{
 			Map: &api.Map{},
 		},
@@ -72,7 +76,7 @@ func CreateGame() (*Game, error) {
 		},
 	}
 
-	g.generateLevel(0, 1, 1)
+	g.generateLevel(0, 1, g.maxLevelReached)
 
 	// Create some items
 	g.AddItem(gameobject.CreateWeapon("axe", 12, 42))
@@ -83,10 +87,10 @@ func CreateGame() (*Game, error) {
 	return g, nil
 }
 
-func (g *Game) generateLevel(start int, end int, max int) {
+func (g *Game) generateLevel(start int, end int, max int) string {
 	g.generatorLock.Lock()
 	defer g.generatorLock.Unlock()
-	generator.Generate_level(start, end, max)
+	return generator.Generate_level(start, end, max)
 }
 
 func (g *Game) gameLoop() {
@@ -97,6 +101,13 @@ func (g *Game) gameLoop() {
 		g.Game.Events = []*api.Event{}
 		time.Sleep(LoopTime - (time.Now().Sub(startTime)))
 	}
+}
+
+func (g *Game) MarkVisitedLevel(level int) {
+	g.gameLock.Lock()
+	defer g.gameLock.Unlock()
+	// Next level needs to passed to the generator.
+	g.maxLevelReached = utils.Max(g.maxLevelReached, level+1)
 }
 
 func (g *Game) AddPlayer(player *gameobject.Player, registration *api.Registration) {
