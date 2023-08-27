@@ -212,6 +212,8 @@ message MapObjects {
   repeated Shortcut portals = 5;
   MapDecorations decorations = 6;
   repeated Effect effects = 7;
+  repeated Item items = 8;
+  bool walkable = 9;
   // TODO: chests are not implemented yet
   // bool chest = 4;
 }
@@ -221,13 +223,17 @@ message MapDecorations {
   bool rug = 2;
   bool door = 3;
   bool anomaly = 4;
+  bool pedestal = 5;
+  bool wall = 6;
 }
 
 message Level {
   int32 level = 1;
-  repeated google.protobuf.ListValue free = 2;
-  MapObjects objects = 3;
-  repeated string ascii = 4;
+  int32 width = 2;
+  int32 height = 3;
+  repeated google.protobuf.ListValue free = 4;
+  repeated MapObjects objects = 5;
+  repeated string ascii = 6;
 }
 
 message Map {
@@ -253,7 +259,7 @@ message GameState {
   optional Character character = 3;
   optional Coordinates current_position = 4;
   int64 tick = 5;
-  // List of events which occurred in the previous tick. Useful for visualising effects and debugging.
+  // List of events which occurred in the previous tick. Useful for visualising effects, debugging and communication.
   repeated Event events = 6;
 }
 

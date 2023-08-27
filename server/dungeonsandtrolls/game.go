@@ -12,7 +12,6 @@ import (
 	"github.com/gdg-garage/dungeons-and-trolls/server/dungeonsandtrolls/utils"
 	"github.com/gdg-garage/dungeons-and-trolls/server/generator"
 	"github.com/rs/zerolog/log"
-	"google.golang.org/protobuf/types/known/structpb"
 )
 
 const LoopTime = time.Second
@@ -25,7 +24,6 @@ const gameStorageKey = "game"
 const gameTickStorageKey = "game_tick"
 
 type Game struct {
-	Map    *ObsoleteMap          `json:"-"`
 	Inputs map[string][]CommandI `json:"-"` // TODO deprecated
 	// Gained after kill (may be used in the next run)
 	Experience float32 `json:"-"`
@@ -84,11 +82,6 @@ func NewGame() *Game {
 
 func CreateGame() (*Game, error) {
 	g := NewGame()
-	m, err := CreateMap()
-	if err != nil {
-		return nil, err
-	}
-	g.Map = m
 
 	// place test player
 	playerName := "player 1"
@@ -98,26 +91,42 @@ func CreateGame() (*Game, error) {
 		testKey := "test"
 		p = gameobject.CreatePlayer(playerName)
 		g.AddPlayer(p, &api.Registration{ApiKey: &testKey})
-		(*g.Map)[0][4][4].SetChildren(append((*g.Map)[0][4][4].GetChildren(), p))
+		// (*g.Map)[0][4][4].SetChildren(append((*g.Map)[0][4][4].GetChildren(), p))
 		var levelZero int32 = 0
 		p.Position = api.Coordinates{Level: &levelZero, PositionX: 4, PositionY: 4}
 	}
 
-	g.Game.Map.Levels = []*api.Level{
-		{
-			Level: 0,
-			Free:  []*structpb.ListValue{{Values: []*structpb.Value{{Kind: &structpb.Value_NumberValue{NumberValue: 1}}}}},
-			Objects: &api.MapObjects{
-				Position: &api.Coordinates{
-					PositionY: 4,
-					PositionX: 4,
-				},
-				Players: []*api.Character{&p.Character},
-			},
-		},
-	}
+	// g.Game.Map.Levels = []*api.Level{
+	// 	{
+	// 		Level: 0,
+	// 		Free:  []*structpb.ListValue{{Values: []*structpb.Value{{Kind: &structpb.Value_NumberValue{NumberValue: 1}}}}},
+	// 		Objects: []*api.MapObjects{
+	// 			&api.MapObjects{
+	// 				Position: &api.Coordinates{
+	// 					PositionY: 4,
+	// 					PositionX: 4,
+	// 				},
+	// 				Players: []*api.Character{&p.Character},
+	// 			}},
+	// 	},
+	// }
 
-	g.generateLevel(0, 1, g.MaxLevelReached)
+	m, err := ParseMap(g.generateLevel(0, 1))
+	if err != nil {
+		log.Error().Err(err).Msg("Parsing map failed")
+	}
+	log.Info().Msgf("map: %v", m)
+
+	g.Game.Map = m
+	g.Game.Map.Levels[0].Objects = append(g.Game.Map.Levels[0].Objects, &api.MapObjects{
+		Position: &api.Coordinates{
+			PositionY: 1,
+			PositionX: 1,
+		},
+		Players: []*api.Character{&p.Character},
+	})
+
+	// TODO place the player on spawn
 
 	// Create some items
 	g.AddItem(gameobject.CreateWeapon("axe", 12, 42))
@@ -139,10 +148,10 @@ func (g *Game) storeGameState() {
 	g.gameStorage.Write(gameTickStorageKey, g.Game.Tick)
 }
 
-func (g *Game) generateLevel(start int, end int, max int) string {
+func (g *Game) generateLevel(start int, end int) string {
 	g.generatorLock.Lock()
 	defer g.generatorLock.Unlock()
-	return generator.Generate_level(start, end, max)
+	return generator.Generate_level(start, end, g.MaxLevelReached)
 }
 
 func (g *Game) gameLoop() {
