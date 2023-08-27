@@ -159,8 +159,7 @@ func (g *Game) gameLoop() {
 func (g *Game) MarkVisitedLevel(level int) {
 	g.gameLock.Lock()
 	defer g.gameLock.Unlock()
-	// Next level needs to passed to the generator.
-	g.MaxLevelReached = utils.Max(g.MaxLevelReached, level+1)
+	g.MaxLevelReached = utils.Max(g.MaxLevelReached, level)
 }
 
 func (g *Game) AddPlayer(player *gameobject.Player, registration *api.Registration) {
