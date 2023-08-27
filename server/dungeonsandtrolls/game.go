@@ -2,6 +2,7 @@ package dungeonsandtrolls
 
 import (
 	"errors"
+	"sync"
 	"time"
 
 	"github.com/gdg-garage/dungeons-and-trolls/server/dungeonsandtrolls/api"
@@ -24,6 +25,7 @@ type Game struct {
 	IdToName       map[string]string             `json:"-"`
 	IdToItem       map[string]*api.Item          `json:"-"`
 	ApiKeyToPlayer map[string]*gameobject.Player `json:"-"`
+	generatorLock  sync.Mutex
 	Game           api.GameState
 }
 
@@ -70,7 +72,7 @@ func CreateGame() (*Game, error) {
 		},
 	}
 
-	generator.Generate_level(1, 2, 2)
+	g.generateLevel(0, 1, 1)
 
 	// Create some items
 	g.AddItem(gameobject.CreateWeapon("axe", 12, 42))
@@ -79,6 +81,12 @@ func CreateGame() (*Game, error) {
 	go g.gameLoop()
 
 	return g, nil
+}
+
+func (g *Game) generateLevel(start int, end int, max int) {
+	g.generatorLock.Lock()
+	defer g.generatorLock.Unlock()
+	generator.Generate_level(start, end, max)
 }
 
 func (g *Game) gameLoop() {
