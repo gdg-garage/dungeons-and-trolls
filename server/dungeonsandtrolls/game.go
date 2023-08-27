@@ -2,11 +2,13 @@ package dungeonsandtrolls
 
 import (
 	"errors"
+	"path/filepath"
 	"sync"
 	"time"
 
 	"github.com/gdg-garage/dungeons-and-trolls/server/dungeonsandtrolls/api"
 	"github.com/gdg-garage/dungeons-and-trolls/server/dungeonsandtrolls/gameobject"
+	"github.com/gdg-garage/dungeons-and-trolls/server/dungeonsandtrolls/storage"
 	"github.com/gdg-garage/dungeons-and-trolls/server/dungeonsandtrolls/utils"
 	"github.com/gdg-garage/dungeons-and-trolls/server/generator"
 	"github.com/rs/zerolog/log"
@@ -15,8 +17,15 @@ import (
 
 const LoopTime = time.Second
 
+const storageBasePath = "data/"
+const userStorageFile = "users.json"
+const gameStorageFile = "game.json"
+
+const gameStorageKey = "game"
+const gameTickStorageKey = "game_tick"
+
 type Game struct {
-	Map    *ObsoleteMap          `json:"map"`
+	Map    *ObsoleteMap          `json:"-"`
 	Inputs map[string][]CommandI `json:"-"` // TODO deprecated
 	// Gained after kill (may be used in the next run)
 	Experience float32 `json:"-"`
@@ -25,25 +34,52 @@ type Game struct {
 	Players         map[string]*gameobject.Player `json:"-"`
 	IdToName        map[string]string             `json:"-"`
 	IdToItem        map[string]*api.Item          `json:"-"`
-	ApiKeyToPlayer  map[string]*gameobject.Player `json:"-"`
-	generatorLock   sync.Mutex
-	gameLock        sync.Mutex
-	maxLevelReached int
-	Game            api.GameState
+	ApiKeyToPlayer  map[string]*gameobject.Player `json:"player_api_keys"`
+	MaxLevelReached int                           `json:"max_reached_level"`
+	Game            api.GameState                 `json:"-"`
+
+	generatorLock sync.RWMutex
+	gameLock      sync.RWMutex
+	gameStorage   *storage.Storage
+	userStorage   *storage.Storage
 }
 
 func NewGame() *Game {
-	return &Game{
+	gameStorage, err := storage.NewStorage(filepath.Join(storageBasePath, gameStorageFile))
+	if err != nil {
+		log.Fatal().Msgf("Game storage init failed %v", err)
+	}
+	userStorage, err := storage.NewStorage(filepath.Join(storageBasePath, userStorageFile))
+	if err != nil {
+		log.Fatal().Msgf("User storage init failed %v", err)
+	}
+
+	g := &Game{
 		Inputs:          map[string][]CommandI{},
 		Players:         map[string]*gameobject.Player{},
 		IdToName:        map[string]string{},
 		ApiKeyToPlayer:  map[string]*gameobject.Player{},
 		IdToItem:        map[string]*api.Item{},
-		maxLevelReached: 1,
+		gameStorage:     gameStorage,
+		userStorage:     userStorage,
+		MaxLevelReached: 1,
 		Game: api.GameState{
 			Map: &api.Map{},
 		},
 	}
+
+	err = gameStorage.ReadTo(gameStorageKey, g)
+	if err != nil {
+		log.Warn().Msgf("Game was not loaded from the storage %v", err)
+	} else {
+		g.handleStoredPlayers()
+	}
+	err = gameStorage.ReadTo(gameTickStorageKey, &g.Game.Tick)
+	if err != nil {
+		log.Warn().Msgf("Game tick was not loaded from the storage %v", err)
+	}
+
+	return g
 }
 
 func CreateGame() (*Game, error) {
@@ -54,14 +90,19 @@ func CreateGame() (*Game, error) {
 	}
 	g.Map = m
 
-	// place player
+	// place test player
 	playerName := "player 1"
-	testKey := "test"
-	p := gameobject.CreatePlayer(playerName)
-	g.AddPlayer(p, &api.Registration{ApiKey: &testKey})
-	(*g.Map)[0][4][4].SetChildren(append((*g.Map)[0][4][4].GetChildren(), p))
-	var levelZero int32 = 0
-	p.Position = api.Coordinates{Level: &levelZero, PositionX: 4, PositionY: 4}
+	var p *gameobject.Player
+	var testPlayerFound bool
+	if p, testPlayerFound = g.Players[playerName]; !testPlayerFound {
+		testKey := "test"
+		p = gameobject.CreatePlayer(playerName)
+		g.AddPlayer(p, &api.Registration{ApiKey: &testKey})
+		(*g.Map)[0][4][4].SetChildren(append((*g.Map)[0][4][4].GetChildren(), p))
+		var levelZero int32 = 0
+		p.Position = api.Coordinates{Level: &levelZero, PositionX: 4, PositionY: 4}
+	}
+
 	g.Game.Map.Levels = []*api.Level{
 		{
 			Level: 0,
@@ -76,7 +117,7 @@ func CreateGame() (*Game, error) {
 		},
 	}
 
-	g.generateLevel(0, 1, g.maxLevelReached)
+	g.generateLevel(0, 1, g.MaxLevelReached)
 
 	// Create some items
 	g.AddItem(gameobject.CreateWeapon("axe", 12, 42))
@@ -85,6 +126,17 @@ func CreateGame() (*Game, error) {
 	go g.gameLoop()
 
 	return g, nil
+}
+
+func (g *Game) handleStoredPlayers() {
+	for key, p := range g.ApiKeyToPlayer {
+		g.AddPlayer(p, &api.Registration{ApiKey: &key})
+	}
+}
+
+func (g *Game) storeGameState() {
+	g.gameStorage.Write(gameStorageKey, g)
+	g.gameStorage.Write(gameTickStorageKey, g.Game.Tick)
 }
 
 func (g *Game) generateLevel(start int, end int, max int) string {
@@ -98,8 +150,9 @@ func (g *Game) gameLoop() {
 		startTime := time.Now()
 		g.processCommands()
 		g.Game.Tick++
+		g.storeGameState()
 		g.Game.Events = []*api.Event{}
-		time.Sleep(LoopTime - (time.Now().Sub(startTime)))
+		time.Sleep(LoopTime - (time.Since(startTime)))
 	}
 }
 
@@ -107,12 +160,12 @@ func (g *Game) MarkVisitedLevel(level int) {
 	g.gameLock.Lock()
 	defer g.gameLock.Unlock()
 	// Next level needs to passed to the generator.
-	g.maxLevelReached = utils.Max(g.maxLevelReached, level+1)
+	g.MaxLevelReached = utils.Max(g.MaxLevelReached, level+1)
 }
 
 func (g *Game) AddPlayer(player *gameobject.Player, registration *api.Registration) {
 	g.Players[player.Character.Name] = player
-	g.IdToName[player.Character.Id] = player.GetId()
+	g.IdToName[player.GetId()] = player.Character.Name
 	g.ApiKeyToPlayer[*registration.ApiKey] = player
 }
 
