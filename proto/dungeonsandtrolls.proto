@@ -182,7 +182,7 @@ message Monster {
   string icon = 13;
   string algorithm = 14;
   string faction = 15;
-  Dropable on_death = 16;
+  repeated Dropable on_death = 16;
 }
 
 // TODO create user monster
