@@ -212,8 +212,8 @@ message Skill {
   DamageType damage_type = 10;
   SkillAttributes casterAttributes = 11;
   SkillAttributes targetAttributes = 12;
-  repeated SkillFlag casterFlags = 13;
-  repeated SkillFlag targetFlags = 14;
+  repeated SkillEffect casterEffects = 13;
+  repeated SkillEffect targetEffects = 14;
 }
 
 message Item {
@@ -236,10 +236,10 @@ message Item {
   repeated Skill skills = 7;
 }
 
-message Dropables {
+message Dropable {
   oneof data {
     Skill skill = 1;
-    Item items = 2;
+    Item item = 2;
     Monster monster = 3;
     Decoration decoration = 4;
     Waypoint waypoint = 5;
@@ -247,12 +247,11 @@ message Dropables {
   }
 }
 
-message SkillFlag {
-  oneof data {
-    string flag = 1;
-    Dropables dropables = 2;
-  }
-}
+message SkillEffect {
+	SkillAttributes attributes = 1;
+	repeated string flags = 2;
+	repeated Dropable summons = 3;
+};
 
 // Rest\",\"skills\":[{\"class\":\"skill\",\"name\":\"Laugh\"},{\"casterAttributes\":{\"stamina\":{\"constitution\":1.043227}},\"casterFlags\":[\"alone\"],\"class\":\"skill\",\"name\":\"Refreshing
 // Rest\"}],\"slot\":\"body\"}"}
