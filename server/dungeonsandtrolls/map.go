@@ -211,8 +211,8 @@ func parseMapObjects(tile map[string]interface{}, o *api.MapObjects) error {
 			o.Monsters = append(o.Monsters, i.Monster)
 			log.Info().Msgf("I found monster %v", i)
 		case *api.Dropable_Decoration:
-			o.Decoration = append(o.Decoration, i.Decoration.Name)
-			log.Info().Msgf("I found monster %v", i)
+			o.Decorations = append(o.Decorations, i.Decoration)
+			log.Info().Msgf("I found decoration %v", i)
 		default:
 			log.Info().Msgf("I found something(%T) %v", i, i)
 		}

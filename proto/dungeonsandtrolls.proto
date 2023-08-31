@@ -275,7 +275,7 @@ message MapObjects {
   repeated Character players = 3;
   bool is_stairs = 4;
   repeated Shortcut portals = 5;
-  repeated string decoration = 6;
+  repeated Decoration decorations = 6;
   repeated Effect effects = 7;
   repeated Item items = 8;
   bool is_free = 9;
