@@ -183,7 +183,6 @@ func parseTile(maybeTile interface{}, l *api.Level) error {
 }
 
 func parseMapObjects(tile map[string]interface{}, o *api.MapObjects) error {
-
 	maybeData, ok := tile["data"]
 	if !ok {
 		return nil
@@ -197,18 +196,25 @@ func parseMapObjects(tile map[string]interface{}, o *api.MapObjects) error {
 		if err != nil {
 			return fmt.Errorf("tile data serialization failed %v", err)
 		}
-		o := &api.Dropable{}
-		err = protojson.Unmarshal(j, o)
+		d := &api.Dropable{}
+		err = protojson.Unmarshal(j, d)
 		if err != nil {
 			fmt.Println(string(j))
 			return fmt.Errorf("tile data is malformed %v", err)
 		}
 
-		switch p := o.Data.(type) {
+		switch i := d.Data.(type) {
 		case *api.Dropable_Item:
-			log.Info().Msgf("I found item %v", p)
+			o.Items = append(o.Items, i.Item)
+			log.Info().Msgf("I found item %v", i)
+		case *api.Dropable_Monster:
+			o.Monsters = append(o.Monsters, i.Monster)
+			log.Info().Msgf("I found monster %v", i)
+		case *api.Dropable_Decoration:
+			o.Decoration = append(o.Decoration, i.Decoration.Name)
+			log.Info().Msgf("I found monster %v", i)
 		default:
-			log.Info().Msgf("I found something(%T) %v", p, p)
+			log.Info().Msgf("I found something(%T) %v", i, i)
 		}
 	}
 	return nil
