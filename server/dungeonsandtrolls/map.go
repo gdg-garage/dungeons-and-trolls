@@ -4,10 +4,12 @@ import (
 	"encoding/json"
 	"fmt"
 	"math/rand"
+	"reflect"
 
 	"github.com/gdg-garage/dungeons-and-trolls/server/dungeonsandtrolls/api"
 	"github.com/gdg-garage/dungeons-and-trolls/server/dungeonsandtrolls/gameobject"
 	"github.com/rs/zerolog/log"
+	"google.golang.org/protobuf/encoding/protojson"
 )
 
 type ObsoleteMap [][][]gameobject.Interface
@@ -124,42 +126,184 @@ func parseLevel(level interface{}) (*api.Level, error) {
 		return nil, fmt.Errorf("tiles are malformed")
 	}
 	for _, maybeTile := range tiles {
-		tile, ok := maybeTile.(map[string]interface{})
-		if !ok {
-			return nil, fmt.Errorf("tile is malformed")
+		err = parseTile(maybeTile, l)
+		if err != nil {
+			return nil, err
 		}
-		maybeType, ok := tile["type"]
-		if !ok {
-			return nil, fmt.Errorf("type not found in the tile")
-		}
-		t, ok := maybeType.(string)
-		if !ok {
-			return nil, fmt.Errorf("tile type is not string")
-		}
-
-		// This silently assumes that positions exist.
-		o := &api.MapObjects{
-			Position: &api.Coordinates{
-				PositionX: int32(tile["x"].(float64)),
-				PositionY: int32(tile["y"].(float64)),
-			},
-			Decorations: &api.MapDecorations{},
-		}
-
-		switch t {
-		case "wall":
-			o.Walkable = false
-			o.Decorations.Wall = true
-		case "spawn":
-			// TODO use this
-		default:
-			log.Warn().Msgf("unknown terrain type %s", t)
-		}
-
-		l.Objects = append(l.Objects, o)
-
-		// TODO parse data
-		// field data is array
 	}
 	return l, nil
+}
+
+func parseTile(maybeTile interface{}, l *api.Level) error {
+	tile, ok := maybeTile.(map[string]interface{})
+	if !ok {
+		return fmt.Errorf("tile is malformed")
+	}
+	maybeType, ok := tile["type"]
+	if !ok {
+		return fmt.Errorf("type not found in the tile")
+	}
+	t, ok := maybeType.(string)
+	if !ok {
+		return fmt.Errorf("tile type is not string")
+	}
+
+	// This silently assumes that positions exist.
+	o := &api.MapObjects{
+		Position: &api.Coordinates{
+			PositionX: int32(tile["x"].(float64)),
+			PositionY: int32(tile["y"].(float64)),
+		},
+	}
+
+	o.IsFree = true
+
+	switch t {
+	case "wall":
+		o.IsFree = false
+		o.IsWall = true
+	case "spawn":
+		spawn := true
+		o.IsSpawn = &spawn
+	case "stairs":
+		o.IsStairs = true
+	case "decoration", "monster":
+		// We do not care, the specific decoration is defined in the data field.
+	default:
+		log.Warn().Msgf("unknown terrain type %s", t)
+	}
+
+	err := parseMapObjects(tile, o)
+	if err != nil {
+		return err
+	}
+
+	l.Objects = append(l.Objects, o)
+
+	return nil
+}
+
+func parseMapObjects(tile map[string]interface{}, o *api.MapObjects) error {
+	maybeData, ok := tile["data"]
+	if !ok {
+		return nil
+	}
+	data, ok := maybeData.([]interface{})
+	if !ok {
+		return fmt.Errorf("tile data is malformed")
+	}
+	for _, dat := range data {
+		d, ok := dat.(map[string]interface{})
+		if !ok {
+			return fmt.Errorf("tile data is malformed")
+		}
+
+		maybeClass, ok := d["class"]
+		if !ok {
+			return fmt.Errorf("type not found in the tile data")
+		}
+		c, ok := maybeClass.(string)
+		if !ok {
+			return fmt.Errorf("tile data type is not string")
+		}
+		switch c {
+		case "decoration":
+			maybeType, ok := d["type"]
+			if !ok {
+				return fmt.Errorf("type not found in the tile data decoration")
+			}
+			t, ok := maybeType.(string)
+			if !ok {
+				return fmt.Errorf("tile data decoration type is not string")
+			}
+
+			o.Decoration = t
+		case "item":
+			delete(d, "class")
+
+			// maybeSkills, ok := d["skills"]
+			// if !ok {
+			// 	return fmt.Errorf("type not found in the tile data decoration")
+			// }
+			// skills, ok := maybeSkills.([]interface{})
+			// if !ok {
+			// 	return fmt.Errorf("type not found in the tile data decoration")
+			// }
+
+			// log.Info().Msgf("item: %v", d)
+			// log.Info().Msgf("skills: %v", skills)
+			for _, skill := range d["skills"].([]interface{}) {
+				s, _ := skill.(map[string]interface{})
+				delete(d, "class")
+				if cfs, ok := s["casterFlags"]; ok {
+
+					log.Info().Msgf("casterFlags %v %s", cfs, reflect.TypeOf(cfs))
+					switch v := cfs.(type) {
+					case []interface{}:
+						for _, cf := range v {
+
+							log.Info().Msgf("flag %s", cf)
+							a := api.SkillFlag{}
+							sfj, _ := json.Marshal(map[string]string{
+								"flag": cf.(string),
+							})
+							log.Info().Msgf("flag %s", string(sfj))
+							protojson.Unmarshal(sfj, &a)
+							log.Info().Msgf("%d", a.String())
+						}
+					default:
+						log.Info().Msgf("casterFlags %d", cfs)
+					}
+
+				}
+				delete(s, "casterFlags")
+				delete(s, "targetFlags")
+			}
+
+			// TODO use branch restructure
+
+			log.Info().Msgf("item: %v", d)
+
+			j, err := json.Marshal(d)
+			if err != nil {
+				return fmt.Errorf("item serialization failed %v", err)
+			}
+			i := &api.Item{}
+
+			// d, _ := protojson.Marshal(&api.SkillFlag{Data: &api.SkillFlag_Flag{Flag: "aaaa"}})
+			// log.Info().Msg(string(d))
+			// d, _ = protojson.Marshal(&api.SkillFlag{
+			// 	Data: &api.SkillFlag_Dropables{Dropables: &api.Dropables{Data: &api.Dropables_Decoration{Decoration: &api.Decoration{Name: "bb"}}}},
+			// })
+			// log.Info().Msg(string(d))
+
+			err = protojson.UnmarshalOptions{DiscardUnknown: true}.Unmarshal(j, i)
+			// err = protojson.UnmarshalOptions{}.Unmarshal(j, i)
+			if err != nil {
+				log.Info().Msgf("%v", string(j))
+				return fmt.Errorf("item deserialization failed %v", err)
+			}
+			i.Id = gameobject.GetNewId()
+			for _, skill := range i.Skills {
+				skill.Id = gameobject.GetNewId()
+
+				if skill.Cost != nil {
+					skill.Cost = &api.Attributes{}
+				}
+			}
+			if i.Requirements == nil {
+				i.Requirements = &api.Attributes{}
+			}
+			if i.Attributes == nil {
+				i.Attributes = &api.Attributes{}
+			}
+			o.Items = append(o.Items, i)
+			log.Info().Msg(string(j))
+		default:
+			log.Warn().Msgf("Unknown data tile class: %s", c)
+			log.Info().Msgf("%v", d)
+		}
+
+	}
+	return nil
 }

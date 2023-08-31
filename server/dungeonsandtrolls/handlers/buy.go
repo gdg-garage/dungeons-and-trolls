@@ -2,6 +2,7 @@ package handlers
 
 import (
 	"fmt"
+
 	"github.com/gdg-garage/dungeons-and-trolls/server/dungeonsandtrolls"
 	"github.com/gdg-garage/dungeons-and-trolls/server/dungeonsandtrolls/api"
 )
@@ -29,7 +30,7 @@ func Buy(game *dungeonsandtrolls.Game, identifiers *api.Identifiers) error {
 	}
 	for _, itemId := range identifiers.Ids {
 		item := game.IdToItem[itemId]
-		p.Character.Money -= item.Price
+		p.Character.Money -= item.BuyPrice
 		buyEvent := api.Event_BUY
 		game.LogEvent(&api.Event{
 			Type: &buyEvent,

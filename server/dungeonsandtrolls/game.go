@@ -113,7 +113,7 @@ func CreateGame() (*Game, error) {
 
 	m, err := ParseMap(g.generateLevel(0, 1))
 	if err != nil {
-		log.Error().Err(err).Msg("Parsing map failed")
+		log.Fatal().Err(err).Msg("Parsing map failed")
 	}
 	log.Info().Msgf("map: %v", m)
 

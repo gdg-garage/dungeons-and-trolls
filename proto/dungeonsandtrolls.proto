@@ -7,28 +7,33 @@ package dungeonsandtrolls;
 import "google/protobuf/empty.proto";
 import "google/protobuf/struct.proto";
 
-
 // The game service definition.
 service DungeonsAndTrolls {
   // Sends all info about the game.
   rpc Game(GameStateParams) returns (GameState) {}
   // Register provided User to the Game and create a character.
   rpc Register(User) returns (Registration) {}
-  // Buy Items identified by the provided ID for the Character bound to the logged user.
+  // Buy Items identified by the provided ID for the Character bound to the
+  // logged user.
   rpc Buy(Identifiers) returns (google.protobuf.Empty) {}
-  // Equip the Item identified by the provided ID for the Character bound to the logged user (unused).
+  // Equip the Item identified by the provided ID for the Character bound to the
+  // logged user (unused).
   rpc Equip(Identifier) returns (google.protobuf.Empty) {}
-  // Assign skill point to the attribute for the Character bound to the logged user.
+  // Assign skill point to the attribute for the Character bound to the logged
+  // user.
   rpc AssignSkillPoints(Attributes) returns (google.protobuf.Empty) {}
   // Move the Character bound to the logged user to the specified place.
   rpc Move(Coordinates) returns (google.protobuf.Empty) {}
   // Respawn the Character bound to the logged user.
   rpc Respawn(google.protobuf.Empty) returns (google.protobuf.Empty) {}
-  // Use a skill (provided by an item) by the Character bound to the logged user.
+  // Use a skill (provided by an item) by the Character bound to the logged
+  // user.
   rpc Skill(SkillUse) returns (google.protobuf.Empty) {}
-  // The Character bound to the logged user yells a messages (visible for everyone).
+  // The Character bound to the logged user yells a messages (visible for
+  // everyone).
   rpc Yell(Message) returns (google.protobuf.Empty) {}
-  // Send multiple commands to the Character bound to the logged user. The order of execution is defined in the message.
+  // Send multiple commands to the Character bound to the logged user. The order
+  // of execution is defined in the message.
   rpc Commands(CommandsBatch) returns (google.protobuf.Empty) {}
   // Control monsters. Admin only.
   rpc MonstersCommands(CommandsForMonsters) returns (google.protobuf.Empty) {}
@@ -38,11 +43,23 @@ service DungeonsAndTrolls {
 
   // TODO: How to use stairs.
   //  * this is probably just a condition for move.
-  // TODO: Stats? Those will be probably in Grafana (not sure if we need an rpc for that).
+  // TODO: Stats? Those will be probably in Grafana (not sure if we need an rpc
+  // for that).
 }
 
-message Message {
-  string text = 1;
+message Message { string text = 1; }
+
+message Decoration {
+  string name = 1;
+  string type = 2;
+}
+
+message Key {
+  // TODO
+}
+
+message Waypoint {
+  // TODO
 }
 
 message GameStateParams {
@@ -76,6 +93,15 @@ message Elements {
   int32 physical = 5;
 }
 
+enum DamageType {
+  none = 0;
+  slash = 1;
+  piercing = 2; // todo no ing
+  fire = 3;
+  poison = 4;
+  electric = 5;
+}
+
 message Effect {
   Elements min_damage = 1;
   Elements max_damage = 2;
@@ -87,15 +113,47 @@ message Effect {
 }
 
 message Attributes {
-  int32 strength = 1;
-  int32 intelligence = 2;
-  int32 endurance = 3;
-  int32 willpower = 4;
-  int32 dexterity = 5;
+  optional float strength = 1;
+  optional float dexterity = 2;
+  optional float inteligence = 3;
+  optional float willpower = 4;
+  optional float constitution = 5;
+
+  optional float slash_armor = 6;     // TODO slash_resist
+  optional float piercing_resist = 7; // TODO pierce_resist
+  optional float fire_resist = 8;
+  optional float poison_resist = 9;
+  optional float electric_resist = 10;
+
+  optional float life = 11;
+  optional float stamina = 12;
+  optional float mana = 13;
+
+  optional float scalar = 14;
+}
+
+message SkillAttributes {
+  optional Attributes strength = 1;
+  optional Attributes dexterity = 2;
+  optional Attributes inteligence = 3;
+  optional Attributes willpower = 4;
+  optional Attributes constitution = 5;
+
+  optional Attributes slash_armor = 6;     // TODO slash_resist
+  optional Attributes piercing_resist = 7; // TODO pierce_resist
+  optional Attributes fire_resist = 8;
+  optional Attributes poison_resist = 9;
+  optional Attributes electric_resist = 10;
+ 
+  optional Attributes life = 11;
+  optional Attributes stamina = 12;
+  optional Attributes mana = 13;
+ 
+  optional Attributes scalar = 14;
 }
 
 message Stats {
-  float health = 1;
+  float life = 1;
   float mana = 2;
   float stamina = 3;
 }
@@ -117,76 +175,97 @@ message Monster {
   int32 xp = 9;
   optional Rewards rewards = 10;
   repeated Item equip = 11;
+  int32 score = 12;
 }
 
 message Character {
   string id = 1;
   string name = 2;
-  Stats stats = 3;
+  Stats stats = 3; // todo max life stamina ...
   int32 level = 4;
   Attributes attributes = 5;
   Elements resistances = 6;
   repeated Item inventory = 7;
   int32 xp = 8;
-  float money = 9;
+  int32 money = 9;
   int32 free_skill_points = 10;
   repeated Item equip = 11;
 }
 
 message Skill {
-  string id = 1;
-  string name = 2;
-  repeated Effect effects = 3;
-  Attributes requirements = 4;
-  Stats cost = 5;
-  bool requires_line_of_sight = 6;
-  int32 max_distance = 7;
-  int32 max_move_distance = 8;
-}
-
-enum ItemVisualType {
-  DAGGER = 0;
-  SWORD = 1;
-  WAND = 2;
-  AXE = 3;
-  MACE = 4;
-  CLAW = 5;
-  STAFF = 6;
-  SPEAR = 7;
-  SHIELD = 8;
-  HELMET = 9;
-  BODY_ARMOR= 10;
-  TROUSERS = 11;
-  BELT = 12;
-  BOOTS = 13;
-  GLOVES = 14;
-  RING = 15;
-}
-
-message Item {
-  enum Type {
-    SHIELD = 0;
-    HELMET = 1;
-    BODY_ARMOR = 2;
-    TROUSERS = 3;
-    BELT = 4;
-    BOOTS = 5;
-    GLOVES = 6;
-    RING = 7;
-    WEAPON = 8;
+  enum Target {
+    none = 0;
+    position = 1;
+    character = 2;
+    item = 3;
   }
 
   string id = 1;
   string name = 2;
-  Type type = 3;
-  float price = 4;
-  optional float weight = 5;
-  Attributes requirements = 6;
-  Attributes boosts = 7;
-  Elements resistances = 8;
-  optional ItemVisualType visual_type = 9;
-  repeated Skill skills = 10;
+  Target target = 3;
+  repeated Effect effects = 4;
+  Attributes cost = 5;
+  Attributes range = 6;
+  Attributes radius = 7;
+  Attributes duration = 8;
+  Attributes damageAmount = 9;
+  DamageType damage_type = 10;
+  SkillAttributes casterAttributes = 11;
+  SkillAttributes targetAttributes = 12;
+  repeated SkillFlag casterFlags = 13;
+  repeated SkillFlag targetFlags = 14;
 }
+
+message Item {
+  enum Type {
+    none = 0;
+    head = 1;
+    mainHand = 2;
+    offHand = 3;
+    body = 4;
+    legs = 5;
+    neck = 6;
+  }
+
+  string id = 1;
+  string name = 2;
+  Type slot = 3;
+  int32 buy_price = 4; // TODO price
+  Attributes requirements = 5;
+  Attributes attributes = 6; // TODO rename to effects
+  repeated Skill skills = 7;
+}
+
+message Dropables {
+  oneof data {
+    Skill skill = 1;
+    Item items = 2;
+    Monster monster = 3;
+    Decoration decoration = 4;
+    Waypoint waypoint = 5;
+    Key key = 6;
+  }
+}
+
+message SkillFlag {
+  oneof data {
+    string flag = 1;
+    Dropables dropables = 2;
+  }
+}
+
+// Rest\",\"skills\":[{\"class\":\"skill\",\"name\":\"Laugh\"},{\"casterAttributes\":{\"stamina\":{\"constitution\":1.043227}},\"casterFlags\":[\"alone\"],\"class\":\"skill\",\"name\":\"Refreshing
+// Rest\"}],\"slot\":\"body\"}"}
+// {\"attributes\":{\"strength\":1},\"buyPrice\":183,\"class\":\"item\",\"name\":\"Sword
+// With Thrifty
+// Attack\",\"skills\":[{\"class\":\"skill\",\"cost\":{\"stamina\":9},\"damageAmount\":{\"strength\":0.43284008},\"damageType\":\"slash\",\"name\":\"Thrifty
+// Attack\",\"range\":{\"scalar\":1},\"target\":\"character\"}],\"slot\":\"mainHand\"}"}
+// {\"attributes\":{\"dexterity\":7},\"buyPrice\":574,\"class\":\"item\",\"name\":\"Dexterous
+// Helmet\",\"slot\":\"head\"}"}
+// {\"attributes\":{\"strength\":4},\"buyPrice\":471,\"class\":\"item\",\"name\":\"Strengthening
+// Sword With Strong
+// Attack\",\"skills\":[{\"class\":\"skill\",\"cost\":{\"stamina\":10},\"damageAmount\":{\"strength\":0.8328668},\"damageType\":\"slash\",\"name\":\"Strong
+// Attack\",\"range\":{\"scalar\":1},\"target\":\"character\"}],\"slot\":\"mainHand\"}"}
 
 message Jump {
   float max_jump_distance = 1;
@@ -200,31 +279,34 @@ message Object {
   int32 position_y = 3;
 }
 
-message Shortcut {
-  optional Coordinates leads_to = 1;
-}
+message Shortcut { optional Coordinates leads_to = 1; }
 
 message MapObjects {
   Coordinates position = 1;
   repeated Monster monsters = 2;
   repeated Character players = 3;
-  repeated Shortcut stairs = 4;
+  bool is_stairs = 4;
   repeated Shortcut portals = 5;
-  MapDecorations decorations = 6;
+  string decoration = 6;
   repeated Effect effects = 7;
   repeated Item items = 8;
-  bool walkable = 9;
+  bool is_free = 9;
+  bool is_wall = 10;
+  bool is_door = 11;
+  optional bool is_spawn = 12;
   // TODO: chests are not implemented yet
   // bool chest = 4;
 }
 
+// Those are useful for visualization and niche implementations (you do not need
+// them for your first bot).
 message MapDecorations {
   bool carpet = 1;
   bool rug = 2;
-  bool door = 3;
-  bool anomaly = 4;
+  bool rope = 3;
+  bool lava = 4;
   bool pedestal = 5;
-  bool wall = 6;
+  bool spawn = 6;
 }
 
 message Level {
@@ -236,9 +318,7 @@ message Level {
   repeated string ascii = 6;
 }
 
-message Map {
-  repeated Level levels = 1;
-}
+message Map { repeated Level levels = 1; }
 
 message Event {
   enum Type {
@@ -259,21 +339,16 @@ message GameState {
   optional Character character = 3;
   optional Coordinates current_position = 4;
   int64 tick = 5;
-  // List of events which occurred in the previous tick. Useful for visualising effects, debugging and communication.
+  // List of events which occurred in the previous tick. Useful for visualising
+  // effects, debugging and communication.
   repeated Event events = 6;
 }
 
-message User {
-  string username = 1;
-}
+message User { string username = 1; }
 
-message Identifier {
-  string id = 1;
-}
+message Identifier { string id = 1; }
 
-message Identifiers {
-  repeated string ids = 1;
-}
+message Identifiers { repeated string ids = 1; }
 
 message Coordinates {
   optional int32 level = 1;
@@ -287,6 +362,4 @@ message SkillUse {
   optional Coordinates location = 3;
 }
 
-message Registration {
-  optional string api_key = 1;
-}
+message Registration { optional string api_key = 1; }

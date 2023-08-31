@@ -37,6 +37,6 @@ func (p *Player) generateEquip() {
 }
 
 func (p *Player) Equip(item *api.Item) {
-	p.Equipped[item.Type] = item
+	p.Equipped[item.Slot] = item
 	p.generateEquip()
 }
