@@ -4,7 +4,6 @@ import (
 	"encoding/json"
 	"fmt"
 	"math/rand"
-	"reflect"
 
 	"github.com/gdg-garage/dungeons-and-trolls/server/dungeonsandtrolls/api"
 	"github.com/gdg-garage/dungeons-and-trolls/server/dungeonsandtrolls/gameobject"
@@ -184,6 +183,7 @@ func parseTile(maybeTile interface{}, l *api.Level) error {
 }
 
 func parseMapObjects(tile map[string]interface{}, o *api.MapObjects) error {
+
 	maybeData, ok := tile["data"]
 	if !ok {
 		return nil
@@ -192,118 +192,134 @@ func parseMapObjects(tile map[string]interface{}, o *api.MapObjects) error {
 	if !ok {
 		return fmt.Errorf("tile data is malformed")
 	}
-	for _, dat := range data {
-		d, ok := dat.(map[string]interface{})
-		if !ok {
-			return fmt.Errorf("tile data is malformed")
+	for _, d := range data {
+		j, err := json.Marshal(d)
+		if err != nil {
+			return fmt.Errorf("tile data serialization failed %v", err)
+		}
+		o := &api.Dropable{}
+		err = protojson.Unmarshal(j, o)
+		if err != nil {
+			fmt.Println(string(j))
+			return fmt.Errorf("tile data is malformed %v", err)
 		}
 
-		maybeClass, ok := d["class"]
-		if !ok {
-			return fmt.Errorf("type not found in the tile data")
-		}
-		c, ok := maybeClass.(string)
-		if !ok {
-			return fmt.Errorf("tile data type is not string")
-		}
-		switch c {
-		case "decoration":
-			maybeType, ok := d["type"]
-			if !ok {
-				return fmt.Errorf("type not found in the tile data decoration")
-			}
-			t, ok := maybeType.(string)
-			if !ok {
-				return fmt.Errorf("tile data decoration type is not string")
-			}
-
-			o.Decoration = t
-		case "item":
-			delete(d, "class")
-
-			// maybeSkills, ok := d["skills"]
-			// if !ok {
-			// 	return fmt.Errorf("type not found in the tile data decoration")
-			// }
-			// skills, ok := maybeSkills.([]interface{})
-			// if !ok {
-			// 	return fmt.Errorf("type not found in the tile data decoration")
-			// }
-
-			// log.Info().Msgf("item: %v", d)
-			// log.Info().Msgf("skills: %v", skills)
-			for _, skill := range d["skills"].([]interface{}) {
-				s, _ := skill.(map[string]interface{})
-				delete(d, "class")
-				if cfs, ok := s["casterFlags"]; ok {
-
-					log.Info().Msgf("casterFlags %v %s", cfs, reflect.TypeOf(cfs))
-					switch v := cfs.(type) {
-					case []interface{}:
-						for _, cf := range v {
-
-							log.Info().Msgf("flag %s", cf)
-							a := api.SkillFlag{}
-							sfj, _ := json.Marshal(map[string]string{
-								"flag": cf.(string),
-							})
-							log.Info().Msgf("flag %s", string(sfj))
-							protojson.Unmarshal(sfj, &a)
-							log.Info().Msgf("%d", a.String())
-						}
-					default:
-						log.Info().Msgf("casterFlags %d", cfs)
-					}
-
-				}
-				delete(s, "casterFlags")
-				delete(s, "targetFlags")
-			}
-
-			// TODO use branch restructure
-
-			log.Info().Msgf("item: %v", d)
-
-			j, err := json.Marshal(d)
-			if err != nil {
-				return fmt.Errorf("item serialization failed %v", err)
-			}
-			i := &api.Item{}
-
-			// d, _ := protojson.Marshal(&api.SkillFlag{Data: &api.SkillFlag_Flag{Flag: "aaaa"}})
-			// log.Info().Msg(string(d))
-			// d, _ = protojson.Marshal(&api.SkillFlag{
-			// 	Data: &api.SkillFlag_Dropables{Dropables: &api.Dropables{Data: &api.Dropables_Decoration{Decoration: &api.Decoration{Name: "bb"}}}},
-			// })
-			// log.Info().Msg(string(d))
-
-			err = protojson.UnmarshalOptions{DiscardUnknown: true}.Unmarshal(j, i)
-			// err = protojson.UnmarshalOptions{}.Unmarshal(j, i)
-			if err != nil {
-				log.Info().Msgf("%v", string(j))
-				return fmt.Errorf("item deserialization failed %v", err)
-			}
-			i.Id = gameobject.GetNewId()
-			for _, skill := range i.Skills {
-				skill.Id = gameobject.GetNewId()
-
-				if skill.Cost != nil {
-					skill.Cost = &api.Attributes{}
-				}
-			}
-			if i.Requirements == nil {
-				i.Requirements = &api.Attributes{}
-			}
-			if i.Attributes == nil {
-				i.Attributes = &api.Attributes{}
-			}
-			o.Items = append(o.Items, i)
-			log.Info().Msg(string(j))
+		switch p := o.Data.(type) {
+		case *api.Dropable_Item:
+			log.Info().Msgf("I found item %v", p)
 		default:
-			log.Warn().Msgf("Unknown data tile class: %s", c)
-			log.Info().Msgf("%v", d)
+			log.Info().Msgf("I found something(%T) %v", p, p)
 		}
-
 	}
 	return nil
+
+	// maybeClass, ok := d["class"]
+	// if !ok {
+	// 	return fmt.Errorf("type not found in the tile data")
+	// }
+	// c, ok := maybeClass.(string)
+	// if !ok {
+	// 	return fmt.Errorf("tile data type is not string")
+	// }
+	// switch c {
+	// case "decoration":
+	// 	maybeType, ok := d["type"]
+	// 	if !ok {
+	// 		return fmt.Errorf("type not found in the tile data decoration")
+	// 	}
+	// 	t, ok := maybeType.(string)
+	// 	if !ok {
+	// 		return fmt.Errorf("tile data decoration type is not string")
+	// 	}
+
+	// 	o.Decoration = t
+	// case "item":
+	// 	delete(d, "class")
+
+	// 	// maybeSkills, ok := d["skills"]
+	// 	// if !ok {
+	// 	// 	return fmt.Errorf("type not found in the tile data decoration")
+	// 	// }
+	// 	// skills, ok := maybeSkills.([]interface{})
+	// 	// if !ok {
+	// 	// 	return fmt.Errorf("type not found in the tile data decoration")
+	// 	// }
+
+	// 	// log.Info().Msgf("item: %v", d)
+	// 	// log.Info().Msgf("skills: %v", skills)
+	// 	for _, skill := range d["skills"].([]interface{}) {
+	// 		s, _ := skill.(map[string]interface{})
+	// 		delete(d, "class")
+	// 		if cfs, ok := s["casterFlags"]; ok {
+
+	// 			log.Info().Msgf("casterFlags %v %s", cfs, reflect.TypeOf(cfs))
+	// 			switch v := cfs.(type) {
+	// 			case []interface{}:
+	// 				for _, cf := range v {
+
+	// 					log.Info().Msgf("flag %s", cf)
+	// 					a := api.SkillFlag{}
+	// 					sfj, _ := json.Marshal(map[string]string{
+	// 						"flag": cf.(string),
+	// 					})
+	// 					log.Info().Msgf("flag %s", string(sfj))
+	// 					protojson.Unmarshal(sfj, &a)
+	// 					log.Info().Msgf("%d", a.String())
+	// 				}
+	// 			default:
+	// 				log.Info().Msgf("casterFlags %d", cfs)
+	// 			}
+
+	// 		}
+	// 		delete(s, "casterFlags")
+	// 		delete(s, "targetFlags")
+	// 	}
+
+	// 	// TODO use branch restructure
+
+	// 	log.Info().Msgf("item: %v", d)
+
+	// 	j, err := json.Marshal(d)
+	// 	if err != nil {
+	// 		return fmt.Errorf("item serialization failed %v", err)
+	// 	}
+	// 	i := &api.Item{}
+
+	// 	// d, _ := protojson.Marshal(&api.SkillFlag{Data: &api.SkillFlag_Flag{Flag: "aaaa"}})
+	// 	// log.Info().Msg(string(d))
+	// 	// d, _ = protojson.Marshal(&api.SkillFlag{
+	// 	// 	Data: &api.SkillFlag_Dropables{Dropables: &api.Dropables{Data: &api.Dropables_Decoration{Decoration: &api.Decoration{Name: "bb"}}}},
+	// 	// })
+	// 	// log.Info().Msg(string(d))
+
+	// 	// err = protojson.UnmarshalOptions{DiscardUnknown: true}.Unmarshal(j, i)
+	// 	err = protojson.UnmarshalOptions{}.Unmarshal(j, i)
+	// 	// err = protojson.UnmarshalOptions{}.Unmarshal(j, i)
+	// 	if err != nil {
+	// 		log.Info().Msgf("%v", string(j))
+	// 		return fmt.Errorf("item deserialization failed %v", err)
+	// 	}
+	// 	i.Id = gameobject.GetNewId()
+	// 	for _, skill := range i.Skills {
+	// 		skill.Id = gameobject.GetNewId()
+
+	// 		if skill.Cost != nil {
+	// 			skill.Cost = &api.Attributes{}
+	// 		}
+	// 	}
+	// 	if i.Requirements == nil {
+	// 		i.Requirements = &api.Attributes{}
+	// 	}
+	// 	if i.Attributes == nil {
+	// 		i.Attributes = &api.Attributes{}
+	// 	}
+	// 	o.Items = append(o.Items, i)
+	// 	log.Info().Msg(string(j))
+	// default:
+	// 	log.Warn().Msgf("Unknown data tile class: %s", c)
+	// 	log.Info().Msgf("%v", d)
+	// }
+
+	// }
+	// return nil
 }

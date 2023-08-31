@@ -8,5 +8,5 @@ services:
     volumes:
       - .:/app
       - ~/Library/Caches/go-build:/root/.cache/go-build
-      - ~/go:/go
+      - ~/go:/root/go
     command: "go run ."

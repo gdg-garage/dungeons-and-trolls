@@ -54,12 +54,17 @@ message Decoration {
   string type = 2;
 }
 
+message Position {
+  int32 x = 1;
+  int32 y = 2;
+}
+
 message Key {
-  // TODO
+  repeated Position doors = 1;
 }
 
 message Waypoint {
-  // TODO
+  int32 destinationFloor = 1;
 }
 
 message GameStateParams {
@@ -166,17 +171,21 @@ message Rewards {
 message Monster {
   string id = 1;
   string name = 2;
-  Stats stats = 3;
-  int32 level = 4;
+  // Stats stats = 3;
+  // int32 level = 4;
   Attributes attributes = 5;
-  Elements resistances = 6;
-  repeated Item inventory = 7;
+  // repeated Item inventory = 7;
   repeated Effect effects = 8;
-  int32 xp = 9;
-  optional Rewards rewards = 10;
-  repeated Item equip = 11;
+  // int32 xp = 9;
+  repeated Item equipped_items = 11;
   int32 score = 12;
+  string icon = 13;
+  string algorithm = 14;
+  string faction = 15;
+  Dropable on_death = 16;
 }
+
+// TODO create user monster
 
 message Character {
   string id = 1;
@@ -202,7 +211,7 @@ message Skill {
 
   string id = 1;
   string name = 2;
-  Target target = 3;
+  Target targetType = 3; // TODO target
   repeated Effect effects = 4;
   Attributes cost = 5;
   Attributes range = 6;
@@ -210,10 +219,8 @@ message Skill {
   Attributes duration = 8;
   Attributes damageAmount = 9;
   DamageType damage_type = 10;
-  SkillAttributes casterAttributes = 11;
-  SkillAttributes targetAttributes = 12;
-  repeated SkillEffect casterEffects = 13;
-  repeated SkillEffect targetEffects = 14;
+  SkillEffect caster = 11; // TODO casterEffects
+  SkillEffect target = 12; // TODO targetEffects
 }
 
 message Item {
@@ -252,24 +259,6 @@ message SkillEffect {
 	repeated string flags = 2;
 	repeated Dropable summons = 3;
 };
-
-// Rest\",\"skills\":[{\"class\":\"skill\",\"name\":\"Laugh\"},{\"casterAttributes\":{\"stamina\":{\"constitution\":1.043227}},\"casterFlags\":[\"alone\"],\"class\":\"skill\",\"name\":\"Refreshing
-// Rest\"}],\"slot\":\"body\"}"}
-// {\"attributes\":{\"strength\":1},\"buyPrice\":183,\"class\":\"item\",\"name\":\"Sword
-// With Thrifty
-// Attack\",\"skills\":[{\"class\":\"skill\",\"cost\":{\"stamina\":9},\"damageAmount\":{\"strength\":0.43284008},\"damageType\":\"slash\",\"name\":\"Thrifty
-// Attack\",\"range\":{\"scalar\":1},\"target\":\"character\"}],\"slot\":\"mainHand\"}"}
-// {\"attributes\":{\"dexterity\":7},\"buyPrice\":574,\"class\":\"item\",\"name\":\"Dexterous
-// Helmet\",\"slot\":\"head\"}"}
-// {\"attributes\":{\"strength\":4},\"buyPrice\":471,\"class\":\"item\",\"name\":\"Strengthening
-// Sword With Strong
-// Attack\",\"skills\":[{\"class\":\"skill\",\"cost\":{\"stamina\":10},\"damageAmount\":{\"strength\":0.8328668},\"damageType\":\"slash\",\"name\":\"Strong
-// Attack\",\"range\":{\"scalar\":1},\"target\":\"character\"}],\"slot\":\"mainHand\"}"}
-
-message Jump {
-  float max_jump_distance = 1;
-  float mana_cost = 2;
-}
 
 // TODO this is temporary
 message Object {
