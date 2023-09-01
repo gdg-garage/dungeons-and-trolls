@@ -24,7 +24,6 @@ const gameStorageKey = "game"
 const gameTickStorageKey = "game_tick"
 
 type Game struct {
-	Inputs map[string][]CommandI `json:"-"` // TODO deprecated
 	// Gained after kill (may be used in the next run)
 	Score           float32                       `json:"-"`
 	Players         map[string]*gameobject.Player `json:"-"`
@@ -51,7 +50,6 @@ func NewGame() *Game {
 	}
 
 	g := &Game{
-		Inputs:          map[string][]CommandI{},
 		Players:         map[string]*gameobject.Player{},
 		IdToName:        map[string]string{},
 		ApiKeyToPlayer:  map[string]*gameobject.Player{},
@@ -164,6 +162,7 @@ func (g *Game) gameLoop() {
 }
 
 func (g *Game) MarkVisitedLevel(level int) {
+	// TODO maybe this lock will be more global.
 	g.gameLock.Lock()
 	defer g.gameLock.Unlock()
 	g.MaxLevelReached = utils.Max(g.MaxLevelReached, level)
@@ -186,31 +185,7 @@ func (g *Game) LogEvent(event *api.Event) {
 }
 
 func (g *Game) processCommands() {
-	//for playerId, commands := range g.Inputs {
-	//	p := g.Players[playerId]
-	//	for _, command := range commands {
-	//		switch command.GetType() {
-	//		case "Move":
-	//			// TODO check boundaries, do not remove other children (children is probably deprecated anyway)
-	//			(*g.Map)[p.Position.Level][p.Position.Y][p.Position.X].SetChildren([]gameobject.Interface{})
-	//			switch command.(MoveCommand).Direction {
-	//			case Up:
-	//				p.Position.Y--
-	//				(*g.Map)[p.Position.Level][p.Position.Y][p.Position.X].SetChildren([]gameobject.Interface{p})
-	//			case Down:
-	//				p.Position.Y++
-	//				(*g.Map)[p.Position.Level][p.Position.Y][p.Position.X].SetChildren([]gameobject.Interface{p})
-	//			case Left:
-	//				p.Position.X--
-	//				(*g.Map)[p.Position.Level][p.Position.Y][p.Position.X].SetChildren([]gameobject.Interface{p})
-	//			case Right:
-	//				p.Position.X++
-	//				(*g.Map)[p.Position.Level][p.Position.Y][p.Position.X].SetChildren([]gameobject.Interface{p})
-	//			}
-	//		}
-	//	}
-	//}
-	//g.Inputs = make(map[string][]CommandI)
+
 }
 
 func (g *Game) GetPlayerByKey(apiKey string) (*gameobject.Player, error) {
