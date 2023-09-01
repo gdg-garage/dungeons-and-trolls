@@ -13,8 +13,13 @@ import (
 
 type ObsoleteMap [][][]gameobject.Interface
 
+type LevelCache struct {
+	SpawnPoint *api.Coordinates
+	Objects    map[int32]map[int32]*api.MapObjects
+}
+
 type MapCache struct {
-	SpawnPoints map[int32]api.Coordinates
+	Level map[int32]*LevelCache
 }
 
 func CreateMap() (*ObsoleteMap, error) {
@@ -354,5 +359,59 @@ func addIds(mp *api.Map) {
 			}
 		}
 	}
+}
 
+func findLevelSpawnPoint(l *api.Level) (*api.Coordinates, error) {
+	for _, o := range l.Objects {
+		if o.IsSpawn != nil && *o.IsSpawn {
+			return o.Position, nil
+		}
+	}
+	return nil, fmt.Errorf("spawn point not found in the level")
+}
+
+func (lc *LevelCache) CacheObjectsOnPosition(p *api.Coordinates, mo *api.MapObjects) *api.MapObjects {
+	if _, ok := lc.Objects[p.PositionX]; !ok {
+		lc.Objects[p.PositionX] = map[int32]*api.MapObjects{}
+	}
+	if _, ok := lc.Objects[p.PositionX][p.PositionY]; !ok {
+		lc.Objects[p.PositionX][p.PositionY] = &api.MapObjects{}
+	}
+	if mo != nil {
+		lc.Objects[p.PositionX][p.PositionY] = mo
+	}
+	return lc.Objects[p.PositionX][p.PositionY]
+}
+
+func (m *MapCache) CacheLevel(l int32) *LevelCache {
+	if _, ok := m.Level[l]; !ok {
+		m.Level[l] = &LevelCache{
+			Objects: map[int32]map[int32]*api.MapObjects{},
+		}
+	}
+	return m.Level[l]
+}
+
+func (m *MapCache) CachedLevel(l int32) (*LevelCache, error) {
+	if _, ok := m.Level[l]; !ok {
+		return nil, fmt.Errorf("cache for level %d not found", l)
+	}
+	return m.Level[l], nil
+}
+
+func LevelsPostProcessing(m *api.Map, mapCache *MapCache) error {
+	for _, l := range m.Levels {
+		lc := mapCache.CacheLevel(l.Level)
+
+		spawn, err := findLevelSpawnPoint(l)
+		if err != nil {
+			return err
+		}
+		lc.SpawnPoint = spawn
+
+		for _, o := range l.Objects {
+			lc.CacheObjectsOnPosition(o.Position, o)
+		}
+	}
+	return nil
 }

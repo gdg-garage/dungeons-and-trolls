@@ -62,6 +62,9 @@ func NewGame() *Game {
 		Game: api.GameState{
 			Map: &api.Map{},
 		},
+		mapCache: MapCache{
+			Level: map[int32]*LevelCache{},
+		},
 	}
 
 	err = gameStorage.ReadTo(gameStorageKey, g)
@@ -113,24 +116,25 @@ func CreateGame() (*Game, error) {
 	if err != nil {
 		log.Fatal().Err(err).Msg("Parsing map failed")
 	}
-	log.Info().Msgf("map: %v", m)
-
-	// TODO find and cache spawn points.
+	err = LevelsPostProcessing(m, &g.mapCache)
+	if err != nil {
+		log.Warn().Err(err).Msg("")
+	}
 
 	g.Game.Map = m
-	g.Game.Map.Levels[0].Objects = append(g.Game.Map.Levels[0].Objects, &api.MapObjects{
-		Position: &api.Coordinates{
-			PositionY: 1,
-			PositionX: 1,
-		},
-		Players: []*api.Character{&p.Character},
-	})
 
-	// TODO place the player on spawn
+	// Spawn player
+	lc, err := g.mapCache.CachedLevel(0)
+	if err != nil {
+		log.Warn().Err(err).Msg("")
+	} else {
+		o := lc.CacheObjectsOnPosition(lc.SpawnPoint, nil)
+		o.Players = append(o.Players, &p.Character)
+	}
 
 	// Create some items
-	g.AddItem(gameobject.CreateWeapon("axe", 12, 42))
-	g.AddItem(gameobject.CreateWeapon("sword", 11, 20))
+	// g.AddItem(gameobject.CreateWeapon("axe", 12, 42))
+	// g.AddItem(gameobject.CreateWeapon("sword", 11, 20))
 
 	go g.gameLoop()
 
