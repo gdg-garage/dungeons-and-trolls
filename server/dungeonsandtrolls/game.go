@@ -37,6 +37,8 @@ type Game struct {
 	gameLock      sync.RWMutex
 	gameStorage   *storage.Storage
 	userStorage   *storage.Storage
+
+	mapCache MapCache
 }
 
 func NewGame() *Game {
@@ -107,11 +109,13 @@ func CreateGame() (*Game, error) {
 	// 	},
 	// }
 
-	m, err := ParseMap(g.generateLevel(0, 1))
+	m, err := ParseMap(g.generateLevels(0, 1))
 	if err != nil {
 		log.Fatal().Err(err).Msg("Parsing map failed")
 	}
 	log.Info().Msgf("map: %v", m)
+
+	// TODO find and cache spawn points.
 
 	g.Game.Map = m
 	g.Game.Map.Levels[0].Objects = append(g.Game.Map.Levels[0].Objects, &api.MapObjects{
@@ -144,7 +148,7 @@ func (g *Game) storeGameState() {
 	g.gameStorage.Write(gameTickStorageKey, g.Game.Tick)
 }
 
-func (g *Game) generateLevel(start int, end int) string {
+func (g *Game) generateLevels(start int, end int) string {
 	g.generatorLock.Lock()
 	defer g.generatorLock.Unlock()
 	return generator.Generate_level(start, end, g.MaxLevelReached)
@@ -154,6 +158,7 @@ func (g *Game) gameLoop() {
 	for {
 		startTime := time.Now()
 		g.processCommands()
+		// TODO map garbage collection
 		g.Game.Tick++
 		g.storeGameState()
 		g.Game.Events = []*api.Event{}

@@ -13,6 +13,10 @@ import (
 
 type ObsoleteMap [][][]gameobject.Interface
 
+type MapCache struct {
+	SpawnPoints map[int32]api.Coordinates
+}
+
 func CreateMap() (*ObsoleteMap, error) {
 	var m ObsoleteMap
 	m = append(m, baseFloor())
@@ -99,6 +103,9 @@ func ParseMap(mapJson string) (*api.Map, error) {
 		}
 		m.Levels = append(m.Levels, l)
 	}
+
+	addIds(m)
+
 	return m, nil
 }
 
@@ -157,6 +164,7 @@ func parseTile(maybeTile interface{}, l *api.Level) error {
 
 	o.IsFree = true
 
+	// TODO this is just a droppable.
 	switch t {
 	case "wall":
 		o.IsFree = false
@@ -328,4 +336,23 @@ func parseMapObjects(tile map[string]interface{}, o *api.MapObjects) error {
 
 	// }
 	// return nil
+}
+
+func addIds(mp *api.Map) {
+	for _, l := range mp.Levels {
+		for _, o := range l.Objects {
+			for _, m := range o.Monsters {
+				// when to handle on death items
+				// skills and items are not needed
+				m.Id = gameobject.GetNewId()
+			}
+			for _, i := range o.Items {
+				i.Id = gameobject.GetNewId()
+				for _, s := range i.Skills {
+					s.Id = gameobject.GetNewId()
+				}
+			}
+		}
+	}
+
 }

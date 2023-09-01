@@ -44,7 +44,7 @@ func actionHandler(game *dungeonsandtrolls.Game, w http.ResponseWriter, r *http.
 	if err != nil {
 		return
 	}
-	game.Inputs["player 1"] = []dungeonsandtrolls.CommandI{mc}
+	// game.Inputs["player 1"] = []dungeonsandtrolls.CommandI{mc}
 }
 
 func addDefaultHeaders(fn http.HandlerFunc) http.HandlerFunc {
