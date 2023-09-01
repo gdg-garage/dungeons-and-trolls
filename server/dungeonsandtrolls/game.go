@@ -26,9 +26,7 @@ const gameTickStorageKey = "game_tick"
 type Game struct {
 	Inputs map[string][]CommandI `json:"-"` // TODO deprecated
 	// Gained after kill (may be used in the next run)
-	Experience float32 `json:"-"`
-	// Gained after kill (may be used in the next run)
-	Money           float32                       `json:"-"`
+	Score           float32                       `json:"-"`
 	Players         map[string]*gameobject.Player `json:"-"`
 	IdToName        map[string]string             `json:"-"`
 	IdToItem        map[string]*api.Item          `json:"-"`
@@ -221,4 +219,9 @@ func (g *Game) GetPlayerByKey(apiKey string) (*gameobject.Player, error) {
 		return nil, errors.New("API key is not valid")
 	}
 	return player, nil
+}
+
+func (g *Game) GetMoney() float32 {
+	//  TODO edit this formula
+	return g.Score * 4.2
 }
