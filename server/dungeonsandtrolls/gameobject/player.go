@@ -6,8 +6,8 @@ import (
 
 type Player struct {
 	GameObject `json:",inline"`
-	Position   api.Coordinates             `json:"position"`
-	MovingTo   api.Coordinates             `json:"-"`
+	Position   *api.Coordinates            `json:"position"`
+	MovingTo   *api.Coordinates            `json:"-"`
 	Equipped   map[api.Item_Type]*api.Item `json:"equipped"`
 	Character  api.Character               `json:"character"`
 }

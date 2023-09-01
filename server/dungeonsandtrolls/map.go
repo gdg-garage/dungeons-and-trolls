@@ -219,13 +219,13 @@ func parseMapObjects(tile map[string]interface{}, o *api.MapObjects) error {
 		switch i := d.Data.(type) {
 		case *api.Dropable_Item:
 			o.Items = append(o.Items, i.Item)
-			log.Info().Msgf("I found item %v", i)
+			// log.Info().Msgf("I found item %v", i)
 		case *api.Dropable_Monster:
 			o.Monsters = append(o.Monsters, i.Monster)
-			log.Info().Msgf("I found monster %v", i)
+			// log.Info().Msgf("I found monster %v", i)
 		case *api.Dropable_Decoration:
 			o.Decorations = append(o.Decorations, i.Decoration)
-			log.Info().Msgf("I found decoration %v", i)
+			// log.Info().Msgf("I found decoration %v", i)
 		default:
 			log.Info().Msgf("I found something(%T) %v", i, i)
 		}
@@ -401,6 +401,7 @@ func (m *MapCache) CachedLevel(l int32) (*LevelCache, error) {
 
 func LevelsPostProcessing(m *api.Map, mapCache *MapCache) error {
 	for _, l := range m.Levels {
+		log.Info().Int32("level", l.Level).Msg("caching")
 		lc := mapCache.CacheLevel(l.Level)
 
 		spawn, err := findLevelSpawnPoint(l)

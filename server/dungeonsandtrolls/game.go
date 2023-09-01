@@ -39,6 +39,8 @@ type Game struct {
 	userStorage   *storage.Storage
 
 	mapCache MapCache
+	// todo create Id cache
+	// todo create player cache
 }
 
 func NewGame() *Game {
@@ -67,50 +69,11 @@ func NewGame() *Game {
 		},
 	}
 
-	err = gameStorage.ReadTo(gameStorageKey, g)
-	if err != nil {
-		log.Warn().Msgf("Game was not loaded from the storage %v", err)
-	} else {
-		g.handleStoredPlayers()
-	}
-	err = gameStorage.ReadTo(gameTickStorageKey, &g.Game.Tick)
-	if err != nil {
-		log.Warn().Msgf("Game tick was not loaded from the storage %v", err)
-	}
-
 	return g
 }
 
 func CreateGame() (*Game, error) {
 	g := NewGame()
-
-	// place test player
-	playerName := "player 1"
-	var p *gameobject.Player
-	var testPlayerFound bool
-	if p, testPlayerFound = g.Players[playerName]; !testPlayerFound {
-		testKey := "test"
-		p = gameobject.CreatePlayer(playerName)
-		g.AddPlayer(p, &api.Registration{ApiKey: &testKey})
-		// (*g.Map)[0][4][4].SetChildren(append((*g.Map)[0][4][4].GetChildren(), p))
-		var levelZero int32 = 0
-		p.Position = api.Coordinates{Level: &levelZero, PositionX: 4, PositionY: 4}
-	}
-
-	// g.Game.Map.Levels = []*api.Level{
-	// 	{
-	// 		Level: 0,
-	// 		Free:  []*structpb.ListValue{{Values: []*structpb.Value{{Kind: &structpb.Value_NumberValue{NumberValue: 1}}}}},
-	// 		Objects: []*api.MapObjects{
-	// 			&api.MapObjects{
-	// 				Position: &api.Coordinates{
-	// 					PositionY: 4,
-	// 					PositionX: 4,
-	// 				},
-	// 				Players: []*api.Character{&p.Character},
-	// 			}},
-	// 	},
-	// }
 
 	m, err := ParseMap(g.generateLevels(0, 1))
 	if err != nil {
@@ -123,18 +86,27 @@ func CreateGame() (*Game, error) {
 
 	g.Game.Map = m
 
-	// Spawn player
-	lc, err := g.mapCache.CachedLevel(0)
+	// TODO this needs to be properly thought out
+
+	err = g.gameStorage.ReadTo(gameStorageKey, g)
 	if err != nil {
-		log.Warn().Err(err).Msg("")
+		log.Warn().Msgf("Game was not loaded from the storage %v", err)
 	} else {
-		o := lc.CacheObjectsOnPosition(lc.SpawnPoint, nil)
-		o.Players = append(o.Players, &p.Character)
+		g.handleStoredPlayers()
+	}
+	err = g.gameStorage.ReadTo(gameTickStorageKey, &g.Game.Tick)
+	if err != nil {
+		log.Warn().Msgf("Game tick was not loaded from the storage %v", err)
 	}
 
-	// Create some items
-	// g.AddItem(gameobject.CreateWeapon("axe", 12, 42))
-	// g.AddItem(gameobject.CreateWeapon("sword", 11, 20))
+	// place test player
+	playerName := "player 1"
+	var testPlayerFound bool
+	if _, testPlayerFound = g.Players[playerName]; !testPlayerFound {
+		testKey := "test"
+		p := gameobject.CreatePlayer(playerName)
+		g.AddPlayer(p, &api.Registration{ApiKey: &testKey})
+	}
 
 	go g.gameLoop()
 
@@ -181,6 +153,7 @@ func (g *Game) AddPlayer(player *gameobject.Player, registration *api.Registrati
 	g.Players[player.Character.Name] = player
 	g.IdToName[player.GetId()] = player.Character.Name
 	g.ApiKeyToPlayer[*registration.ApiKey] = player
+	g.SpawnPlayer(player)
 }
 
 func (g *Game) AddItem(item *api.Item) {
@@ -194,7 +167,7 @@ func (g *Game) LogEvent(event *api.Event) {
 }
 
 func (g *Game) processCommands() {
-
+	// TODO
 }
 
 func (g *Game) GetPlayerByKey(apiKey string) (*gameobject.Player, error) {
@@ -208,4 +181,15 @@ func (g *Game) GetPlayerByKey(apiKey string) (*gameobject.Player, error) {
 func (g *Game) GetMoney() float32 {
 	//  TODO edit this formula
 	return g.Score * 4.2
+}
+
+func (g *Game) SpawnPlayer(p *gameobject.Player) {
+	lc, err := g.mapCache.CachedLevel(0)
+	if err != nil {
+		log.Warn().Err(err).Msg("")
+	} else {
+		o := lc.CacheObjectsOnPosition(lc.SpawnPoint, nil)
+		o.Players = append(o.Players, &p.Character)
+		p.Position = lc.SpawnPoint
+	}
 }

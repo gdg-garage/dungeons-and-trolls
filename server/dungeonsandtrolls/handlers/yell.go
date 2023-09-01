@@ -2,6 +2,7 @@ package handlers
 
 import (
 	"fmt"
+
 	"github.com/gdg-garage/dungeons-and-trolls/server/dungeonsandtrolls"
 	"github.com/gdg-garage/dungeons-and-trolls/server/dungeonsandtrolls/api"
 )
@@ -20,7 +21,7 @@ func Yell(game *dungeonsandtrolls.Game, message *api.Message) error {
 	game.LogEvent(&api.Event{
 		Type:        &messageEvent,
 		Message:     fmt.Sprintf("%s (%s): %s", p.Character.Id, p.Character.Name, message.Text),
-		Coordinates: &p.Position,
+		Coordinates: p.Position,
 	})
 	return nil
 }
