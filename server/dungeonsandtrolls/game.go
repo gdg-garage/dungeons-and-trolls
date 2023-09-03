@@ -12,6 +12,7 @@ import (
 	"github.com/gdg-garage/dungeons-and-trolls/server/dungeonsandtrolls/utils"
 	"github.com/gdg-garage/dungeons-and-trolls/server/generator"
 	"github.com/rs/zerolog/log"
+	"google.golang.org/protobuf/proto"
 )
 
 const LoopTime = time.Second
@@ -135,6 +136,9 @@ func (g *Game) gameLoop() {
 		startTime := time.Now()
 		g.processCommands()
 		// TODO map garbage collection
+		// - go through objects and remove empty ones
+		// - sort by postion
+		// - update the cache
 		g.Game.Tick++
 		g.storeGameState()
 		g.Game.Events = []*api.Event{}
@@ -188,8 +192,74 @@ func (g *Game) SpawnPlayer(p *gameobject.Player) {
 	if err != nil {
 		log.Warn().Err(err).Msg("")
 	} else {
-		o := lc.CacheObjectsOnPosition(lc.SpawnPoint, nil)
-		o.Players = append(o.Players, &p.Character)
-		p.Position = lc.SpawnPoint
+		c := proto.Clone(lc.SpawnPoint).(*api.Coordinates)
+		groundLevel := int32(0)
+		c.Level = &groundLevel
+		err := g.MovePlayer(p, c)
+		if err != nil {
+			log.Warn().Err(err).Msg("")
+		}
+
+		// o := lc.CacheObjectsOnPosition(lc.SpawnPoint, nil)
+		// o.Players = append(o.Players, &p.Character)
+		// p.Position = lc.SpawnPoint
+
 	}
+}
+
+// The coordinates must include level
+func (g *Game) MovePlayer(p *gameobject.Player, c *api.Coordinates) error {
+	// TODO log move event
+	// we can assume the same level if not provided
+	if c.Level == nil {
+		c.Level = p.Position.Level
+	}
+	if p.Position != nil {
+		// remove player from the previous position
+		lc, err := g.mapCache.CachedLevel(*p.Position.Level)
+		if err != nil {
+			// maybe destroyed level
+			log.Warn().Err(err).Msg("")
+		} else {
+			o := lc.CacheObjectsOnPosition(p.Position, nil)
+			if o != nil {
+				for pi, pd := range o.Players {
+					if pd.Id == p.Character.Id {
+						// move last element to removed position
+						o.Players[pi] = o.Players[len(o.Players)-1]
+						// shorten the slice
+						o.Players = o.Players[:len(o.Players)-1]
+						break
+					}
+				}
+			}
+		}
+	}
+	lc, err := g.mapCache.CachedLevel(*c.Level)
+	if err != nil {
+		log.Warn().Err(err).Msg("")
+	} else {
+		o := lc.CacheObjectsOnPosition(c, nil)
+		if o != nil {
+			o.Players = append(o.Players, &p.Character)
+			p.Position = c
+		} else {
+			coord := proto.Clone(c).(*api.Coordinates)
+			coord.Level = nil
+			mo := &api.MapObjects{
+				Position: coord,
+				Players: []*api.Character{
+					&p.Character,
+				},
+			}
+			g.Game.Map.Levels[*c.Level].Objects = append(g.Game.Map.Levels[*c.Level].Objects, mo)
+			lc.CacheObjectsOnPosition(c, mo)
+		}
+	}
+	return nil
+}
+
+func (g *Game) GetCurrentPlayer() (*gameobject.Player, error) {
+	// TODO implement this
+	return g.GetPlayerByKey("test")
 }

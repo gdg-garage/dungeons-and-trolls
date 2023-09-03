@@ -8,7 +8,7 @@ import (
 )
 
 func Yell(game *dungeonsandtrolls.Game, message *api.Message) error {
-	p, err := game.GetPlayerByKey("test")
+	p, err := game.GetCurrentPlayer()
 	if err != nil {
 		return err
 	}

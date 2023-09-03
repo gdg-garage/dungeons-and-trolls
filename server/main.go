@@ -90,9 +90,11 @@ func (s *server) Equip(ctx context.Context, identifier *api.Identifier) (*emptyp
 func (s *server) AssignSkillPoints(ctx context.Context, attributes *api.Attributes) (*emptypb.Empty, error) {
 	return nil, nil
 }
+
 func (s *server) Move(ctx context.Context, coordinates *api.Coordinates) (*emptypb.Empty, error) {
-	return nil, nil
+	return &emptypb.Empty{}, handlers.Move(s.G, coordinates)
 }
+
 func (s *server) Respawn(ctx context.Context, _ *emptypb.Empty) (*emptypb.Empty, error) {
 	return nil, nil
 }
