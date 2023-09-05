@@ -11,5 +11,9 @@ func Move(game *dungeonsandtrolls.Game, c *api.Coordinates) error {
 		return err
 	}
 
-	return game.MovePlayer(p, c)
+	// TODO check that tile is free and visible
+	pc := game.GetPlayerCommands(p.Character.Id)
+	pc.Move = c
+
+	return nil
 }

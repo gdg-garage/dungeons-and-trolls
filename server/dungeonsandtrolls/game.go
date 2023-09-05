@@ -42,6 +42,8 @@ type Game struct {
 	mapCache MapCache
 	// todo create Id cache
 	// todo create player cache
+
+	playerCommands map[string]*api.CommandsBatch
 }
 
 func NewGame() *Game {
@@ -68,6 +70,7 @@ func NewGame() *Game {
 		mapCache: MapCache{
 			Level: map[int32]*LevelCache{},
 		},
+		playerCommands: map[string]*api.CommandsBatch{},
 	}
 
 	return g
@@ -171,7 +174,26 @@ func (g *Game) LogEvent(event *api.Event) {
 }
 
 func (g *Game) processCommands() {
+	// for pId, c := range g.playerCommands {
+	// 	// get player by Id
+	// 	// p.moveTo = c.move
+	// }
+
+	// move players based on move to
+	for _, p := range g.Players {
+		if p.MovingTo == nil {
+			continue
+		}
+		// TODO this is teleporting, we need to figure out path and plan steps
+		g.MovePlayer(p, p.MovingTo)
+		if p.MovingTo == p.Position {
+			p.MovingTo = nil
+		}
+	}
+
 	// TODO
+
+	g.playerCommands = map[string]*api.CommandsBatch{}
 }
 
 func (g *Game) GetPlayerByKey(apiKey string) (*gameobject.Player, error) {
@@ -262,4 +284,12 @@ func (g *Game) MovePlayer(p *gameobject.Player, c *api.Coordinates) error {
 func (g *Game) GetCurrentPlayer() (*gameobject.Player, error) {
 	// TODO implement this
 	return g.GetPlayerByKey("test")
+}
+
+func (g *Game) GetPlayerCommands(pId string) *api.CommandsBatch {
+	if pc, ok := g.playerCommands[pId]; ok {
+		return pc
+	}
+	g.playerCommands[pId] = &api.CommandsBatch{}
+	return g.playerCommands[pId]
 }
