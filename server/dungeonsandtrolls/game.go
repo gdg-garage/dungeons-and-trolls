@@ -46,6 +46,11 @@ type Game struct {
 	// todo create player cache
 
 	playerCommands map[string]*api.CommandsBatch
+
+	// TODO last action in level probably in map cache
+	// TODO time since generated level
+	// - if level is too old regen
+	// TODO regen 0 level and respawn players there based on the rules described above.
 }
 
 func NewGame() *Game {
