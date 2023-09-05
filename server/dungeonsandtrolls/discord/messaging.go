@@ -67,5 +67,7 @@ func SendAPIKeyToUser(apiKey string, handle string) error {
 	if err != nil {
 		return err
 	}
-	return SendMessageToUser("Here is your API key for Dungeons and trolls: `"+apiKey+"`", username, discriminator)
+	// TODO format the key
+	return SendMessageToUser(`Here is your API key for Dungeons and trolls: `+apiKey+`.
+	Have fun!`, username, discriminator)
 }

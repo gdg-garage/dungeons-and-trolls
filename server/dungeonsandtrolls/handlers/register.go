@@ -2,9 +2,12 @@ package handlers
 
 import (
 	"errors"
+
 	"github.com/gdg-garage/dungeons-and-trolls/server/dungeonsandtrolls"
 	"github.com/gdg-garage/dungeons-and-trolls/server/dungeonsandtrolls/api"
+	"github.com/gdg-garage/dungeons-and-trolls/server/dungeonsandtrolls/discord"
 	"github.com/gdg-garage/dungeons-and-trolls/server/dungeonsandtrolls/gameobject"
+	"github.com/rs/zerolog/log"
 )
 
 func validateRegistration(game *dungeonsandtrolls.Game, user *api.User) error {
@@ -15,6 +18,7 @@ func validateRegistration(game *dungeonsandtrolls.Game, user *api.User) error {
 	if _, ok := game.Players[user.Username]; ok {
 		return errors.New("username is already used")
 	}
+	// TODO validate the Discord user exists.
 	return nil
 }
 
@@ -23,7 +27,8 @@ func generateApiKey() string {
 }
 
 func RegisterUser(game *dungeonsandtrolls.Game, user *api.User) (*api.Registration, error) {
-	// TODO lock game for this (to prevent raise)
+	game.GameLock.Lock()
+	defer game.GameLock.Unlock()
 	err := validateRegistration(game, user)
 	if err != nil {
 		return nil, err
@@ -33,5 +38,9 @@ func RegisterUser(game *dungeonsandtrolls.Game, user *api.User) (*api.Registrati
 		ApiKey: &apiKey,
 	}
 	game.AddPlayer(gameobject.CreatePlayer(user.Username), r)
+	err = discord.SendAPIKeyToUser(apiKey, user.Username)
+	if err != nil {
+		log.Warn().Err(err).Msgf("failed to send api key to %s, Discord used probably does not eist", user.Username)
+	}
 	return r, nil
 }

@@ -13,6 +13,9 @@ func Yell(game *dungeonsandtrolls.Game, message *api.Message) error {
 		return err
 	}
 
+	// TODO translate IDs to names
+	// - consider IDs as one char?
+
 	if len(message.Text) > 80 {
 		return fmt.Errorf("message is too long >80 (we are not Twitter)")
 	}

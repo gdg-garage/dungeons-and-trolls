@@ -5,12 +5,18 @@ import (
 
 	"github.com/gdg-garage/dungeons-and-trolls/server/dungeonsandtrolls"
 	"github.com/gdg-garage/dungeons-and-trolls/server/dungeonsandtrolls/api"
+	"github.com/gdg-garage/dungeons-and-trolls/server/dungeonsandtrolls/gameobject"
 )
 
 func validateIdentifiers(game *dungeonsandtrolls.Game, identifiers *api.Identifiers) error {
 	for _, id := range identifiers.Ids {
-		if _, ok := game.IdToItem[id]; !ok {
-			return fmt.Errorf("item with ID %s does not exist", id)
+		maybeItem, err := game.GetObjectById(id)
+		if err != nil {
+			return err
+		}
+		_, ok := maybeItem.(*api.Item)
+		if !ok {
+			return fmt.Errorf("%s is not Item ID", id)
 		}
 	}
 	return nil
@@ -18,18 +24,32 @@ func validateIdentifiers(game *dungeonsandtrolls.Game, identifiers *api.Identifi
 
 func Buy(game *dungeonsandtrolls.Game, identifiers *api.Identifiers) error {
 	// TODO use apiKey
-	p, err := game.GetPlayerByKey("test")
+	p, err := game.GetCurrentPlayer()
 	if err != nil {
 		return err
 	}
-	// TODO check player is located on the 0th floor
-	// TODO lock
+
+	if p.Position.Level == &gameobject.ZeroLevel {
+		return fmt.Errorf("buying is availible only on the ground floor")
+	}
+
 	err = validateIdentifiers(game, identifiers)
 	if err != nil {
 		return err
 	}
+
+	// TODO this should be deferred - not executed now
+	// TODO lock
+
 	for _, itemId := range identifiers.Ids {
-		item := game.IdToItem[itemId]
+		maybeItem, err := game.GetObjectById(itemId)
+		if err != nil {
+			return err
+		}
+		item, ok := maybeItem.(*api.Item)
+		if !ok {
+			return fmt.Errorf("%s is not Item ID", itemId)
+		}
 		p.Character.Money -= item.BuyPrice
 		buyEvent := api.Event_BUY
 		game.LogEvent(&api.Event{

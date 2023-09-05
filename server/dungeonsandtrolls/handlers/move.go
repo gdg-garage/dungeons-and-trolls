@@ -5,8 +5,20 @@ import (
 	"github.com/gdg-garage/dungeons-and-trolls/server/dungeonsandtrolls/api"
 )
 
+func validateMove(game *dungeonsandtrolls.Game, c *api.Coordinates) error {
+	// TODO check if visible
+	// TODO check is free
+
+	return nil
+}
+
 func Move(game *dungeonsandtrolls.Game, c *api.Coordinates) error {
 	p, err := game.GetCurrentPlayer()
+	if err != nil {
+		return err
+	}
+
+	err = validateMove(game, c)
 	if err != nil {
 		return err
 	}

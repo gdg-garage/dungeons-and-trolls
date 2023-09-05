@@ -1,6 +1,10 @@
 package gameobject
 
-import "github.com/google/uuid"
+import (
+	"github.com/google/uuid"
+)
+
+var ZeroLevel int32 = 0
 
 type GameObject struct {
 	Type     string      `json:"type"`

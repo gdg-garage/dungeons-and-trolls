@@ -2,6 +2,7 @@ package dungeonsandtrolls
 
 import (
 	"errors"
+	"fmt"
 	"path/filepath"
 	"sync"
 	"time"
@@ -28,19 +29,20 @@ type Game struct {
 	// Gained after kill (may be used in the next run)
 	Score           float32                       `json:"score"`
 	Players         map[string]*gameobject.Player `json:"-"`
-	IdToName        map[string]string             `json:"-"`
-	IdToItem        map[string]*api.Item          `json:"-"`
 	ApiKeyToPlayer  map[string]*gameobject.Player `json:"player_api_keys"`
 	MaxLevelReached int                           `json:"max_reached_level"`
 	Game            api.GameState                 `json:"-"`
+	GameLock        sync.RWMutex                  `json:"-"`
 
 	generatorLock sync.RWMutex
-	gameLock      sync.RWMutex
-	gameStorage   *storage.Storage
-	userStorage   *storage.Storage
+
+	gameStorage *storage.Storage
+	userStorage *storage.Storage
 
 	mapCache MapCache
-	// todo create Id cache
+
+	idToObject map[string]gameobject.Id
+
 	// todo create player cache
 
 	playerCommands map[string]*api.CommandsBatch
@@ -58,9 +60,7 @@ func NewGame() *Game {
 
 	g := &Game{
 		Players:         map[string]*gameobject.Player{},
-		IdToName:        map[string]string{},
 		ApiKeyToPlayer:  map[string]*gameobject.Player{},
-		IdToItem:        map[string]*api.Item{},
 		gameStorage:     gameStorage,
 		userStorage:     userStorage,
 		MaxLevelReached: 1,
@@ -71,6 +71,7 @@ func NewGame() *Game {
 			Level: map[int32]*LevelCache{},
 		},
 		playerCommands: map[string]*api.CommandsBatch{},
+		idToObject:     map[string]gameobject.Id{},
 	}
 
 	return g
@@ -83,6 +84,7 @@ func CreateGame() (*Game, error) {
 	if err != nil {
 		log.Fatal().Err(err).Msg("Parsing map failed")
 	}
+	// TODO register all ids
 	err = LevelsPostProcessing(m, &g.mapCache)
 	if err != nil {
 		log.Warn().Err(err).Msg("")
@@ -142,6 +144,7 @@ func (g *Game) gameLoop() {
 		// - go through objects and remove empty ones
 		// - sort by postion
 		// - update the cache
+		// - unregister IDs
 		g.Game.Tick++
 		g.storeGameState()
 		g.Game.Events = []*api.Event{}
@@ -151,21 +154,24 @@ func (g *Game) gameLoop() {
 
 func (g *Game) MarkVisitedLevel(level int) {
 	// TODO maybe this lock will be more global.
-	g.gameLock.Lock()
-	defer g.gameLock.Unlock()
+	g.GameLock.Lock()
+	defer g.GameLock.Unlock()
 	g.MaxLevelReached = utils.Max(g.MaxLevelReached, level)
 }
 
 func (g *Game) AddPlayer(player *gameobject.Player, registration *api.Registration) {
 	g.Players[player.Character.Name] = player
-	g.IdToName[player.GetId()] = player.Character.Name
 	g.ApiKeyToPlayer[*registration.ApiKey] = player
 	g.SpawnPlayer(player)
+
+	g.Register(player)
 }
 
 func (g *Game) AddItem(item *api.Item) {
 	g.Game.Items = append(g.Game.Items, item)
-	g.IdToItem[item.Id] = item
+
+	// This shuld imho fail because items does not implement id
+	g.Register(item)
 }
 
 func (g *Game) LogEvent(event *api.Event) {
@@ -174,10 +180,19 @@ func (g *Game) LogEvent(event *api.Event) {
 }
 
 func (g *Game) processCommands() {
-	// for pId, c := range g.playerCommands {
-	// 	// get player by Id
-	// 	// p.moveTo = c.move
-	// }
+	for pId, c := range g.playerCommands {
+		maybePlayer, err := g.GetObjectById(pId)
+		if err != nil {
+			log.Warn().Err(err).Msg("")
+			continue
+		}
+		p, ok := maybePlayer.(*gameobject.Player)
+		if !ok {
+			log.Warn().Err(err).Msg("object retrieved by ID is not a player")
+			continue
+		}
+		p.MovingTo = c.Move
+	}
 
 	// move players based on move to
 	for _, p := range g.Players {
@@ -292,4 +307,15 @@ func (g *Game) GetPlayerCommands(pId string) *api.CommandsBatch {
 	}
 	g.playerCommands[pId] = &api.CommandsBatch{}
 	return g.playerCommands[pId]
+}
+
+func (g *Game) Register(o gameobject.Id) {
+	g.idToObject[o.GetId()] = o
+}
+
+func (g *Game) GetObjectById(id string) (gameobject.Id, error) {
+	if o, ok := g.idToObject[id]; ok {
+		return o, nil
+	}
+	return nil, fmt.Errorf("object with id %s not found", id)
 }

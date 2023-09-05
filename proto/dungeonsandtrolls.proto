@@ -323,7 +323,7 @@ message Event {
 
 message GameState {
   Map map = 1;
-  repeated Item items = 2;
+  repeated Item items = 2; // TODO rename to shop
   optional Character character = 3;
   optional Coordinates current_position = 4;
   int64 tick = 5;
