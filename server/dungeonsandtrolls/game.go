@@ -26,7 +26,7 @@ const gameTickStorageKey = "game_tick"
 
 type Game struct {
 	// Gained after kill (may be used in the next run)
-	Score           float32                       `json:"-"`
+	Score           float32                       `json:"score"`
 	Players         map[string]*gameobject.Player `json:"-"`
 	IdToName        map[string]string             `json:"-"`
 	IdToItem        map[string]*api.Item          `json:"-"`
