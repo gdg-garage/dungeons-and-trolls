@@ -401,9 +401,16 @@ func (m *MapCache) CachedLevel(l int32) (*LevelCache, error) {
 	return m.Level[l], nil
 }
 
-func LevelsPostProcessing(m *api.Map, mapCache *MapCache) error {
+func LevelsPostProcessing(g *Game, m *api.Map, mapCache *MapCache) error {
 	for _, l := range m.Levels {
-		log.Info().Int32("level", l.Level).Msg("caching")
+		// Strip items from the first level.
+		if l.Level == gameobject.ZeroLevel {
+			for _, o := range l.Objects {
+				g.Game.Items = append(g.Game.Items, o.Items...)
+				o.Items = []*api.Item{}
+			}
+		}
+
 		lc := mapCache.CacheLevel(l.Level)
 
 		spawn, err := findLevelSpawnPoint(l)

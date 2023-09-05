@@ -85,7 +85,7 @@ func CreateGame() (*Game, error) {
 		log.Fatal().Err(err).Msg("Parsing map failed")
 	}
 	// TODO register all ids
-	err = LevelsPostProcessing(m, &g.mapCache)
+	err = LevelsPostProcessing(g, m, &g.mapCache)
 	if err != nil {
 		log.Warn().Err(err).Msg("")
 	}
@@ -206,7 +206,8 @@ func (g *Game) processCommands() {
 		}
 	}
 
-	// TODO
+	// TODO handle stairs
+	// - mark visited level
 
 	g.playerCommands = map[string]*api.CommandsBatch{}
 }
@@ -225,22 +226,17 @@ func (g *Game) GetMoney() float32 {
 }
 
 func (g *Game) SpawnPlayer(p *gameobject.Player) {
-	lc, err := g.mapCache.CachedLevel(0)
+	lc, err := g.mapCache.CachedLevel(gameobject.ZeroLevel)
 	if err != nil {
 		log.Warn().Err(err).Msg("")
 	} else {
 		c := proto.Clone(lc.SpawnPoint).(*api.Coordinates)
-		groundLevel := int32(0)
+		groundLevel := gameobject.ZeroLevel
 		c.Level = &groundLevel
 		err := g.MovePlayer(p, c)
 		if err != nil {
 			log.Warn().Err(err).Msg("")
 		}
-
-		// o := lc.CacheObjectsOnPosition(lc.SpawnPoint, nil)
-		// o.Players = append(o.Players, &p.Character)
-		// p.Position = lc.SpawnPoint
-
 	}
 }
 
@@ -311,6 +307,10 @@ func (g *Game) GetPlayerCommands(pId string) *api.CommandsBatch {
 
 func (g *Game) Register(o gameobject.Id) {
 	g.idToObject[o.GetId()] = o
+}
+
+func (g *Game) Unregister(o gameobject.Id) {
+	delete(g.idToObject, o.GetId())
 }
 
 func (g *Game) GetObjectById(id string) (gameobject.Id, error) {
