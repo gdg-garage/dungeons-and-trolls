@@ -77,11 +77,11 @@ message GameStateParams {
 }
 
 message CommandsBatch {
-  repeated Identifier buy = 1;
-  repeated Identifier equip = 2;
+  optional Identifiers buy = 1;
+  optional Identifier equip = 2;
   optional Coordinates move = 3;
   optional SkillUse skill = 4;
-  Attributes assign_attribute = 5;
+  optional Attributes assign_attribute = 5;
   optional Message yell = 6;
 }
 
@@ -314,6 +314,7 @@ message Event {
     MESSAGE = 1;
     BUY = 2;
     EQUIP = 3;
+    ERROR = 4;
   }
 
   string message = 1;

@@ -22,7 +22,7 @@
   "paths": {
     "/v1/assign-skill-points": {
       "post": {
-        "summary": "Assign skill point to the attribute for the Character bound to the logged user.",
+        "summary": "Assign skill point to the attribute for the Character bound to the logged\nuser.",
         "operationId": "DungeonsAndTrolls_AssignSkillPoints",
         "responses": {
           "200": {
@@ -64,7 +64,7 @@
     },
     "/v1/buy": {
       "post": {
-        "summary": "Buy Items identified by the provided ID for the Character bound to the logged user.",
+        "summary": "Buy Items identified by the provided ID for the Character bound to the\nlogged user.",
         "operationId": "DungeonsAndTrolls_Buy",
         "responses": {
           "200": {
@@ -106,7 +106,7 @@
     },
     "/v1/commands": {
       "post": {
-        "summary": "Send multiple commands to the Character bound to the logged user. The order of execution is defined in the message.",
+        "summary": "Send multiple commands to the Character bound to the logged user. The order\nof execution is defined in the message.",
         "operationId": "DungeonsAndTrolls_Commands",
         "responses": {
           "200": {
@@ -148,7 +148,7 @@
     },
     "/v1/equip": {
       "post": {
-        "summary": "Equip the Item identified by the provided ID for the Character bound to the logged user (unused).",
+        "summary": "Equip the Item identified by the provided ID for the Character bound to the\nlogged user (unused).",
         "operationId": "DungeonsAndTrolls_Equip",
         "responses": {
           "200": {
@@ -412,7 +412,7 @@
     },
     "/v1/skill": {
       "post": {
-        "summary": "Use a skill (provided by an item) by the Character bound to the logged user.",
+        "summary": "Use a skill (provided by an item) by the Character bound to the logged\nuser.",
         "operationId": "DungeonsAndTrolls_Skill",
         "responses": {
           "200": {
@@ -454,7 +454,7 @@
     },
     "/v1/yell": {
       "post": {
-        "summary": "The Character bound to the logged user yells a messages (visible for everyone).",
+        "summary": "The Character bound to the logged user yells a messages (visible for\neveryone).",
         "operationId": "DungeonsAndTrolls_Yell",
         "responses": {
           "200": {
@@ -496,28 +496,76 @@
     }
   },
   "definitions": {
+    "SkillTarget": {
+      "type": "string",
+      "enum": [
+        "none",
+        "position",
+        "character",
+        "item"
+      ],
+      "default": "none"
+    },
     "dungeonsandtrollsAttributes": {
       "type": "object",
       "properties": {
         "strength": {
-          "type": "integer",
-          "format": "int32"
-        },
-        "intelligence": {
-          "type": "integer",
-          "format": "int32"
-        },
-        "endurance": {
-          "type": "integer",
-          "format": "int32"
-        },
-        "willpower": {
-          "type": "integer",
-          "format": "int32"
+          "type": "number",
+          "format": "float"
         },
         "dexterity": {
-          "type": "integer",
-          "format": "int32"
+          "type": "number",
+          "format": "float"
+        },
+        "inteligence": {
+          "type": "number",
+          "format": "float"
+        },
+        "willpower": {
+          "type": "number",
+          "format": "float"
+        },
+        "constitution": {
+          "type": "number",
+          "format": "float"
+        },
+        "slashArmor": {
+          "type": "number",
+          "format": "float",
+          "title": "TODO slash_resist"
+        },
+        "piercingResist": {
+          "type": "number",
+          "format": "float",
+          "title": "TODO pierce_resist"
+        },
+        "fireResist": {
+          "type": "number",
+          "format": "float"
+        },
+        "poisonResist": {
+          "type": "number",
+          "format": "float"
+        },
+        "electricResist": {
+          "type": "number",
+          "format": "float"
+        },
+        "life": {
+          "type": "number",
+          "format": "float"
+        },
+        "stamina": {
+          "type": "number",
+          "format": "float"
+        },
+        "mana": {
+          "type": "number",
+          "format": "float"
+        },
+        "scalar": {
+          "type": "number",
+          "format": "float"
         }
       }
     },
@@ -531,7 +579,8 @@
           "type": "string"
         },
         "stats": {
-          "$ref": "#/definitions/dungeonsandtrollsStats"
+          "$ref": "#/definitions/dungeonsandtrollsStats",
+          "description": "todo max life stamina ..."
         },
         "level": {
           "type": "integer",
@@ -554,8 +603,8 @@
           "format": "int32"
         },
         "money": {
-          "type": "number",
-          "format": "float"
+          "type": "integer",
+          "format": "int32"
         },
         "freeSkillPoints": {
           "type": "integer",
@@ -624,6 +673,53 @@
         "positionY": {
           "type": "integer",
           "format": "int32"
+        }
+      }
+    },
+    "dungeonsandtrollsDamageType": {
+      "type": "string",
+      "enum": [
+        "none",
+        "slash",
+        "piercing",
+        "fire",
+        "poison",
+        "electric"
+      ],
+      "default": "none",
+      "title": "- piercing: todo no ing"
+    },
+    "dungeonsandtrollsDecoration": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string"
+        },
+        "type": {
+          "type": "string"
+        }
+      }
+    },
+    "dungeonsandtrollsDropable": {
+      "type": "object",
+      "properties": {
+        "skill": {
+          "$ref": "#/definitions/dungeonsandtrollsSkill"
+        },
+        "item": {
+          "$ref": "#/definitions/dungeonsandtrollsItem"
+        },
+        "monster": {
+          "$ref": "#/definitions/dungeonsandtrollsMonster"
+        },
+        "decoration": {
+          "$ref": "#/definitions/dungeonsandtrollsDecoration"
+        },
+        "waypoint": {
+          "$ref": "#/definitions/dungeonsandtrollsWaypoint"
+        },
+        "key": {
+          "$ref": "#/definitions/dungeonsandtrollsKey"
         }
       }
     },
@@ -700,7 +796,8 @@
         "DAMAGE",
         "MESSAGE",
         "BUY",
-        "EQUIP"
+        "EQUIP",
+        "ERROR"
       ],
       "default": "DAMAGE"
     },
@@ -714,7 +811,8 @@
           "type": "array",
           "items": {
             "$ref": "#/definitions/dungeonsandtrollsItem"
-          }
+          },
+          "title": "TODO rename to shop"
         },
         "character": {
           "$ref": "#/definitions/dungeonsandtrollsCharacter"
@@ -731,7 +829,7 @@
           "items": {
             "$ref": "#/definitions/dungeonsandtrollsEvent"
           },
-          "description": "List of events which occurred in the previous tick. Useful for visualising effects and debugging."
+          "description": "List of events which occurred in the previous tick. Useful for visualising\neffects, debugging and communication."
         }
       }
     },
@@ -763,28 +861,20 @@
         "name": {
           "type": "string"
         },
-        "type": {
+        "slot": {
           "$ref": "#/definitions/dungeonsandtrollsItemType"
         },
-        "price": {
-          "type": "number",
-          "format": "float"
-        },
-        "weight": {
-          "type": "number",
-          "format": "float"
+        "buyPrice": {
+          "type": "integer",
+          "format": "int32",
+          "title": "TODO price"
         },
         "requirements": {
           "$ref": "#/definitions/dungeonsandtrollsAttributes"
         },
-        "boosts": {
-          "$ref": "#/definitions/dungeonsandtrollsAttributes"
-        },
-        "resistances": {
-          "$ref": "#/definitions/dungeonsandtrollsElements"
-        },
-        "visualType": {
-          "$ref": "#/definitions/dungeonsandtrollsItemVisualType"
+        "attributes": {
+          "$ref": "#/definitions/dungeonsandtrollsAttributes",
+          "title": "TODO rename to effects"
         },
         "skills": {
           "type": "array",
@@ -797,44 +887,39 @@
     "dungeonsandtrollsItemType": {
       "type": "string",
       "enum": [
-        "SHIELD",
-        "HELMET",
-        "BODY_ARMOR",
-        "TROUSERS",
-        "BELT",
-        "BOOTS",
-        "GLOVES",
-        "RING",
-        "WEAPON"
+        "none",
+        "head",
+        "mainHand",
+        "offHand",
+        "body",
+        "legs",
+        "neck"
       ],
-      "default": "SHIELD"
+      "default": "none"
     },
-    "dungeonsandtrollsItemVisualType": {
-      "type": "string",
-      "enum": [
-        "DAGGER",
-        "SWORD",
-        "WAND",
-        "AXE",
-        "MACE",
-        "CLAW",
-        "STAFF",
-        "SPEAR",
-        "SHIELD",
-        "HELMET",
-        "BODY_ARMOR",
-        "TROUSERS",
-        "BELT",
-        "BOOTS",
-        "GLOVES",
-        "RING"
-      ],
-      "default": "DAGGER"
+    "dungeonsandtrollsKey": {
+      "type": "object",
+      "properties": {
+        "doors": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/dungeonsandtrollsPosition"
+          }
+        }
+      }
     },
     "dungeonsandtrollsLevel": {
       "type": "object",
       "properties": {
         "level": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "width": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "height": {
           "type": "integer",
           "format": "int32"
         },
@@ -848,7 +933,10 @@
           }
         },
         "objects": {
-          "$ref": "#/definitions/dungeonsandtrollsMapObjects"
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/dungeonsandtrollsMapObjects"
+          }
         },
         "ascii": {
           "type": "array",
@@ -866,23 +954,6 @@
           "items": {
             "$ref": "#/definitions/dungeonsandtrollsLevel"
           }
-        }
-      }
-    },
-    "dungeonsandtrollsMapDecorations": {
-      "type": "object",
-      "properties": {
-        "carpet": {
-          "type": "boolean"
-        },
-        "rug": {
-          "type": "boolean"
-        },
-        "door": {
-          "type": "boolean"
-        },
-        "anomaly": {
-          "type": "boolean"
         }
       }
     },
@@ -904,11 +975,8 @@
             "$ref": "#/definitions/dungeonsandtrollsCharacter"
           }
         },
-        "stairs": {
-          "type": "array",
-          "items": {
-            "$ref": "#/definitions/dungeonsandtrollsShortcut"
-          }
+        "isStairs": {
+          "type": "boolean"
         },
         "portals": {
           "type": "array",
@@ -917,13 +985,34 @@
           }
         },
         "decorations": {
-          "$ref": "#/definitions/dungeonsandtrollsMapDecorations"
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/dungeonsandtrollsDecoration"
+          }
         },
         "effects": {
           "type": "array",
           "items": {
             "$ref": "#/definitions/dungeonsandtrollsEffect"
-          },
+          }
+        },
+        "items": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/dungeonsandtrollsItem"
+          }
+        },
+        "isFree": {
+          "type": "boolean"
+        },
+        "isWall": {
+          "type": "boolean"
+        },
+        "isDoor": {
+          "type": "boolean"
+        },
+        "isSpawn": {
+          "type": "boolean",
           "title": "TODO: chests are not implemented yet\n bool chest = 4;"
         }
       }
@@ -945,43 +1034,55 @@
         "name": {
           "type": "string"
         },
-        "stats": {
-          "$ref": "#/definitions/dungeonsandtrollsStats"
-        },
-        "level": {
-          "type": "integer",
-          "format": "int32"
-        },
         "attributes": {
-          "$ref": "#/definitions/dungeonsandtrollsAttributes"
-        },
-        "resistances": {
-          "$ref": "#/definitions/dungeonsandtrollsElements"
-        },
-        "inventory": {
-          "type": "array",
-          "items": {
-            "$ref": "#/definitions/dungeonsandtrollsItem"
-          }
+          "$ref": "#/definitions/dungeonsandtrollsAttributes",
+          "title": "Stats stats = 3;\nint32 level = 4;"
         },
         "effects": {
           "type": "array",
           "items": {
             "$ref": "#/definitions/dungeonsandtrollsEffect"
-          }
+          },
+          "title": "repeated Item inventory = 7;"
         },
-        "xp": {
-          "type": "integer",
-          "format": "int32"
-        },
-        "rewards": {
-          "$ref": "#/definitions/dungeonsandtrollsRewards"
-        },
-        "equip": {
+        "equippedItems": {
           "type": "array",
           "items": {
             "$ref": "#/definitions/dungeonsandtrollsItem"
+          },
+          "title": "int32 xp = 9;"
+        },
+        "score": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "icon": {
+          "type": "string"
+        },
+        "algorithm": {
+          "type": "string"
+        },
+        "faction": {
+          "type": "string"
+        },
+        "onDeath": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/dungeonsandtrollsDropable"
           }
+        }
+      }
+    },
+    "dungeonsandtrollsPosition": {
+      "type": "object",
+      "properties": {
+        "x": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "y": {
+          "type": "integer",
+          "format": "int32"
         }
       }
     },
@@ -990,19 +1091,6 @@
       "properties": {
         "apiKey": {
           "type": "string"
-        }
-      }
-    },
-    "dungeonsandtrollsRewards": {
-      "type": "object",
-      "properties": {
-        "xp": {
-          "type": "integer",
-          "format": "int32"
-        },
-        "money": {
-          "type": "integer",
-          "format": "int32"
         }
       }
     },
@@ -1023,28 +1111,110 @@
         "name": {
           "type": "string"
         },
+        "targetType": {
+          "$ref": "#/definitions/SkillTarget",
+          "title": "TODO target"
+        },
         "effects": {
           "type": "array",
           "items": {
             "$ref": "#/definitions/dungeonsandtrollsEffect"
           }
         },
-        "requirements": {
+        "cost": {
           "$ref": "#/definitions/dungeonsandtrollsAttributes"
         },
-        "cost": {
-          "$ref": "#/definitions/dungeonsandtrollsStats"
+        "range": {
+          "$ref": "#/definitions/dungeonsandtrollsAttributes"
         },
-        "requiresLineOfSight": {
-          "type": "boolean"
+        "radius": {
+          "$ref": "#/definitions/dungeonsandtrollsAttributes"
         },
-        "maxDistance": {
-          "type": "integer",
-          "format": "int32"
+        "duration": {
+          "$ref": "#/definitions/dungeonsandtrollsAttributes"
         },
-        "maxMoveDistance": {
-          "type": "integer",
-          "format": "int32"
+        "damageAmount": {
+          "$ref": "#/definitions/dungeonsandtrollsAttributes"
+        },
+        "damageType": {
+          "$ref": "#/definitions/dungeonsandtrollsDamageType"
+        },
+        "caster": {
+          "$ref": "#/definitions/dungeonsandtrollsSkillEffect",
+          "title": "TODO casterEffects"
+        },
+        "target": {
+          "$ref": "#/definitions/dungeonsandtrollsSkillEffect",
+          "title": "TODO targetEffects"
+        }
+      }
+    },
+    "dungeonsandtrollsSkillAttributes": {
+      "type": "object",
+      "properties": {
+        "strength": {
+          "$ref": "#/definitions/dungeonsandtrollsAttributes"
+        },
+        "dexterity": {
+          "$ref": "#/definitions/dungeonsandtrollsAttributes"
+        },
+        "inteligence": {
+          "$ref": "#/definitions/dungeonsandtrollsAttributes"
+        },
+        "willpower": {
+          "$ref": "#/definitions/dungeonsandtrollsAttributes"
+        },
+        "constitution": {
+          "$ref": "#/definitions/dungeonsandtrollsAttributes"
+        },
+        "slashArmor": {
+          "$ref": "#/definitions/dungeonsandtrollsAttributes",
+          "title": "TODO slash_resist"
+        },
+        "piercingResist": {
+          "$ref": "#/definitions/dungeonsandtrollsAttributes",
+          "title": "TODO pierce_resist"
+        },
+        "fireResist": {
+          "$ref": "#/definitions/dungeonsandtrollsAttributes"
+        },
+        "poisonResist": {
+          "$ref": "#/definitions/dungeonsandtrollsAttributes"
+        },
+        "electricResist": {
+          "$ref": "#/definitions/dungeonsandtrollsAttributes"
+        },
+        "life": {
+          "$ref": "#/definitions/dungeonsandtrollsAttributes"
+        },
+        "stamina": {
+          "$ref": "#/definitions/dungeonsandtrollsAttributes"
+        },
+        "mana": {
+          "$ref": "#/definitions/dungeonsandtrollsAttributes"
+        },
+        "scalar": {
+          "$ref": "#/definitions/dungeonsandtrollsAttributes"
+        }
+      }
+    },
+    "dungeonsandtrollsSkillEffect": {
+      "type": "object",
+      "properties": {
+        "attributes": {
+          "$ref": "#/definitions/dungeonsandtrollsSkillAttributes"
+        },
+        "flags": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "summons": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/dungeonsandtrollsDropable"
+          }
         }
       }
     },
@@ -1065,7 +1235,7 @@
     "dungeonsandtrollsStats": {
       "type": "object",
       "properties": {
-        "health": {
+        "life": {
           "type": "number",
           "format": "float"
         },
@@ -1084,6 +1254,15 @@
       "properties": {
         "username": {
           "type": "string"
+        }
+      }
+    },
+    "dungeonsandtrollsWaypoint": {
+      "type": "object",
+      "properties": {
+        "destinationFloor": {
+          "type": "integer",
+          "format": "int32"
         }
       }
     },

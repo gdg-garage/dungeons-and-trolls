@@ -11,6 +11,7 @@ import (
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials/insecure"
 	"google.golang.org/grpc/metadata"
+	"google.golang.org/protobuf/proto"
 	"google.golang.org/protobuf/types/known/emptypb"
 	"net"
 	"net/http"
@@ -36,7 +37,21 @@ type server struct {
 }
 
 func (s *server) Game(ctx context.Context, params *api.GameStateParams) (*api.GameState, error) {
-	return &s.G.Game, nil
+	token, err := getToken(ctx)
+	if err != nil {
+		return &s.G.Game, nil
+	}
+	p, err := s.G.GetPlayerByKey(token)
+	if err != nil {
+		return nil, err
+	}
+	g, ok := proto.Clone(&s.G.Game).(*api.GameState)
+	if !ok {
+		return nil, fmt.Errorf("cloning GameState failed")
+	}
+	g.Character = &p.Character
+	g.CurrentPosition = p.Position
+	return g, nil
 }
 
 func (s *server) Register(ctx context.Context, user *api.User) (*api.Registration, error) {

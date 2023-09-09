@@ -110,15 +110,6 @@ func CreateGame() (*Game, error) {
 		log.Warn().Msgf("Game tick was not loaded from the storage %v", err)
 	}
 
-	// place test player
-	playerName := "player 1"
-	var testPlayerFound bool
-	if _, testPlayerFound = g.Players[playerName]; !testPlayerFound {
-		testKey := "test"
-		p := gameobject.CreatePlayer(playerName)
-		g.AddPlayer(p, &api.Registration{ApiKey: &testKey})
-	}
-
 	go g.gameLoop()
 
 	return g, nil
@@ -136,6 +127,7 @@ func (g *Game) storeGameState() {
 }
 
 func (g *Game) generateLevels(start int, end int) string {
+	// TODO measure generation time
 	g.generatorLock.Lock()
 	defer g.generatorLock.Unlock()
 	return generator.Generate_level(start, end, g.MaxLevelReached)
@@ -144,16 +136,19 @@ func (g *Game) generateLevels(start int, end int) string {
 func (g *Game) gameLoop() {
 	for {
 		startTime := time.Now()
+		// TODO lock
+		g.Game.Events = []*api.Event{}
 		g.processCommands()
 		// TODO map garbage collection
 		// - go through objects and remove empty ones
-		// - sort by postion
+		// - sort by position
 		// - update the cache
 		// - unregister IDs
 		g.Game.Tick++
 		g.storeGameState()
-		g.Game.Events = []*api.Event{}
-		time.Sleep(LoopTime - (time.Since(startTime)))
+		// TODO regenerate levels
+		//log.Debug().Msgf("sleeping for %v", LoopTime-time.Since(startTime))
+		time.Sleep(LoopTime - time.Since(startTime))
 	}
 }
 
@@ -175,11 +170,14 @@ func (g *Game) AddPlayer(player *gameobject.Player, registration *api.Registrati
 func (g *Game) AddItem(item *api.Item) {
 	g.Game.Items = append(g.Game.Items, item)
 
-	// This shuld imho fail because items does not implement id
+	// This should imho fail because items does not implement id
 	g.Register(item)
 }
 
 func (g *Game) LogEvent(event *api.Event) {
+	g.GameLock.Lock()
+	defer g.GameLock.Unlock()
+
 	g.Game.Events = append(g.Game.Events, event)
 	log.Info().Msgf(event.String())
 }
@@ -197,6 +195,30 @@ func (g *Game) processCommands() {
 			continue
 		}
 		p.MovingTo = c.Move
+
+		if c.Yell != nil {
+			err = ExecuteYell(g, p, c.Yell)
+			if err != nil {
+				errorEvent := api.Event_ERROR
+				g.LogEvent(&api.Event{
+					Type:        &errorEvent,
+					Message:     fmt.Sprintf("%s (%s): failed to yell: %s", p.Character.Id, p.Character.Name, err.Error()),
+					Coordinates: p.Position,
+				})
+			}
+		}
+
+		if c.Buy != nil {
+			err = ExecuteBuy(g, p, c.Buy)
+			if err != nil {
+				errorEvent := api.Event_ERROR
+				g.LogEvent(&api.Event{
+					Type:        &errorEvent,
+					Message:     fmt.Sprintf("%s (%s): failed to buy: %s", p.Character.Id, p.Character.Name, err.Error()),
+					Coordinates: p.Position,
+				})
+			}
+		}
 	}
 
 	// move players based on move to
@@ -206,11 +228,13 @@ func (g *Game) processCommands() {
 		}
 		// TODO this is teleporting, we need to figure out path and plan steps
 		g.MovePlayer(p, p.MovingTo)
+		// TODO log errors
 		if p.MovingTo == p.Position {
 			p.MovingTo = nil
 		}
 	}
 
+	// TODO generate new levels
 	// TODO handle stairs
 	// - mark visited level
 
@@ -245,7 +269,7 @@ func (g *Game) SpawnPlayer(p *gameobject.Player) {
 	}
 }
 
-// The coordinates must include level
+// MovePlayer The coordinates must include level.
 func (g *Game) MovePlayer(p *gameobject.Player, c *api.Coordinates) error {
 	// TODO log move event
 	// we can assume the same level if not provided
