@@ -12,8 +12,8 @@ func validateMove(game *dungeonsandtrolls.Game, c *api.Coordinates) error {
 	return nil
 }
 
-func Move(game *dungeonsandtrolls.Game, c *api.Coordinates) error {
-	p, err := game.GetCurrentPlayer()
+func Move(game *dungeonsandtrolls.Game, c *api.Coordinates, token string) error {
+	p, err := game.GetCurrentPlayer(token)
 	if err != nil {
 		return err
 	}

@@ -297,9 +297,8 @@ func (g *Game) MovePlayer(p *gameobject.Player, c *api.Coordinates) error {
 	return nil
 }
 
-func (g *Game) GetCurrentPlayer() (*gameobject.Player, error) {
-	// TODO implement this
-	return g.GetPlayerByKey("test")
+func (g *Game) GetCurrentPlayer(token string) (*gameobject.Player, error) {
+	return g.GetPlayerByKey(token)
 }
 
 func (g *Game) GetPlayerCommands(pId string) *api.CommandsBatch {

@@ -22,9 +22,8 @@ func validateIdentifiers(game *dungeonsandtrolls.Game, identifiers *api.Identifi
 	return nil
 }
 
-func Buy(game *dungeonsandtrolls.Game, identifiers *api.Identifiers) error {
-	// TODO use apiKey
-	p, err := game.GetCurrentPlayer()
+func Buy(game *dungeonsandtrolls.Game, identifiers *api.Identifiers, token string) error {
+	p, err := game.GetCurrentPlayer(token)
 	if err != nil {
 		return err
 	}

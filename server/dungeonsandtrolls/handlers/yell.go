@@ -7,8 +7,8 @@ import (
 	"github.com/gdg-garage/dungeons-and-trolls/server/dungeonsandtrolls/api"
 )
 
-func Yell(game *dungeonsandtrolls.Game, message *api.Message) error {
-	p, err := game.GetCurrentPlayer()
+func Yell(game *dungeonsandtrolls.Game, message *api.Message, token string) error {
+	p, err := game.GetCurrentPlayer(token)
 	if err != nil {
 		return err
 	}

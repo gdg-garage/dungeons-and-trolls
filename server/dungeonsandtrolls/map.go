@@ -406,8 +406,9 @@ func LevelsPostProcessing(g *Game, m *api.Map, mapCache *MapCache) error {
 		// Strip items from the first level.
 		if l.Level == gameobject.ZeroLevel {
 			for _, o := range l.Objects {
-				// TODO use game.AddItem()
-				g.Game.Items = append(g.Game.Items, o.Items...)
+				for _, i := range o.Items {
+					g.AddItem(i)
+				}
 				o.Items = []*api.Item{}
 			}
 		}

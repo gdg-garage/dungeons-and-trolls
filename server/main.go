@@ -2,12 +2,7 @@ package main
 
 import (
 	"context"
-	"encoding/json"
 	"fmt"
-	"io"
-	"net"
-	"net/http"
-
 	"github.com/gdg-garage/dungeons-and-trolls/server/dungeonsandtrolls"
 	"github.com/gdg-garage/dungeons-and-trolls/server/dungeonsandtrolls/api"
 	"github.com/gdg-garage/dungeons-and-trolls/server/dungeonsandtrolls/handlers"
@@ -15,52 +10,69 @@ import (
 	"github.com/rs/zerolog/log"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials/insecure"
+	"google.golang.org/grpc/metadata"
 	"google.golang.org/protobuf/types/known/emptypb"
+	"net"
+	"net/http"
 )
 
-func gameHandler(game *dungeonsandtrolls.Game, w http.ResponseWriter, r *http.Request) {
-	gameJson, err := json.Marshal(game)
-	if err != nil {
-		http.Error(w, `{"message": "response marshal failed"}`, http.StatusInternalServerError)
-		log.Err(err)
-		return
-	}
-	_, err = w.Write(gameJson)
-	if err != nil {
-		http.Error(w, `{"message": "response write failed"}`, http.StatusInternalServerError)
-		log.Err(err)
-		return
-	}
-}
+const apiKeyFieldName = "X-API-key"
 
-func actionHandler(game *dungeonsandtrolls.Game, w http.ResponseWriter, r *http.Request) {
-	body, err := io.ReadAll(r.Body)
-	if err != nil {
-		// TODO log and so on
-		return
-	}
-	var mc dungeonsandtrolls.MoveCommand
-	err = json.Unmarshal(body, &mc)
-	if err != nil {
-		return
-	}
-	// game.Inputs["player 1"] = []dungeonsandtrolls.CommandI{mc}
-}
+//func gameHandler(game *dungeonsandtrolls.Game, w http.ResponseWriter, r *http.Request) {
+//	gameJson, err := json.Marshal(game)
+//	if err != nil {
+//		http.Error(w, `{"message": "response marshal failed"}`, http.StatusInternalServerError)
+//		log.Err(err)
+//		return
+//	}
+//	_, err = w.Write(gameJson)
+//	if err != nil {
+//		http.Error(w, `{"message": "response write failed"}`, http.StatusInternalServerError)
+//		log.Err(err)
+//		return
+//	}
+//}
+//
+//func actionHandler(game *dungeonsandtrolls.Game, w http.ResponseWriter, r *http.Request) {
+//	body, err := io.ReadAll(r.Body)
+//	if err != nil {
+//		// TODO log and so on
+//		return
+//	}
+//	var mc dungeonsandtrolls.MoveCommand
+//	err = json.Unmarshal(body, &mc)
+//	if err != nil {
+//		return
+//	}
+//	// game.Inputs["player 1"] = []dungeonsandtrolls.CommandI{mc}
+//}
+//
+//func addDefaultHeaders(fn http.HandlerFunc) http.HandlerFunc {
+//	return func(w http.ResponseWriter, r *http.Request) {
+//		if origin := r.Header.Get("Origin"); origin != "" {
+//			w.Header().Set("Access-Control-Allow-Origin", origin)
+//		}
+//		w.Header().Set("Access-Control-Allow-Methods", "POST, GET, OPTIONS, PUT, DELETE")
+//		w.Header().Set("Access-Control-Allow-Headers", "Content-Type, Content-Length, Accept-Encoding, X-CSRF-Token, User-Agent")
+//		w.Header().Set("Access-Control-Allow-Credentials", "true")
+//		if r.Method == "OPTIONS" {
+//			return
+//		}
+//		w.Header().Set("Content-Type", "application/json; charset=UTF-8")
+//		fn(w, r)
+//	}
+//}
 
-func addDefaultHeaders(fn http.HandlerFunc) http.HandlerFunc {
-	return func(w http.ResponseWriter, r *http.Request) {
-		if origin := r.Header.Get("Origin"); origin != "" {
-			w.Header().Set("Access-Control-Allow-Origin", origin)
-		}
-		w.Header().Set("Access-Control-Allow-Methods", "POST, GET, OPTIONS, PUT, DELETE")
-		w.Header().Set("Access-Control-Allow-Headers", "Content-Type, Content-Length, Accept-Encoding, X-CSRF-Token, User-Agent")
-		w.Header().Set("Access-Control-Allow-Credentials", "true")
-		if r.Method == "OPTIONS" {
-			return
-		}
-		w.Header().Set("Content-Type", "application/json; charset=UTF-8")
-		fn(w, r)
+func getToken(ctx context.Context) (string, error) {
+	md, ok := metadata.FromIncomingContext(ctx)
+	if !ok {
+		return "", fmt.Errorf("cannot read request metadata (api key is missing)")
 	}
+	tokens := md.Get(apiKeyFieldName)
+	if len(tokens) != 1 {
+		return "", fmt.Errorf("incorrect number of auth tokens: %d", len(tokens))
+	}
+	return tokens[0], nil
 }
 
 type server struct {
@@ -81,7 +93,11 @@ func (s *server) Register(ctx context.Context, user *api.User) (*api.Registratio
 }
 
 func (s *server) Buy(ctx context.Context, identifiers *api.Identifiers) (*emptypb.Empty, error) {
-	return &emptypb.Empty{}, handlers.Buy(s.G, identifiers)
+	token, err := getToken(ctx)
+	if err != nil {
+		return &emptypb.Empty{}, err
+	}
+	return &emptypb.Empty{}, handlers.Buy(s.G, identifiers, token)
 }
 
 func (s *server) Equip(ctx context.Context, identifier *api.Identifier) (*emptypb.Empty, error) {
@@ -92,7 +108,11 @@ func (s *server) AssignSkillPoints(ctx context.Context, attributes *api.Attribut
 }
 
 func (s *server) Move(ctx context.Context, coordinates *api.Coordinates) (*emptypb.Empty, error) {
-	return &emptypb.Empty{}, handlers.Move(s.G, coordinates)
+	token, err := getToken(ctx)
+	if err != nil {
+		return &emptypb.Empty{}, err
+	}
+	return &emptypb.Empty{}, handlers.Move(s.G, coordinates, token)
 }
 
 func (s *server) Respawn(ctx context.Context, _ *emptypb.Empty) (*emptypb.Empty, error) {
@@ -109,7 +129,11 @@ func (s *server) MonstersCommands(ctx context.Context, commands *api.CommandsFor
 }
 
 func (s *server) Yell(ctx context.Context, message *api.Message) (*emptypb.Empty, error) {
-	return &emptypb.Empty{}, handlers.Yell(s.G, message)
+	token, err := getToken(ctx)
+	if err != nil {
+		return &emptypb.Empty{}, err
+	}
+	return &emptypb.Empty{}, handlers.Yell(s.G, message, token)
 }
 
 func main() {
@@ -122,12 +146,12 @@ func main() {
 		log.Fatal().Err(err).Msg("")
 	}
 
-	http.HandleFunc("/", addDefaultHeaders(func(w http.ResponseWriter, r *http.Request) {
-		gameHandler(g, w, r)
-	}))
-	http.HandleFunc("/actions", addDefaultHeaders(func(w http.ResponseWriter, r *http.Request) {
-		actionHandler(g, w, r)
-	}))
+	//http.HandleFunc("/", addDefaultHeaders(func(w http.ResponseWriter, r *http.Request) {
+	//	gameHandler(g, w, r)
+	//}))
+	//http.HandleFunc("/actions", addDefaultHeaders(func(w http.ResponseWriter, r *http.Request) {
+	//	actionHandler(g, w, r)
+	//}))
 
 	lis, err := net.Listen("tcp", fmt.Sprintf(":%d", 8081))
 	if err != nil {
@@ -155,8 +179,12 @@ func main() {
 		log.Fatal().Msgf("Failed to dial server: %s", err)
 	}
 
-	gwmux := runtime.NewServeMux()
-	// Register Greeter
+	gwmux := runtime.NewServeMux(
+		runtime.WithMetadata(func(ctx context.Context, request *http.Request) metadata.MD {
+			header := request.Header.Get(apiKeyFieldName)
+			md := metadata.Pairs(apiKeyFieldName, header)
+			return md
+		}))
 	err = api.RegisterDungeonsAndTrollsHandler(context.Background(), gwmux, conn)
 	if err != nil {
 		log.Fatal().Msgf("Failed to register gateway: %s", err)
