@@ -38,7 +38,7 @@ type server struct {
 
 func (s *server) Game(ctx context.Context, params *api.GameStateParams) (*api.GameState, error) {
 	token, err := getToken(ctx)
-	if err != nil {
+	if err != nil || len(token) == 0 {
 		return &s.G.Game, nil
 	}
 	p, err := s.G.GetPlayerByKey(token)
@@ -111,6 +111,7 @@ func main() {
 	// if err != nil {
 	// 	log.Fatal().Err(err).Msg("")
 	// }
+
 	g, err := dungeonsandtrolls.CreateGame()
 	if err != nil {
 		log.Fatal().Err(err).Msg("")

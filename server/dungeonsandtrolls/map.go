@@ -209,7 +209,7 @@ func parseMapObjects(tile map[string]interface{}, o *api.MapObjects) error {
 		if err != nil {
 			return fmt.Errorf("tile data serialization failed %v", err)
 		}
-		d := &api.Dropable{}
+		d := &api.Droppable{}
 		err = protojson.Unmarshal(j, d)
 		if err != nil {
 			fmt.Println(string(j))
@@ -217,13 +217,13 @@ func parseMapObjects(tile map[string]interface{}, o *api.MapObjects) error {
 		}
 
 		switch i := d.Data.(type) {
-		case *api.Dropable_Item:
+		case *api.Droppable_Item:
 			o.Items = append(o.Items, i.Item)
 			// log.Info().Msgf("I found item %v", i)
-		case *api.Dropable_Monster:
+		case *api.Droppable_Monster:
 			o.Monsters = append(o.Monsters, i.Monster)
 			// log.Info().Msgf("I found monster %v", i)
-		case *api.Dropable_Decoration:
+		case *api.Droppable_Decoration:
 			o.Decorations = append(o.Decorations, i.Decoration)
 			// log.Info().Msgf("I found decoration %v", i)
 		default:

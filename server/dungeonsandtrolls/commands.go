@@ -43,6 +43,62 @@ type UseCommand struct {
 	Target  string `json:"target"`
 }
 
+// ValidateBuy validates identifiers, funds, and requirements
+func ValidateBuy(game *Game, identifiers *api.Identifiers, p *gameobject.Player) error {
+	// this has to be a copy
+	playerMoney := p.Character.Money * 1
+	requirements := &api.Attributes{}
+	attributes := &api.Attributes{}
+
+	equip := make(map[api.Item_Type]*api.Item, len(p.Equipped))
+	for k, v := range p.Equipped {
+		equip[k] = v
+	}
+
+	for _, id := range identifiers.Ids {
+		maybeItem, err := game.GetObjectById(id)
+		if err != nil {
+			return err
+		}
+		i, ok := maybeItem.(*api.Item)
+		if !ok {
+			return fmt.Errorf("%s is not an Item ID", id)
+		}
+		playerMoney -= i.BuyPrice
+		if playerMoney < 0 {
+			return fmt.Errorf("insufficient funds to make the purchase")
+		}
+		if i.Requirements != nil {
+			err := gameobject.MaxAllAttributes(requirements, i.Requirements, false)
+			if err != nil {
+				return err
+			}
+		}
+		equip[i.Slot] = i
+	}
+
+	// Propagate base attributes
+	err := gameobject.MergeAllAttributes(attributes, p.MaxStats, false)
+	if err != nil {
+		return err
+	}
+	for _, v := range equip {
+		err := gameobject.MergeAllAttributes(attributes, v.Attributes, false)
+		if err != nil {
+			return err
+		}
+	}
+	s, err := gameobject.SatisfyingAttributes(attributes, requirements)
+	if err != nil {
+		return err
+	}
+	if !s {
+		return fmt.Errorf("item requirements are not satisfied")
+	}
+
+	return nil
+}
+
 func ExecuteYell(game *Game, p *gameobject.Player, message *api.Message) error {
 	messageEvent := api.Event_MESSAGE
 	game.LogEvent(&api.Event{
@@ -54,7 +110,10 @@ func ExecuteYell(game *Game, p *gameobject.Player, message *api.Message) error {
 }
 
 func ExecuteBuy(game *Game, p *gameobject.Player, identifiers *api.Identifiers) error {
-	// TODO validate requirements.
+	err := ValidateBuy(game, identifiers, p)
+	if err != nil {
+		return err
+	}
 
 	for _, itemId := range identifiers.Ids {
 		maybeItem, err := game.GetObjectById(itemId)
@@ -65,10 +124,11 @@ func ExecuteBuy(game *Game, p *gameobject.Player, identifiers *api.Identifiers) 
 		if !ok {
 			return fmt.Errorf("%s is not Item ID", itemId)
 		}
-		p.Character.Money -= item.BuyPrice
-		if p.Character.Money < 0 {
+		if p.Character.Money < item.BuyPrice {
+			// this should not happen (thanks to the validation above)
 			return fmt.Errorf("insufficient funds to make the purchase")
 		}
+		p.Character.Money -= item.BuyPrice
 		buyEvent := api.Event_BUY
 		game.LogEvent(&api.Event{
 			Type: &buyEvent,
@@ -76,16 +136,19 @@ func ExecuteBuy(game *Game, p *gameobject.Player, identifiers *api.Identifiers) 
 				p.Character.Id, p.Character.Name, itemId, item.Name)})
 
 		// Buying also means equip in the version without inventory
-		Equip(game, item, p)
+		err = Equip(game, item, p)
+		if err != nil {
+			return err
+		}
 	}
 	return nil
 }
 
-func Equip(game *Game, item *api.Item, player *gameobject.Player) {
+func Equip(game *Game, item *api.Item, player *gameobject.Player) error {
 	equipEvent := api.Event_EQUIP
 	game.LogEvent(&api.Event{
 		Type: &equipEvent,
 		Message: fmt.Sprintf("Character %s (%s) equipped item %s (%s)",
 			player.Character.Id, player.Character.Name, item.Id, item.Name)})
-	player.Equip(item)
+	return player.Equip(item)
 }

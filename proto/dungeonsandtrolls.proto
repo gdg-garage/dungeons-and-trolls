@@ -18,9 +18,11 @@ service DungeonsAndTrolls {
   rpc Buy(Identifiers) returns (google.protobuf.Empty) {}
   // Equip the Item identified by the provided ID for the Character bound to the
   // logged user (unused).
+  // TODO deprecated - reuse for pickup
   rpc Equip(Identifier) returns (google.protobuf.Empty) {}
   // Assign skill point to the attribute for the Character bound to the logged
   // user.
+  // TODO deprecated
   rpc AssignSkillPoints(Attributes) returns (google.protobuf.Empty) {}
   // Move the Character bound to the logged user to the specified place.
   rpc Move(Coordinates) returns (google.protobuf.Empty) {}
@@ -120,7 +122,7 @@ message Effect {
 message Attributes {
   optional float strength = 1;
   optional float dexterity = 2;
-  optional float inteligence = 3;
+  optional float intelligence = 3;
   optional float willpower = 4;
   optional float constitution = 5;
 
@@ -178,11 +180,11 @@ message Monster {
   repeated Effect effects = 8;
   // int32 xp = 9;
   repeated Item equipped_items = 11;
-  int32 score = 12;
+  int64 score = 12;
   string icon = 13;
   string algorithm = 14;
   string faction = 15;
-  repeated Dropable on_death = 16;
+  repeated Droppable on_death = 16;
 }
 
 // TODO create user monster
@@ -190,13 +192,19 @@ message Monster {
 message Character {
   string id = 1;
   string name = 2;
+  // TODO deprecated
   Stats stats = 3; // todo max life stamina ...
+  // TODO deprecated
   int32 level = 4;
   Attributes attributes = 5;
+  // TODO deprecated
   Elements resistances = 6;
+  // TODO deprecated
   repeated Item inventory = 7;
+  // TODO deprecated
   int32 xp = 8;
   int32 money = 9;
+  // TODO deprecated
   int32 free_skill_points = 10;
   repeated Item equip = 11;
 }
@@ -243,7 +251,7 @@ message Item {
   repeated Skill skills = 7;
 }
 
-message Dropable {
+message Droppable {
   oneof data {
     Skill skill = 1;
     Item item = 2;
@@ -257,7 +265,7 @@ message Dropable {
 message SkillEffect {
 	SkillAttributes attributes = 1;
 	repeated string flags = 2;
-	repeated Dropable summons = 3;
+	repeated Droppable summons = 3;
 };
 
 // TODO this is temporary

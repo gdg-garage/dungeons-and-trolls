@@ -3,6 +3,7 @@ package dungeonsandtrolls
 import (
 	"errors"
 	"fmt"
+	"math"
 	"path/filepath"
 	"sync"
 	"time"
@@ -163,6 +164,9 @@ func (g *Game) AddPlayer(player *gameobject.Player, registration *api.Registrati
 	g.Players[player.Character.Name] = player
 	g.ApiKeyToPlayer[*registration.ApiKey] = player
 	g.SpawnPlayer(player)
+	player.ResetAttributes()
+	player.Character.Money = g.GetPlayerMoney()
+	player.Character.Equip = []*api.Item{}
 
 	g.Register(player)
 }
@@ -252,6 +256,10 @@ func (g *Game) GetPlayerByKey(apiKey string) (*gameobject.Player, error) {
 func (g *Game) GetMoney() float32 {
 	//  TODO edit this formula
 	return g.Score * 4.2
+}
+
+func (g *Game) GetPlayerMoney() int32 {
+	return int32(math.Floor(float64(g.GetMoney()) / float64(len(g.Players))))
 }
 
 func (g *Game) SpawnPlayer(p *gameobject.Player) {
