@@ -27,7 +27,6 @@ type DungeonsAndTrollsClient interface {
 	Register(ctx context.Context, in *User, opts ...grpc.CallOption) (*Registration, error)
 	Buy(ctx context.Context, in *Identifiers, opts ...grpc.CallOption) (*emptypb.Empty, error)
 	Equip(ctx context.Context, in *Identifier, opts ...grpc.CallOption) (*emptypb.Empty, error)
-	AssignSkillPoints(ctx context.Context, in *Attributes, opts ...grpc.CallOption) (*emptypb.Empty, error)
 	Move(ctx context.Context, in *Coordinates, opts ...grpc.CallOption) (*emptypb.Empty, error)
 	Respawn(ctx context.Context, in *emptypb.Empty, opts ...grpc.CallOption) (*emptypb.Empty, error)
 	Skill(ctx context.Context, in *SkillUse, opts ...grpc.CallOption) (*emptypb.Empty, error)
@@ -74,15 +73,6 @@ func (c *dungeonsAndTrollsClient) Buy(ctx context.Context, in *Identifiers, opts
 func (c *dungeonsAndTrollsClient) Equip(ctx context.Context, in *Identifier, opts ...grpc.CallOption) (*emptypb.Empty, error) {
 	out := new(emptypb.Empty)
 	err := c.cc.Invoke(ctx, "/dungeonsandtrolls.DungeonsAndTrolls/Equip", in, out, opts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
-}
-
-func (c *dungeonsAndTrollsClient) AssignSkillPoints(ctx context.Context, in *Attributes, opts ...grpc.CallOption) (*emptypb.Empty, error) {
-	out := new(emptypb.Empty)
-	err := c.cc.Invoke(ctx, "/dungeonsandtrolls.DungeonsAndTrolls/AssignSkillPoints", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -151,7 +141,6 @@ type DungeonsAndTrollsServer interface {
 	Register(context.Context, *User) (*Registration, error)
 	Buy(context.Context, *Identifiers) (*emptypb.Empty, error)
 	Equip(context.Context, *Identifier) (*emptypb.Empty, error)
-	AssignSkillPoints(context.Context, *Attributes) (*emptypb.Empty, error)
 	Move(context.Context, *Coordinates) (*emptypb.Empty, error)
 	Respawn(context.Context, *emptypb.Empty) (*emptypb.Empty, error)
 	Skill(context.Context, *SkillUse) (*emptypb.Empty, error)
@@ -176,9 +165,6 @@ func (UnimplementedDungeonsAndTrollsServer) Buy(context.Context, *Identifiers) (
 }
 func (UnimplementedDungeonsAndTrollsServer) Equip(context.Context, *Identifier) (*emptypb.Empty, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method Equip not implemented")
-}
-func (UnimplementedDungeonsAndTrollsServer) AssignSkillPoints(context.Context, *Attributes) (*emptypb.Empty, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method AssignSkillPoints not implemented")
 }
 func (UnimplementedDungeonsAndTrollsServer) Move(context.Context, *Coordinates) (*emptypb.Empty, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method Move not implemented")
@@ -279,24 +265,6 @@ func _DungeonsAndTrolls_Equip_Handler(srv interface{}, ctx context.Context, dec 
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(DungeonsAndTrollsServer).Equip(ctx, req.(*Identifier))
-	}
-	return interceptor(ctx, in, info, handler)
-}
-
-func _DungeonsAndTrolls_AssignSkillPoints_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(Attributes)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	if interceptor == nil {
-		return srv.(DungeonsAndTrollsServer).AssignSkillPoints(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: "/dungeonsandtrolls.DungeonsAndTrolls/AssignSkillPoints",
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(DungeonsAndTrollsServer).AssignSkillPoints(ctx, req.(*Attributes))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -431,10 +399,6 @@ var DungeonsAndTrolls_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "Equip",
 			Handler:    _DungeonsAndTrolls_Equip_Handler,
-		},
-		{
-			MethodName: "AssignSkillPoints",
-			Handler:    _DungeonsAndTrolls_AssignSkillPoints_Handler,
 		},
 		{
 			MethodName: "Move",

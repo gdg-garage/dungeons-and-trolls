@@ -73,9 +73,6 @@ func (s *server) Buy(ctx context.Context, identifiers *api.Identifiers) (*emptyp
 func (s *server) Equip(ctx context.Context, identifier *api.Identifier) (*emptypb.Empty, error) {
 	return nil, fmt.Errorf("not implemented")
 }
-func (s *server) AssignSkillPoints(ctx context.Context, attributes *api.Attributes) (*emptypb.Empty, error) {
-	return nil, nil
-}
 
 func (s *server) Move(ctx context.Context, coordinates *api.Coordinates) (*emptypb.Empty, error) {
 	token, err := getToken(ctx)
@@ -86,14 +83,25 @@ func (s *server) Move(ctx context.Context, coordinates *api.Coordinates) (*empty
 }
 
 func (s *server) Respawn(ctx context.Context, _ *emptypb.Empty) (*emptypb.Empty, error) {
-	return nil, nil
+	token, err := getToken(ctx)
+	if err != nil {
+		return &emptypb.Empty{}, err
+	}
+	return &emptypb.Empty{}, handlers.Respawn(s.G, token)
 }
+
 func (s *server) Skill(ctx context.Context, spell *api.SkillUse) (*emptypb.Empty, error) {
 	return nil, nil
 }
+
 func (s *server) Commands(ctx context.Context, commands *api.CommandsBatch) (*emptypb.Empty, error) {
-	return nil, nil
+	token, err := getToken(ctx)
+	if err != nil {
+		return &emptypb.Empty{}, err
+	}
+	return &emptypb.Empty{}, handlers.Commands(s.G, commands, token)
 }
+
 func (s *server) MonstersCommands(ctx context.Context, commands *api.CommandsForMonsters) (*emptypb.Empty, error) {
 	return nil, nil
 }

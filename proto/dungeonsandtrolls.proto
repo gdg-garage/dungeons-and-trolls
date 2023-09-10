@@ -22,9 +22,6 @@ service DungeonsAndTrolls {
   rpc Equip(Identifier) returns (google.protobuf.Empty) {}
   // Assign skill point to the attribute for the Character bound to the logged
   // user.
-  // TODO deprecated
-  rpc AssignSkillPoints(Attributes) returns (google.protobuf.Empty) {}
-  // Move the Character bound to the logged user to the specified place.
   rpc Move(Coordinates) returns (google.protobuf.Empty) {}
   // Respawn the Character bound to the logged user.
   rpc Respawn(google.protobuf.Empty) returns (google.protobuf.Empty) {}
@@ -83,7 +80,6 @@ message CommandsBatch {
   optional Identifier equip = 2;
   optional Coordinates move = 3;
   optional SkillUse skill = 4;
-  optional Attributes assign_attribute = 5;
   optional Message yell = 6;
 }
 
@@ -192,21 +188,10 @@ message Monster {
 message Character {
   string id = 1;
   string name = 2;
-  // TODO deprecated
-  Stats stats = 3; // todo max life stamina ...
-  // TODO deprecated
-  int32 level = 4;
-  Attributes attributes = 5;
-  // TODO deprecated
-  Elements resistances = 6;
-  // TODO deprecated
-  repeated Item inventory = 7;
-  // TODO deprecated
-  int32 xp = 8;
-  int32 money = 9;
-  // TODO deprecated
-  int32 free_skill_points = 10;
-  repeated Item equip = 11;
+  Attributes attributes = 3;
+  int64 money = 4;
+  repeated Item equip = 5;
+  int64 score = 6;
 }
 
 message Skill {
@@ -339,6 +324,7 @@ message GameState {
   // List of events which occurred in the previous tick. Useful for visualising
   // effects, debugging and communication.
   repeated Event events = 6;
+  int64 score = 7;
 }
 
 message User { string username = 1; }

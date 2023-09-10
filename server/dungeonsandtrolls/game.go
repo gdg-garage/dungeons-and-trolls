@@ -28,7 +28,7 @@ const gameTickStorageKey = "game_tick"
 
 type Game struct {
 	// Gained after kill (may be used in the next run)
-	Score           float32                       `json:"score"`
+	Score           int64                         `json:"score"`
 	Players         map[string]*gameobject.Player `json:"-"`
 	ApiKeyToPlayer  map[string]*gameobject.Player `json:"player_api_keys"`
 	MaxLevelReached int                           `json:"max_reached_level"`
@@ -146,6 +146,9 @@ func (g *Game) gameLoop() {
 		// - update the cache
 		// - unregister IDs
 		g.Game.Tick++
+		// Copy score - for storage reasons
+		// TODO maybe use the same solution as for tick or find something more elegant
+		g.Game.Score = g.Score
 		g.storeGameState()
 		// TODO regenerate levels
 		//log.Debug().Msgf("sleeping for %v", LoopTime-time.Since(startTime))
@@ -160,15 +163,22 @@ func (g *Game) MarkVisitedLevel(level int) {
 	g.MaxLevelReached = utils.Max(g.MaxLevelReached, level)
 }
 
-func (g *Game) AddPlayer(player *gameobject.Player, registration *api.Registration) {
-	g.Players[player.Character.Name] = player
-	g.ApiKeyToPlayer[*registration.ApiKey] = player
+func (g *Game) Respawn(player *gameobject.Player) {
+	// TODO mark death if appropriate
+
 	g.SpawnPlayer(player)
 	player.ResetAttributes()
 	player.Character.Money = g.GetPlayerMoney()
 	player.Character.Equip = []*api.Item{}
+	player.Equipped = map[api.Item_Type]*api.Item{}
 
 	g.Register(player)
+}
+
+func (g *Game) AddPlayer(player *gameobject.Player, registration *api.Registration) {
+	g.Players[player.Character.Name] = player
+	g.ApiKeyToPlayer[*registration.ApiKey] = player
+	g.Respawn(player)
 }
 
 func (g *Game) AddItem(item *api.Item) {
@@ -198,6 +208,7 @@ func (g *Game) processCommands() {
 			log.Warn().Err(err).Msg("object retrieved by ID is not a player")
 			continue
 		}
+
 		p.MovingTo = c.Move
 
 		if c.Yell != nil {
@@ -253,13 +264,13 @@ func (g *Game) GetPlayerByKey(apiKey string) (*gameobject.Player, error) {
 	return player, nil
 }
 
-func (g *Game) GetMoney() float32 {
+func (g *Game) GetMoney() int64 {
 	//  TODO edit this formula
-	return g.Score * 4.2
+	return int64(float64(g.Score) * 4.2)
 }
 
-func (g *Game) GetPlayerMoney() int32 {
-	return int32(math.Floor(float64(g.GetMoney()) / float64(len(g.Players))))
+func (g *Game) GetPlayerMoney() int64 {
+	return int64(math.Floor(float64(g.GetMoney()) / float64(len(g.Players))))
 }
 
 func (g *Game) SpawnPlayer(p *gameobject.Player) {
