@@ -284,6 +284,8 @@ func (g *Game) processCommands() {
 		}
 		// spawn in the next level.
 		g.SpawnPlayer(p, *p.Position.Level+1)
+		// TODO log level traverse stats
+		// TODO log newly discovered levels
 	}
 
 	g.playerCommands = map[string]*api.CommandsBatch{}
