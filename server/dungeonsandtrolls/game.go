@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"math"
 	"path/filepath"
+	"sort"
 	"sync"
 	"time"
 
@@ -31,7 +32,7 @@ type Game struct {
 	Score           int64                         `json:"score"`
 	Players         map[string]*gameobject.Player `json:"-"`
 	ApiKeyToPlayer  map[string]*gameobject.Player `json:"player_api_keys"`
-	MaxLevelReached int                           `json:"max_reached_level"`
+	MaxLevelReached int32                         `json:"max_reached_level"`
 	Game            api.GameState                 `json:"-"`
 	GameLock        sync.RWMutex                  `json:"-"`
 
@@ -86,20 +87,11 @@ func NewGame() *Game {
 func CreateGame() (*Game, error) {
 	g := NewGame()
 
-	m, err := ParseMap(g.generateLevels(0, 1))
-	if err != nil {
-		log.Fatal().Err(err).Msg("Parsing map failed")
-	}
-	err = LevelsPostProcessing(g, m, &g.mapCache)
-	if err != nil {
-		log.Warn().Err(err).Msg("")
-	}
-
-	g.Game.Map = m
+	g.AddLevels(0, g.MaxLevelReached)
 
 	// TODO this needs to be properly thought out
 
-	err = g.gameStorage.ReadTo(gameStorageKey, g)
+	err := g.gameStorage.ReadTo(gameStorageKey, g)
 	if err != nil {
 		log.Warn().Msgf("Game was not loaded from the storage %v", err)
 	} else {
@@ -126,12 +118,12 @@ func (g *Game) storeGameState() {
 	g.gameStorage.Write(gameTickStorageKey, g.Game.Tick)
 }
 
-func (g *Game) generateLevels(start int, end int) string {
+func (g *Game) generateLevels(start int32, end int32) string {
 	startGen := time.Now()
 	defer func(start time.Time) { log.Info().Msgf("Map generation took %s", time.Since(start)) }(startGen)
 	g.generatorLock.Lock()
 	defer g.generatorLock.Unlock()
-	return generator.Generate_level(start, end, g.MaxLevelReached)
+	return generator.GenerateLevel(start, end, g.MaxLevelReached)
 }
 
 func (g *Game) gameLoop() {
@@ -151,12 +143,34 @@ func (g *Game) gameLoop() {
 		g.Game.Score = g.Score
 		g.storeGameState()
 		// TODO regenerate levels
+		// TODO generate new levels (based on all the skips)
 		//log.Debug().Msgf("sleeping for %v", LoopTime-time.Since(startTime))
 		time.Sleep(LoopTime - time.Since(startTime))
 	}
 }
 
-func (g *Game) MarkVisitedLevel(level int) {
+func (g *Game) AddLevels(start int32, end int32) {
+	m, err := ParseMap(g.generateLevels(start, end))
+	if err != nil {
+		log.Fatal().Err(err).Msg("Parsing map failed")
+	}
+	err = LevelsPostProcessing(g, m, &g.mapCache)
+	if err != nil {
+		log.Warn().Err(err).Msg("")
+	}
+
+	g.Game.Map.Levels = append(g.Game.Map.Levels, m.Levels...)
+
+	sort.Slice(g.Game.Map.Levels, func(i, j int) bool {
+		return g.Game.Map.Levels[i].Level < g.Game.Map.Levels[j].Level
+	})
+}
+
+func (g *Game) AddLevel(level int32) {
+	g.AddLevels(level, level)
+}
+
+func (g *Game) MarkVisitedLevel(level int32) {
 	// TODO maybe this lock will be more global.
 	g.GameLock.Lock()
 	defer g.GameLock.Unlock()
@@ -166,7 +180,7 @@ func (g *Game) MarkVisitedLevel(level int) {
 func (g *Game) Respawn(player *gameobject.Player, markDeath bool) {
 	// TODO mark death if appropriate
 
-	g.SpawnPlayer(player)
+	g.SpawnPlayer(player, gameobject.ZeroLevel)
 	player.ResetAttributes()
 	player.Character.Money = g.GetPlayerMoney()
 	player.Character.Equip = []*api.Item{}
@@ -259,11 +273,18 @@ func (g *Game) processCommands() {
 		if p.MovingTo == p.Position {
 			p.MovingTo = nil
 		}
+		// check stairs
+		o, err := g.GetObjectsOnPosition(p.Position)
+		if err != nil {
+			log.Warn().Err(err).Msg("")
+			continue
+		}
+		if !o.IsStairs {
+			continue
+		}
+		// spawn in the next level.
+		g.SpawnPlayer(p, *p.Position.Level+1)
 	}
-
-	// TODO generate new levels
-	// TODO handle stairs
-	// - mark visited level
 
 	g.playerCommands = map[string]*api.CommandsBatch{}
 }
@@ -285,17 +306,41 @@ func (g *Game) GetPlayerMoney() int64 {
 	return int64(math.Floor(float64(g.GetMoney()) / float64(len(g.Players))))
 }
 
-func (g *Game) SpawnPlayer(p *gameobject.Player) {
-	lc, err := g.mapCache.CachedLevel(gameobject.ZeroLevel)
+func (g *Game) SpawnPlayer(p *gameobject.Player, level int32) {
+	g.MarkVisitedLevel(level)
+	lc, err := g.mapCache.CachedLevel(level)
+	if err != nil {
+		log.Warn().Msgf("New level %d discovered", level)
+		g.AddLevel(level)
+		lc, err = g.mapCache.CachedLevel(level)
+		if err != nil {
+			log.Warn().Err(err).Msgf("Newly generated level is missing in the cache")
+		}
+	}
+
+	c := proto.Clone(lc.SpawnPoint).(*api.Coordinates)
+	c.Level = &level
+	err = g.MovePlayer(p, c)
 	if err != nil {
 		log.Warn().Err(err).Msg("")
-	} else {
-		c := proto.Clone(lc.SpawnPoint).(*api.Coordinates)
-		groundLevel := gameobject.ZeroLevel
-		c.Level = &groundLevel
-		err := g.MovePlayer(p, c)
-		if err != nil {
-			log.Warn().Err(err).Msg("")
+	}
+}
+
+func (g *Game) removePlayerFromPosition(p *gameobject.Player) {
+	o, err := g.GetObjectsOnPosition(p.Position)
+	if err != nil {
+		// maybe destroyed level
+		log.Warn().Err(err).Msg("")
+	}
+	if o != nil {
+		for pi, pd := range o.Players {
+			if pd.Id == p.Character.Id {
+				// move last element to removed position
+				o.Players[pi] = o.Players[len(o.Players)-1]
+				// shorten the slice
+				o.Players = o.Players[:len(o.Players)-1]
+				break
+			}
 		}
 	}
 }
@@ -309,24 +354,7 @@ func (g *Game) MovePlayer(p *gameobject.Player, c *api.Coordinates) error {
 	}
 	if p.Position != nil {
 		// remove player from the previous position
-		lc, err := g.mapCache.CachedLevel(*p.Position.Level)
-		if err != nil {
-			// maybe destroyed level
-			log.Warn().Err(err).Msg("")
-		} else {
-			o := lc.CacheObjectsOnPosition(p.Position, nil)
-			if o != nil {
-				for pi, pd := range o.Players {
-					if pd.Id == p.Character.Id {
-						// move last element to removed position
-						o.Players[pi] = o.Players[len(o.Players)-1]
-						// shorten the slice
-						o.Players = o.Players[:len(o.Players)-1]
-						break
-					}
-				}
-			}
-		}
+		g.removePlayerFromPosition(p)
 	}
 	lc, err := g.mapCache.CachedLevel(*c.Level)
 	if err != nil {

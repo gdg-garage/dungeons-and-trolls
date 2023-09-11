@@ -10,8 +10,8 @@ import (
 
 const binary = "./generator/dntgenerator"
 
-func Generate_level(start int, end int, max int) string {
-	cmd := exec.Command(binary, "-s", strconv.Itoa(start), "-e", strconv.Itoa(end), "-m", strconv.Itoa(max), "-j", "-", "-h", "")
+func GenerateLevel(start int32, end int32, max int32) string {
+	cmd := exec.Command(binary, "-s", strconv.Itoa(int(start)), "-e", strconv.Itoa(int(end)), "-m", strconv.Itoa(int(max)), "-j", "-", "-h", "")
 
 	stderr := &strings.Builder{}
 	stdout := &strings.Builder{}
