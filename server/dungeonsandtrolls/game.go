@@ -87,14 +87,13 @@ func NewGame() *Game {
 func CreateGame() (*Game, error) {
 	g := NewGame()
 
-	g.AddLevels(0, g.MaxLevelReached)
-
 	// TODO this needs to be properly thought out
 
 	err := g.gameStorage.ReadTo(gameStorageKey, g)
 	if err != nil {
 		log.Warn().Msgf("Game was not loaded from the storage %v", err)
 	} else {
+		g.AddLevels(0, g.MaxLevelReached)
 		g.handleStoredPlayers()
 	}
 	err = g.gameStorage.ReadTo(gameTickStorageKey, &g.Game.Tick)
@@ -235,8 +234,6 @@ func (g *Game) processCommands() {
 			}
 		}
 
-		p.MovingTo = c.Move
-
 		if c.Yell != nil {
 			err = ExecuteYell(g, p, c.Yell)
 			if err != nil {
@@ -267,10 +264,13 @@ func (g *Game) processCommands() {
 		if p.MovingTo == nil {
 			continue
 		}
-		// TODO this is teleporting, we need to figure out path and plan steps
-		g.MovePlayer(p, p.MovingTo)
+		p.MovingTo.Advance()
+		log.Info().Msgf("player is at (%d, %d), moving to (%d, %d)", p.Position.PositionX, p.Position.PositionY, p.MovingTo.Current().X, p.MovingTo.Current().Y)
+		g.MovePlayer(p, &api.Coordinates{
+			PositionX: int32(p.MovingTo.Current().X),
+			PositionY: int32(p.MovingTo.Current().Y)})
 		// TODO log errors
-		if p.MovingTo == p.Position {
+		if p.MovingTo.AtEnd() {
 			p.MovingTo = nil
 		}
 		// check stairs
@@ -284,6 +284,8 @@ func (g *Game) processCommands() {
 		}
 		// spawn in the next level.
 		g.SpawnPlayer(p, *p.Position.Level+1)
+		// cancel currently invalid path
+		p.MovingTo = nil
 		// TODO log level traverse stats
 		// TODO log newly discovered levels
 	}
@@ -374,12 +376,18 @@ func (g *Game) MovePlayer(p *gameobject.Player, c *api.Coordinates) error {
 				Players: []*api.Character{
 					&p.Character,
 				},
+				IsFree: true,
 			}
 			g.Game.Map.Levels[*c.Level].Objects = append(g.Game.Map.Levels[*c.Level].Objects, mo)
 			lc.CacheObjectsOnPosition(c, mo)
 		}
 	}
+	p.Position = c
 	return nil
+}
+
+func (g *Game) GetCachedLevel(level int32) (*LevelCache, error) {
+	return g.mapCache.CachedLevel(level)
 }
 
 func (g *Game) GetObjectsOnPosition(c *api.Coordinates) (*api.MapObjects, error) {

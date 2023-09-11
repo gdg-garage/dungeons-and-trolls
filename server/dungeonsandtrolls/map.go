@@ -6,6 +6,7 @@ import (
 	"github.com/gdg-garage/dungeons-and-trolls/server/dungeonsandtrolls/api"
 	"github.com/gdg-garage/dungeons-and-trolls/server/dungeonsandtrolls/gameobject"
 	"github.com/rs/zerolog/log"
+	"github.com/solarlune/paths"
 	"google.golang.org/protobuf/encoding/protojson"
 )
 
@@ -13,7 +14,10 @@ type ObsoleteMap [][][]gameobject.Interface
 
 type LevelCache struct {
 	SpawnPoint *api.Coordinates
+	Width      int32
+	Height     int32
 	Objects    map[int32]map[int32]*api.MapObjects
+	Grid       *paths.Grid
 }
 
 type MapCache struct {
@@ -200,6 +204,10 @@ func (lc *LevelCache) CacheObjectsOnPosition(p *api.Coordinates, mo *api.MapObje
 	}
 	if mo != nil {
 		lc.Objects[p.PositionX][p.PositionY] = mo
+		if !mo.IsFree {
+			c := lc.Grid.Get(int(p.PositionX), int(p.PositionY))
+			c.Walkable = false
+		}
 	} else {
 		if _, ok := lc.Objects[p.PositionX][p.PositionY]; !ok {
 			return nil
@@ -209,7 +217,7 @@ func (lc *LevelCache) CacheObjectsOnPosition(p *api.Coordinates, mo *api.MapObje
 	return lc.Objects[p.PositionX][p.PositionY]
 }
 
-func (m *MapCache) CacheLevel(l int32) *LevelCache {
+func (m *MapCache) createLevelCache(l int32) *LevelCache {
 	if _, ok := m.Level[l]; !ok {
 		m.Level[l] = &LevelCache{
 			Objects: map[int32]map[int32]*api.MapObjects{},
@@ -246,7 +254,10 @@ func LevelsPostProcessing(g *Game, m *api.Map, mapCache *MapCache) error {
 			}
 		}
 
-		lc := mapCache.CacheLevel(l.Level)
+		lc := mapCache.createLevelCache(l.Level)
+		lc.Width = l.Width
+		lc.Height = l.Height
+		lc.Grid = paths.NewGrid(int(l.Width), int(l.Height), 1, 1)
 
 		spawn, err := findLevelSpawnPoint(l)
 		if err != nil {

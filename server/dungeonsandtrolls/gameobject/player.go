@@ -2,6 +2,7 @@ package gameobject
 
 import (
 	"github.com/gdg-garage/dungeons-and-trolls/server/dungeonsandtrolls/api"
+	"github.com/solarlune/paths"
 	"go.openly.dev/pointy"
 	"google.golang.org/protobuf/proto"
 )
@@ -11,7 +12,7 @@ const baseStat float32 = 100
 type Player struct {
 	GameObject     `json:",inline"`
 	Position       *api.Coordinates            `json:"position"`
-	MovingTo       *api.Coordinates            `json:"-"`
+	MovingTo       *paths.Path                 `json:"-"`
 	Equipped       map[api.Item_Type]*api.Item `json:"-"`
 	Character      api.Character               `json:"character"`
 	ItemAttributes *api.Attributes             `json:"-"`
