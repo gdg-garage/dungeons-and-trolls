@@ -16,10 +16,9 @@ service DungeonsAndTrolls {
   // Buy Items identified by the provided ID for the Character bound to the
   // logged user.
   rpc Buy(Identifiers) returns (google.protobuf.Empty) {}
-  // Equip the Item identified by the provided ID for the Character bound to the
+  // Equip the Item from the ground identified by the provided ID for the Character bound to the
   // logged user (unused).
-  // TODO deprecated - reuse for pickup
-  rpc Equip(Identifier) returns (google.protobuf.Empty) {}
+  rpc PickUp(Identifier) returns (google.protobuf.Empty) {}
   // Assign skill point to the attribute for the Character bound to the logged
   // user.
   rpc Move(Coordinates) returns (google.protobuf.Empty) {}
@@ -77,7 +76,7 @@ message GameStateParams {
 
 message CommandsBatch {
   optional Identifiers buy = 1;
-  optional Identifier equip = 2;
+  optional Identifier pickUp = 2;
   optional Coordinates move = 3;
   optional SkillUse skill = 4;
   optional Message yell = 6;

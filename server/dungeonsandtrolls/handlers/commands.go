@@ -29,6 +29,12 @@ func Commands(game *dungeonsandtrolls.Game, c *api.CommandsBatch, token string) 
 			return err
 		}
 	}
+	if c.PickUp != nil {
+		err = validatePickUp(game, c.PickUp, p)
+		if err != nil {
+			return err
+		}
+	}
 
 	// TODO validate all
 
@@ -36,6 +42,7 @@ func Commands(game *dungeonsandtrolls.Game, c *api.CommandsBatch, token string) 
 	pc.Move = c.Move
 	pc.Yell = c.Yell
 	pc.Buy = c.Buy
+	pc.PickUp = c.PickUp
 
 	return nil
 }

@@ -44,6 +44,11 @@ func MergeAttributes(receiver *api.Attributes, booster *api.Attributes, skipped 
 	return AttributesOperation(receiver, booster, skipped, mustBePresent, func(r, b *float32) { *r += *b })
 }
 
+func SubtractAllAttributes(receiver *api.Attributes, booster *api.Attributes, mustBePresent bool) error {
+	// TODO how to set negative values for missing attributes?
+	return AttributesOperation(receiver, booster, map[string]struct{}{}, mustBePresent, func(r, b *float32) { *r -= *b })
+}
+
 func MergeAllAttributes(receiver *api.Attributes, booster *api.Attributes, mustBePresent bool) error {
 	return MergeAttributes(receiver, booster, map[string]struct{}{}, mustBePresent)
 }

@@ -6,43 +6,6 @@ import (
 	"github.com/gdg-garage/dungeons-and-trolls/server/dungeonsandtrolls/gameobject"
 )
 
-type Direction string
-
-const (
-	Up    Direction = "up"
-	Down  Direction = "down"
-	Left  Direction = "left"
-	Right Direction = "right"
-)
-
-type CommandI interface {
-	GetType() string
-}
-
-type Command struct {
-	Type string `json:"type"`
-}
-
-func (c Command) GetType() string {
-	return c.Type
-}
-
-type MoveCommand struct {
-	Command   `json:",inline"`
-	Direction Direction `json:"direction"`
-}
-
-type AttackCommand struct {
-	Command `json:",inline"`
-	Target  string `json:"target"`
-}
-
-// Instants
-type UseCommand struct {
-	Command `json:",inline"`
-	Target  string `json:"target"`
-}
-
 // ValidateBuy validates identifiers, funds, and requirements
 func ValidateBuy(game *Game, identifiers *api.Identifiers, p *gameobject.Player) error {
 	// this has to be a copy
@@ -151,4 +114,9 @@ func Equip(game *Game, item *api.Item, player *gameobject.Player) error {
 		Message: fmt.Sprintf("Character %s (%s) equipped item %s (%s)",
 			player.Character.Id, player.Character.Name, item.Id, item.Name)})
 	return player.Equip(item)
+}
+
+func ExecutePickUp(game *Game, p *gameobject.Player, i *api.Identifier) error {
+	// TODO solve concurrent pickUp (more than one player wants to pick up the same item)
+	return fmt.Errorf("not implemented")
 }

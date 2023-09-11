@@ -90,7 +90,6 @@ func CreateGame() (*Game, error) {
 	if err != nil {
 		log.Fatal().Err(err).Msg("Parsing map failed")
 	}
-	// TODO register all ids
 	err = LevelsPostProcessing(g, m, &g.mapCache)
 	if err != nil {
 		log.Warn().Err(err).Msg("")
@@ -128,7 +127,8 @@ func (g *Game) storeGameState() {
 }
 
 func (g *Game) generateLevels(start int, end int) string {
-	// TODO measure generation time
+	startGen := time.Now()
+	defer func(start time.Time) { log.Info().Msgf("Map generation took %s", time.Since(start)) }(startGen)
 	g.generatorLock.Lock()
 	defer g.generatorLock.Unlock()
 	return generator.Generate_level(start, end, g.MaxLevelReached)
@@ -163,7 +163,7 @@ func (g *Game) MarkVisitedLevel(level int) {
 	g.MaxLevelReached = utils.Max(g.MaxLevelReached, level)
 }
 
-func (g *Game) Respawn(player *gameobject.Player) {
+func (g *Game) Respawn(player *gameobject.Player, markDeath bool) {
 	// TODO mark death if appropriate
 
 	g.SpawnPlayer(player)
@@ -178,7 +178,7 @@ func (g *Game) Respawn(player *gameobject.Player) {
 func (g *Game) AddPlayer(player *gameobject.Player, registration *api.Registration) {
 	g.Players[player.Character.Name] = player
 	g.ApiKeyToPlayer[*registration.ApiKey] = player
-	g.Respawn(player)
+	g.Respawn(player, false)
 }
 
 func (g *Game) AddItem(item *api.Item) {
@@ -207,6 +207,18 @@ func (g *Game) processCommands() {
 		if !ok {
 			log.Warn().Err(err).Msg("object retrieved by ID is not a player")
 			continue
+		}
+
+		if c.PickUp != nil {
+			err = ExecutePickUp(g, p, c.PickUp)
+			if err != nil {
+				errorEvent := api.Event_ERROR
+				g.LogEvent(&api.Event{
+					Type:        &errorEvent,
+					Message:     fmt.Sprintf("%s (%s): failed to pick up %s: %s", p.Character.Id, p.Character.Name, c.PickUp, err.Error()),
+					Coordinates: p.Position,
+				})
+			}
 		}
 
 		p.MovingTo = c.Move
@@ -338,6 +350,14 @@ func (g *Game) MovePlayer(p *gameobject.Player, c *api.Coordinates) error {
 		}
 	}
 	return nil
+}
+
+func (g *Game) GetObjectsOnPosition(c *api.Coordinates) (*api.MapObjects, error) {
+	lc, err := g.mapCache.CachedLevel(*c.Level)
+	if err != nil {
+		return nil, err
+	}
+	return lc.CacheObjectsOnPosition(c, nil), nil
 }
 
 func (g *Game) GetCurrentPlayer(token string) (*gameobject.Player, error) {

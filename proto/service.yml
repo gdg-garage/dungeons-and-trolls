@@ -11,8 +11,8 @@ http:
     - selector: dungeonsandtrolls.DungeonsAndTrolls.Buy
       post: /v1/buy
       body: "*"
-    - selector: dungeonsandtrolls.DungeonsAndTrolls.Equip
-      post: /v1/equip
+    - selector: dungeonsandtrolls.DungeonsAndTrolls.PickUp
+      post: /v1/pick-up
       body: "*"
     - selector: dungeonsandtrolls.DungeonsAndTrolls.Move
       post: /v1/move

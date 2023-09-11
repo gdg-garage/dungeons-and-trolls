@@ -70,8 +70,12 @@ func (s *server) Buy(ctx context.Context, identifiers *api.Identifiers) (*emptyp
 	return &emptypb.Empty{}, handlers.Buy(s.G, identifiers, token)
 }
 
-func (s *server) Equip(ctx context.Context, identifier *api.Identifier) (*emptypb.Empty, error) {
-	return nil, fmt.Errorf("not implemented")
+func (s *server) PickUp(ctx context.Context, identifier *api.Identifier) (*emptypb.Empty, error) {
+	token, err := getToken(ctx)
+	if err != nil {
+		return &emptypb.Empty{}, err
+	}
+	return &emptypb.Empty{}, handlers.PickUp(s.G, identifier, token)
 }
 
 func (s *server) Move(ctx context.Context, coordinates *api.Coordinates) (*emptypb.Empty, error) {

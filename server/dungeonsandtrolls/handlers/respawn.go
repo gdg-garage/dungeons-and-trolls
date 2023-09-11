@@ -10,7 +10,7 @@ func Respawn(game *dungeonsandtrolls.Game, token string) error {
 		return err
 	}
 
-	game.Respawn(p)
+	game.Respawn(p, true)
 
 	return nil
 }

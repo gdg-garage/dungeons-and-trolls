@@ -3,8 +3,6 @@ package dungeonsandtrolls
 import (
 	"encoding/json"
 	"fmt"
-	"math/rand"
-
 	"github.com/gdg-garage/dungeons-and-trolls/server/dungeonsandtrolls/api"
 	"github.com/gdg-garage/dungeons-and-trolls/server/dungeonsandtrolls/gameobject"
 	"github.com/rs/zerolog/log"
@@ -20,70 +18,6 @@ type LevelCache struct {
 
 type MapCache struct {
 	Level map[int32]*LevelCache
-}
-
-func CreateMap() (*ObsoleteMap, error) {
-	var m ObsoleteMap
-	m = append(m, baseFloor())
-	monsterCounter := 1
-	for l := 1; l < 3; l++ {
-		m = append(m, generateFloor(l, 10, 10))
-		// add monsters
-		for i := 0; i < 1+rand.Intn(l); i++ {
-			mYPos := rand.Intn(len(m[l])-1) + 1
-			mXPos := rand.Intn(len(m[l][0])-1) + 1
-			m[l][mYPos][mXPos].SetChildren(append(m[l][mYPos][mXPos].GetChildren(), gameobject.CreateMonster(fmt.Sprintf("monster %d", monsterCounter))))
-			monsterCounter++
-		}
-	}
-	return &m, nil
-}
-
-func baseFloor() [][]gameobject.Interface {
-	var floor [][]gameobject.Interface
-	stairsXPos := rand.Intn(9) + 1
-	stairsYPos := rand.Intn(9) + 1
-	for i := 0; i < 10; i++ {
-		var row []gameobject.Interface
-		for j := 0; j < 10; j++ {
-			if i == stairsYPos && j == stairsXPos {
-				row = append(row, gameobject.CreateStairs(1))
-			} else if j == 0 || j == 9 || i == 0 || i == 9 {
-				row = append(row, gameobject.CreateWall())
-			} else {
-				row = append(row, gameobject.CreateEmpty())
-			}
-		}
-		floor = append(floor, row)
-	}
-	return floor
-}
-
-func generateFloor(level int, maxSizeX int, maxSizeY int) [][]gameobject.Interface {
-	var floor [][]gameobject.Interface
-	xSize := 10 + rand.Intn(maxSizeX)
-	ySize := 10 + rand.Intn(maxSizeY)
-	stairsXPos := rand.Intn(xSize-1) + 1
-	stairsYPos := rand.Intn(ySize-1) + 1
-	// TODO this may end up on the same place as the stair up
-	stairsDownXPos := rand.Intn(xSize-1) + 1
-	stairsDownYPos := rand.Intn(ySize-1) + 1
-	for i := 0; i < ySize; i++ {
-		var row []gameobject.Interface
-		for j := 0; j < xSize; j++ {
-			if i == stairsYPos && j == stairsXPos {
-				row = append(row, gameobject.CreateStairs(level-1))
-			} else if i == stairsDownYPos && j == stairsDownXPos {
-				row = append(row, gameobject.CreateStairs(level+1))
-			} else if j == 0 || j == xSize-1 || i == 0 || i == ySize-1 {
-				row = append(row, gameobject.CreateWall())
-			} else {
-				row = append(row, gameobject.CreateEmpty())
-			}
-		}
-		floor = append(floor, row)
-	}
-	return floor
 }
 
 func ParseMap(mapJson string) (*api.Map, error) {
@@ -231,116 +165,6 @@ func parseMapObjects(tile map[string]interface{}, o *api.MapObjects) error {
 		}
 	}
 	return nil
-
-	// maybeClass, ok := d["class"]
-	// if !ok {
-	// 	return fmt.Errorf("type not found in the tile data")
-	// }
-	// c, ok := maybeClass.(string)
-	// if !ok {
-	// 	return fmt.Errorf("tile data type is not string")
-	// }
-	// switch c {
-	// case "decoration":
-	// 	maybeType, ok := d["type"]
-	// 	if !ok {
-	// 		return fmt.Errorf("type not found in the tile data decoration")
-	// 	}
-	// 	t, ok := maybeType.(string)
-	// 	if !ok {
-	// 		return fmt.Errorf("tile data decoration type is not string")
-	// 	}
-
-	// 	o.Decoration = t
-	// case "item":
-	// 	delete(d, "class")
-
-	// 	// maybeSkills, ok := d["skills"]
-	// 	// if !ok {
-	// 	// 	return fmt.Errorf("type not found in the tile data decoration")
-	// 	// }
-	// 	// skills, ok := maybeSkills.([]interface{})
-	// 	// if !ok {
-	// 	// 	return fmt.Errorf("type not found in the tile data decoration")
-	// 	// }
-
-	// 	// log.Info().Msgf("item: %v", d)
-	// 	// log.Info().Msgf("skills: %v", skills)
-	// 	for _, skill := range d["skills"].([]interface{}) {
-	// 		s, _ := skill.(map[string]interface{})
-	// 		delete(d, "class")
-	// 		if cfs, ok := s["casterFlags"]; ok {
-
-	// 			log.Info().Msgf("casterFlags %v %s", cfs, reflect.TypeOf(cfs))
-	// 			switch v := cfs.(type) {
-	// 			case []interface{}:
-	// 				for _, cf := range v {
-
-	// 					log.Info().Msgf("flag %s", cf)
-	// 					a := api.SkillFlag{}
-	// 					sfj, _ := json.Marshal(map[string]string{
-	// 						"flag": cf.(string),
-	// 					})
-	// 					log.Info().Msgf("flag %s", string(sfj))
-	// 					protojson.Unmarshal(sfj, &a)
-	// 					log.Info().Msgf("%d", a.String())
-	// 				}
-	// 			default:
-	// 				log.Info().Msgf("casterFlags %d", cfs)
-	// 			}
-
-	// 		}
-	// 		delete(s, "casterFlags")
-	// 		delete(s, "targetFlags")
-	// 	}
-
-	// 	// TODO use branch restructure
-
-	// 	log.Info().Msgf("item: %v", d)
-
-	// 	j, err := json.Marshal(d)
-	// 	if err != nil {
-	// 		return fmt.Errorf("item serialization failed %v", err)
-	// 	}
-	// 	i := &api.Item{}
-
-	// 	// d, _ := protojson.Marshal(&api.SkillFlag{Data: &api.SkillFlag_Flag{Flag: "aaaa"}})
-	// 	// log.Info().Msg(string(d))
-	// 	// d, _ = protojson.Marshal(&api.SkillFlag{
-	// 	// 	Data: &api.SkillFlag_Dropables{Dropables: &api.Dropables{Data: &api.Dropables_Decoration{Decoration: &api.Decoration{Name: "bb"}}}},
-	// 	// })
-	// 	// log.Info().Msg(string(d))
-
-	// 	// err = protojson.UnmarshalOptions{DiscardUnknown: true}.Unmarshal(j, i)
-	// 	err = protojson.UnmarshalOptions{}.Unmarshal(j, i)
-	// 	// err = protojson.UnmarshalOptions{}.Unmarshal(j, i)
-	// 	if err != nil {
-	// 		log.Info().Msgf("%v", string(j))
-	// 		return fmt.Errorf("item deserialization failed %v", err)
-	// 	}
-	// 	i.Id = gameobject.GetNewId()
-	// 	for _, skill := range i.Skills {
-	// 		skill.Id = gameobject.GetNewId()
-
-	// 		if skill.Cost != nil {
-	// 			skill.Cost = &api.Attributes{}
-	// 		}
-	// 	}
-	// 	if i.Requirements == nil {
-	// 		i.Requirements = &api.Attributes{}
-	// 	}
-	// 	if i.Attributes == nil {
-	// 		i.Attributes = &api.Attributes{}
-	// 	}
-	// 	o.Items = append(o.Items, i)
-	// 	log.Info().Msg(string(j))
-	// default:
-	// 	log.Warn().Msgf("Unknown data tile class: %s", c)
-	// 	log.Info().Msgf("%v", d)
-	// }
-
-	// }
-	// return nil
 }
 
 func addIds(mp *api.Map) {
@@ -410,6 +234,15 @@ func LevelsPostProcessing(g *Game, m *api.Map, mapCache *MapCache) error {
 					g.AddItem(i)
 				}
 				o.Items = []*api.Item{}
+			}
+		}
+
+		for _, o := range l.Objects {
+			for _, i := range o.Items {
+				g.Register(i)
+			}
+			for _, m := range o.Monsters {
+				g.Register(m)
 			}
 		}
 

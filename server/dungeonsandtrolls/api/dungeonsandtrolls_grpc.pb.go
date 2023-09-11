@@ -26,7 +26,7 @@ type DungeonsAndTrollsClient interface {
 	Game(ctx context.Context, in *GameStateParams, opts ...grpc.CallOption) (*GameState, error)
 	Register(ctx context.Context, in *User, opts ...grpc.CallOption) (*Registration, error)
 	Buy(ctx context.Context, in *Identifiers, opts ...grpc.CallOption) (*emptypb.Empty, error)
-	Equip(ctx context.Context, in *Identifier, opts ...grpc.CallOption) (*emptypb.Empty, error)
+	PickUp(ctx context.Context, in *Identifier, opts ...grpc.CallOption) (*emptypb.Empty, error)
 	Move(ctx context.Context, in *Coordinates, opts ...grpc.CallOption) (*emptypb.Empty, error)
 	Respawn(ctx context.Context, in *emptypb.Empty, opts ...grpc.CallOption) (*emptypb.Empty, error)
 	Skill(ctx context.Context, in *SkillUse, opts ...grpc.CallOption) (*emptypb.Empty, error)
@@ -70,9 +70,9 @@ func (c *dungeonsAndTrollsClient) Buy(ctx context.Context, in *Identifiers, opts
 	return out, nil
 }
 
-func (c *dungeonsAndTrollsClient) Equip(ctx context.Context, in *Identifier, opts ...grpc.CallOption) (*emptypb.Empty, error) {
+func (c *dungeonsAndTrollsClient) PickUp(ctx context.Context, in *Identifier, opts ...grpc.CallOption) (*emptypb.Empty, error) {
 	out := new(emptypb.Empty)
-	err := c.cc.Invoke(ctx, "/dungeonsandtrolls.DungeonsAndTrolls/Equip", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/dungeonsandtrolls.DungeonsAndTrolls/PickUp", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -140,7 +140,7 @@ type DungeonsAndTrollsServer interface {
 	Game(context.Context, *GameStateParams) (*GameState, error)
 	Register(context.Context, *User) (*Registration, error)
 	Buy(context.Context, *Identifiers) (*emptypb.Empty, error)
-	Equip(context.Context, *Identifier) (*emptypb.Empty, error)
+	PickUp(context.Context, *Identifier) (*emptypb.Empty, error)
 	Move(context.Context, *Coordinates) (*emptypb.Empty, error)
 	Respawn(context.Context, *emptypb.Empty) (*emptypb.Empty, error)
 	Skill(context.Context, *SkillUse) (*emptypb.Empty, error)
@@ -163,8 +163,8 @@ func (UnimplementedDungeonsAndTrollsServer) Register(context.Context, *User) (*R
 func (UnimplementedDungeonsAndTrollsServer) Buy(context.Context, *Identifiers) (*emptypb.Empty, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method Buy not implemented")
 }
-func (UnimplementedDungeonsAndTrollsServer) Equip(context.Context, *Identifier) (*emptypb.Empty, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method Equip not implemented")
+func (UnimplementedDungeonsAndTrollsServer) PickUp(context.Context, *Identifier) (*emptypb.Empty, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method PickUp not implemented")
 }
 func (UnimplementedDungeonsAndTrollsServer) Move(context.Context, *Coordinates) (*emptypb.Empty, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method Move not implemented")
@@ -251,20 +251,20 @@ func _DungeonsAndTrolls_Buy_Handler(srv interface{}, ctx context.Context, dec fu
 	return interceptor(ctx, in, info, handler)
 }
 
-func _DungeonsAndTrolls_Equip_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+func _DungeonsAndTrolls_PickUp_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(Identifier)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(DungeonsAndTrollsServer).Equip(ctx, in)
+		return srv.(DungeonsAndTrollsServer).PickUp(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/dungeonsandtrolls.DungeonsAndTrolls/Equip",
+		FullMethod: "/dungeonsandtrolls.DungeonsAndTrolls/PickUp",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(DungeonsAndTrollsServer).Equip(ctx, req.(*Identifier))
+		return srv.(DungeonsAndTrollsServer).PickUp(ctx, req.(*Identifier))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -397,8 +397,8 @@ var DungeonsAndTrolls_ServiceDesc = grpc.ServiceDesc{
 			Handler:    _DungeonsAndTrolls_Buy_Handler,
 		},
 		{
-			MethodName: "Equip",
-			Handler:    _DungeonsAndTrolls_Equip_Handler,
+			MethodName: "PickUp",
+			Handler:    _DungeonsAndTrolls_PickUp_Handler,
 		},
 		{
 			MethodName: "Move",
