@@ -12,7 +12,7 @@ func Commands(game *dungeonsandtrolls.Game, c *api.CommandsBatch, token string) 
 	}
 
 	if c.Move != nil {
-		err = validateMove(game, c.Move)
+		err = validateMove(game, c.Move, p)
 		if err != nil {
 			return err
 		}

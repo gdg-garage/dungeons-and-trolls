@@ -20,48 +20,6 @@
     "application/json"
   ],
   "paths": {
-    "/v1/assign-skill-points": {
-      "post": {
-        "summary": "Assign skill point to the attribute for the Character bound to the logged\nuser.",
-        "operationId": "DungeonsAndTrolls_AssignSkillPoints",
-        "responses": {
-          "200": {
-            "description": "A successful response.",
-            "schema": {
-              "type": "object",
-              "properties": {}
-            }
-          },
-          "403": {
-            "description": "Returned when the user does not have permission to access the resource.",
-            "schema": {}
-          },
-          "404": {
-            "description": "Returned when the resource does not exist.",
-            "schema": {}
-          },
-          "default": {
-            "description": "An unexpected error response.",
-            "schema": {
-              "$ref": "#/definitions/rpcStatus"
-            }
-          }
-        },
-        "parameters": [
-          {
-            "name": "body",
-            "in": "body",
-            "required": true,
-            "schema": {
-              "$ref": "#/definitions/dungeonsandtrollsAttributes"
-            }
-          }
-        ],
-        "tags": [
-          "DungeonsAndTrolls"
-        ]
-      }
-    },
     "/v1/buy": {
       "post": {
         "summary": "Buy Items identified by the provided ID for the Character bound to the\nlogged user.",
@@ -138,48 +96,6 @@
             "required": true,
             "schema": {
               "$ref": "#/definitions/dungeonsandtrollsCommandsBatch"
-            }
-          }
-        ],
-        "tags": [
-          "DungeonsAndTrolls"
-        ]
-      }
-    },
-    "/v1/equip": {
-      "post": {
-        "summary": "Equip the Item identified by the provided ID for the Character bound to the\nlogged user (unused).",
-        "operationId": "DungeonsAndTrolls_Equip",
-        "responses": {
-          "200": {
-            "description": "A successful response.",
-            "schema": {
-              "type": "object",
-              "properties": {}
-            }
-          },
-          "403": {
-            "description": "Returned when the user does not have permission to access the resource.",
-            "schema": {}
-          },
-          "404": {
-            "description": "Returned when the resource does not exist.",
-            "schema": {}
-          },
-          "default": {
-            "description": "An unexpected error response.",
-            "schema": {
-              "$ref": "#/definitions/rpcStatus"
-            }
-          }
-        },
-        "parameters": [
-          {
-            "name": "body",
-            "in": "body",
-            "required": true,
-            "schema": {
-              "$ref": "#/definitions/dungeonsandtrollsIdentifier"
             }
           }
         ],
@@ -286,7 +202,7 @@
     },
     "/v1/move": {
       "post": {
-        "summary": "Move the Character bound to the logged user to the specified place.",
+        "summary": "Assign skill point to the attribute for the Character bound to the logged\nuser.",
         "operationId": "DungeonsAndTrolls_Move",
         "responses": {
           "200": {
@@ -318,6 +234,48 @@
             "required": true,
             "schema": {
               "$ref": "#/definitions/dungeonsandtrollsCoordinates"
+            }
+          }
+        ],
+        "tags": [
+          "DungeonsAndTrolls"
+        ]
+      }
+    },
+    "/v1/pick-up": {
+      "post": {
+        "summary": "Equip the Item from the ground identified by the provided ID for the Character bound to the\nlogged user (unused).",
+        "operationId": "DungeonsAndTrolls_PickUp",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "type": "object",
+              "properties": {}
+            }
+          },
+          "403": {
+            "description": "Returned when the user does not have permission to access the resource.",
+            "schema": {}
+          },
+          "404": {
+            "description": "Returned when the resource does not exist.",
+            "schema": {}
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/dungeonsandtrollsIdentifier"
             }
           }
         ],
@@ -517,7 +475,7 @@
           "type": "number",
           "format": "float"
         },
-        "inteligence": {
+        "intelligence": {
           "type": "number",
           "format": "float"
         },
@@ -578,43 +536,22 @@
         "name": {
           "type": "string"
         },
-        "stats": {
-          "$ref": "#/definitions/dungeonsandtrollsStats",
-          "description": "todo max life stamina ..."
-        },
-        "level": {
-          "type": "integer",
-          "format": "int32"
-        },
         "attributes": {
           "$ref": "#/definitions/dungeonsandtrollsAttributes"
         },
-        "resistances": {
-          "$ref": "#/definitions/dungeonsandtrollsElements"
-        },
-        "inventory": {
-          "type": "array",
-          "items": {
-            "$ref": "#/definitions/dungeonsandtrollsItem"
-          }
-        },
-        "xp": {
-          "type": "integer",
-          "format": "int32"
-        },
         "money": {
-          "type": "integer",
-          "format": "int32"
-        },
-        "freeSkillPoints": {
-          "type": "integer",
-          "format": "int32"
+          "type": "string",
+          "format": "int64"
         },
         "equip": {
           "type": "array",
           "items": {
             "$ref": "#/definitions/dungeonsandtrollsItem"
           }
+        },
+        "score": {
+          "type": "string",
+          "format": "int64"
         }
       }
     },
@@ -622,25 +559,16 @@
       "type": "object",
       "properties": {
         "buy": {
-          "type": "array",
-          "items": {
-            "$ref": "#/definitions/dungeonsandtrollsIdentifier"
-          }
+          "$ref": "#/definitions/dungeonsandtrollsIdentifiers"
         },
-        "equip": {
-          "type": "array",
-          "items": {
-            "$ref": "#/definitions/dungeonsandtrollsIdentifier"
-          }
+        "pickUp": {
+          "$ref": "#/definitions/dungeonsandtrollsIdentifier"
         },
         "move": {
           "$ref": "#/definitions/dungeonsandtrollsCoordinates"
         },
         "skill": {
           "$ref": "#/definitions/dungeonsandtrollsSkillUse"
-        },
-        "assignAttribute": {
-          "$ref": "#/definitions/dungeonsandtrollsAttributes"
         },
         "yell": {
           "$ref": "#/definitions/dungeonsandtrollsMessage"
@@ -700,7 +628,7 @@
         }
       }
     },
-    "dungeonsandtrollsDropable": {
+    "dungeonsandtrollsDroppable": {
       "type": "object",
       "properties": {
         "skill": {
@@ -830,6 +758,10 @@
             "$ref": "#/definitions/dungeonsandtrollsEvent"
           },
           "description": "List of events which occurred in the previous tick. Useful for visualising\neffects, debugging and communication."
+        },
+        "score": {
+          "type": "string",
+          "format": "int64"
         }
       }
     },
@@ -1053,8 +985,8 @@
           "title": "int32 xp = 9;"
         },
         "score": {
-          "type": "integer",
-          "format": "int32"
+          "type": "string",
+          "format": "int64"
         },
         "icon": {
           "type": "string"
@@ -1068,7 +1000,7 @@
         "onDeath": {
           "type": "array",
           "items": {
-            "$ref": "#/definitions/dungeonsandtrollsDropable"
+            "$ref": "#/definitions/dungeonsandtrollsDroppable"
           }
         }
       }
@@ -1213,7 +1145,7 @@
         "summons": {
           "type": "array",
           "items": {
-            "$ref": "#/definitions/dungeonsandtrollsDropable"
+            "$ref": "#/definitions/dungeonsandtrollsDroppable"
           }
         }
       }
