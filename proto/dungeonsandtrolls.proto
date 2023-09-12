@@ -53,8 +53,8 @@ message Decoration {
 }
 
 message Position {
-  int32 x = 1;
-  int32 y = 2;
+  int32 positionX = 1;
+  int32 positionY = 2;
 }
 
 message Key {
