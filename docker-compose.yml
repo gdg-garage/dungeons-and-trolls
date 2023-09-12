@@ -3,8 +3,6 @@ version: "3.8"
 services:
   server:
     build: server
-    depends_on:
-      - db
     environment:
       - DISCORD_TOKEN=
       - GARAGE_GUILD_ID=
@@ -20,6 +18,7 @@ services:
       - "traefik.http.middlewares.server_compress.compress=true"
       - "traefik.http.routers.server.middlewares=server_compress"
       - traefik.port=8081
+    restart: always
 
   traefik:
     image: traefik
