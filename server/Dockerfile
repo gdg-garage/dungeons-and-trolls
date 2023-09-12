@@ -9,9 +9,9 @@ rm -rf /var/lib/apt/lists/*
 
 WORKDIR /app
 
-# COPY . .
-# RUN go mod download && go mod verify
+COPY . .
+RUN go mod download && go mod verify
 
-# RUN go build -v -o dnt .
+RUN go build -v -o dnt .
 
-# ENTRYPOINT [ "./dnt" ]
+ENTRYPOINT [ "./dnt" ]

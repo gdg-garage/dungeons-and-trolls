@@ -1,0 +1,56 @@
+version: "3.8"
+
+services:
+  server:
+    build: server
+    depends_on:
+      - db
+    environment:
+      - DISCORD_TOKEN=
+      - GARAGE_GUILD_ID=
+    volumes:
+      - ./data:/app/data
+    expose:
+      - 8081
+    labels:
+      - traefik.http.routers.server.rule=Host(`dt.garage-trip.cz`)
+      - traefik.http.routers.server.tls=true
+      - traefik.http.routers.server.entrypoints=websecure
+      - traefik.http.routers.server.tls.certresolver=le
+      - "traefik.http.middlewares.server_compress.compress=true"
+      - "traefik.http.routers.server.middlewares=server_compress"
+      - traefik.port=8081
+
+  traefik:
+    image: traefik
+    command:
+      - "--api.insecure=true"
+      - "--api.dashboard=true"
+      - "--providers.docker=true"
+      - "--entrypoints.web.address=:80"
+      - "--entrypoints.websecure.address=:443"
+      - "--certificatesresolvers.le.acme.tlschallenge=true"
+      - "--certificatesresolvers.le.acme.email=tivvitmail@gmail.com"
+      - "--certificatesresolvers.le.acme.storage=/letsencrypt/acme.json"
+      - "--entrypoints.web.http.redirections.entryPoint.to=websecure"
+      - "--entrypoints.web.http.redirections.entryPoint.scheme=https"
+    labels:
+      - "traefik.http.routers.traefik.rule=Host(`traefik.garage-trip.cz`)"
+      - "traefik.http.routers.traefik.entrypoints=websecure"
+      - "traefik.http.routers.traefik.tls.certresolver=le"
+      - "traefik.http.routers.traefik.service=api@internal"
+      - "traefik.http.routers.traefik.tls=true"
+      #- "traefik.http.routers.traefik.middlewares=auth"
+      #- "traefik.http.services.traefik.loadbalancer.server.port=8080"
+      #expose:
+      #- 8080
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - "./letsencrypt:/letsencrypt"
+      - "/var/run/docker.sock:/var/run/docker.sock:ro"
+    restart: always
+
+
+

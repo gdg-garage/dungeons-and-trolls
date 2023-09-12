@@ -6,7 +6,6 @@ import (
 	"strings"
 
 	"github.com/bwmarrin/discordgo"
-	"github.com/joho/godotenv"
 )
 
 func getDiscordUser(s *discordgo.Session, guildId string, username string, discriminator string) (*discordgo.User, error) {
@@ -34,10 +33,6 @@ func parseUsernameAndDiscriminatorFromHandle(handle string) (string, string, err
 }
 
 func SendMessageToUser(message string, username string, discriminator string) error {
-	err := godotenv.Load()
-	if err != nil {
-		return err
-	}
 	discord, err := discordgo.New("Bot " + os.Getenv("DISCORD_TOKEN"))
 	if err != nil {
 		return err
