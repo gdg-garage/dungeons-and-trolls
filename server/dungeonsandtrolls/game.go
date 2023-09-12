@@ -79,6 +79,7 @@ func NewGame() *Game {
 		},
 		playerCommands: map[string]*api.CommandsBatch{},
 		idToObject:     map[string]gameobject.Id{},
+		Score:          100,
 	}
 
 	return g

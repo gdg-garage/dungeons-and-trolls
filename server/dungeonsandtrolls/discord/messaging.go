@@ -2,6 +2,7 @@ package discord
 
 import (
 	"fmt"
+	"github.com/rs/zerolog/log"
 	"os"
 	"strings"
 
@@ -33,6 +34,9 @@ func parseUsernameAndDiscriminatorFromHandle(handle string) (string, string, err
 }
 
 func SendMessageToUser(message string, username string, discriminator string) error {
+	log.Info().Msgf("token ", os.Getenv("DISCORD_TOKEN"))
+	log.Info().Msgf("guild ", os.Getenv("GARAGE_GUILD_ID"))
+
 	discord, err := discordgo.New("Bot " + os.Getenv("DISCORD_TOKEN"))
 	if err != nil {
 		return err
@@ -62,7 +66,6 @@ func SendAPIKeyToUser(apiKey string, handle string) error {
 	if err != nil {
 		return err
 	}
-	// TODO format the key
-	return SendMessageToUser(`Here is your API key for Dungeons and trolls: `+apiKey+`.
+	return SendMessageToUser(`Here is your API key for Dungeons and trolls: `+"`"+apiKey+"`"+`.
 	Have fun!`, username, discriminator)
 }
