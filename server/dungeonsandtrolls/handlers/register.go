@@ -41,7 +41,7 @@ func RegisterUser(game *dungeonsandtrolls.Game, user *api.User) (*api.Registrati
 	game.AddPlayer(gameobject.CreatePlayer(user.Username), r)
 	err = discord.SendAPIKeyToUser(apiKey, user.Username)
 	if err != nil {
-		log.Warn().Err(err).Msgf("failed to send api key to %s, Discord used probably does not eist", user.Username)
+		log.Warn().Err(err).Msgf("failed to send api key to %s, Discord used probably does not exist", user.Username)
 	}
 	return r, nil
 }

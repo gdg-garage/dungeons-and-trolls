@@ -29,7 +29,7 @@ const gameTickStorageKey = "game_tick"
 
 type Game struct {
 	// Gained after kill (may be used in the next run)
-	Score           int64                         `json:"score"`
+	Score           float32                       `json:"score"`
 	Players         map[string]*gameobject.Player `json:"-"`
 	ApiKeyToPlayer  map[string]*gameobject.Player `json:"player_api_keys"`
 	MaxLevelReached int32                         `json:"max_reached_level"`
@@ -79,7 +79,7 @@ func NewGame() *Game {
 		},
 		playerCommands: map[string]*api.CommandsBatch{},
 		idToObject:     map[string]gameobject.Id{},
-		Score:          100,
+		Score:          0,
 	}
 
 	return g
@@ -182,7 +182,7 @@ func (g *Game) Respawn(player *gameobject.Player, markDeath bool) {
 
 	g.SpawnPlayer(player, gameobject.ZeroLevel)
 	player.ResetAttributes()
-	player.Character.Money = g.GetPlayerMoney()
+	player.Character.Money = g.GetMoney()
 	player.Character.Equip = []*api.Item{}
 	player.Equipped = map[api.Item_Type]*api.Item{}
 
@@ -196,7 +196,7 @@ func (g *Game) AddPlayer(player *gameobject.Player, registration *api.Registrati
 }
 
 func (g *Game) AddItem(item *api.Item) {
-	g.Game.Items = append(g.Game.Items, item)
+	g.Game.ShopItems = append(g.Game.ShopItems, item)
 
 	// This should imho fail because items does not implement id
 	g.Register(item)
@@ -302,13 +302,9 @@ func (g *Game) GetPlayerByKey(apiKey string) (*gameobject.Player, error) {
 	return player, nil
 }
 
-func (g *Game) GetMoney() int64 {
+func (g *Game) GetMoney() int32 {
 	//  TODO edit this formula
-	return int64(float64(g.Score) * 4.2)
-}
-
-func (g *Game) GetPlayerMoney() int64 {
-	return int64(math.Floor(float64(g.GetMoney()) / float64(len(g.Players))))
+	return int32(math.Sqrt(float64(g.Score)) + float64(420))
 }
 
 func (g *Game) SpawnPlayer(p *gameobject.Player, level int32) {

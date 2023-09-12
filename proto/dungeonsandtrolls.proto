@@ -98,7 +98,7 @@ message Elements {
 enum DamageType {
   none = 0;
   slash = 1;
-  piercing = 2; // todo no ing
+  pierce = 2;
   fire = 3;
   poison = 4;
   electric = 5;
@@ -121,8 +121,8 @@ message Attributes {
   optional float willpower = 4;
   optional float constitution = 5;
 
-  optional float slash_armor = 6;     // TODO slash_resist
-  optional float piercing_resist = 7; // TODO pierce_resist
+  optional float slash_resist = 6;
+  optional float pierce_resist = 7;
   optional float fire_resist = 8;
   optional float poison_resist = 9;
   optional float electric_resist = 10;
@@ -137,12 +137,12 @@ message Attributes {
 message SkillAttributes {
   optional Attributes strength = 1;
   optional Attributes dexterity = 2;
-  optional Attributes inteligence = 3;
+  optional Attributes intelligence = 3;
   optional Attributes willpower = 4;
   optional Attributes constitution = 5;
 
-  optional Attributes slash_armor = 6;     // TODO slash_resist
-  optional Attributes piercing_resist = 7; // TODO pierce_resist
+  optional Attributes slash_resist = 6;
+  optional Attributes pierce_resist = 7;
   optional Attributes fire_resist = 8;
   optional Attributes poison_resist = 9;
   optional Attributes electric_resist = 10;
@@ -175,7 +175,7 @@ message Monster {
   repeated Effect effects = 8;
   // int32 xp = 9;
   repeated Item equipped_items = 11;
-  int64 score = 12;
+  float score = 12;
   string icon = 13;
   string algorithm = 14;
   string faction = 15;
@@ -188,9 +188,9 @@ message Character {
   string id = 1;
   string name = 2;
   Attributes attributes = 3;
-  int64 money = 4;
+  int32 money = 4;
   repeated Item equip = 5;
-  int64 score = 6;
+  float score = 6;
 }
 
 message Skill {
@@ -203,7 +203,7 @@ message Skill {
 
   string id = 1;
   string name = 2;
-  Target targetType = 3; // TODO target
+  Target target = 3;
   repeated Effect effects = 4;
   Attributes cost = 5;
   Attributes range = 6;
@@ -211,8 +211,8 @@ message Skill {
   Attributes duration = 8;
   Attributes damageAmount = 9;
   DamageType damage_type = 10;
-  SkillEffect caster = 11; // TODO casterEffects
-  SkillEffect target = 12; // TODO targetEffects
+  SkillEffect caster_effects = 11;
+  SkillEffect target_effects = 12;
 }
 
 message Item {
@@ -229,10 +229,11 @@ message Item {
   string id = 1;
   string name = 2;
   Type slot = 3;
-  int32 buy_price = 4; // TODO price
+  int32 price = 4;
   Attributes requirements = 5;
-  Attributes attributes = 6; // TODO rename to effects
+  Attributes attributes = 6;
   repeated Skill skills = 7;
+  string icon = 8;
 }
 
 message Droppable {
@@ -251,13 +252,6 @@ message SkillEffect {
 	repeated string flags = 2;
 	repeated Droppable summons = 3;
 };
-
-// TODO this is temporary
-message Object {
-  string name = 1;
-  int32 position_x = 2;
-  int32 position_y = 3;
-}
 
 message Shortcut { optional Coordinates leads_to = 1; }
 
@@ -316,14 +310,15 @@ message Event {
 
 message GameState {
   Map map = 1;
-  repeated Item items = 2; // TODO rename to shop
+  repeated Item shop_items = 2;
   optional Character character = 3;
   optional Coordinates current_position = 4;
-  int64 tick = 5;
+  optional int32 current_level = 5;
+  int64 tick = 6;
   // List of events which occurred in the previous tick. Useful for visualising
   // effects, debugging and communication.
-  repeated Event events = 6;
-  int64 score = 7;
+  repeated Event events = 7;
+  float score = 8;
 }
 
 message User { string username = 1; }

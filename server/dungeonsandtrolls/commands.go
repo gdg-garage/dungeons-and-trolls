@@ -27,7 +27,7 @@ func ValidateBuy(game *Game, identifiers *api.Identifiers, p *gameobject.Player)
 		if !ok {
 			return fmt.Errorf("%s is not an Item ID", id)
 		}
-		playerMoney -= int64(i.BuyPrice)
+		playerMoney -= i.Price
 		if playerMoney < 0 {
 			return fmt.Errorf("insufficient funds to make the purchase")
 		}
@@ -87,11 +87,11 @@ func ExecuteBuy(game *Game, p *gameobject.Player, identifiers *api.Identifiers) 
 		if !ok {
 			return fmt.Errorf("%s is not Item ID", itemId)
 		}
-		if p.Character.Money < int64(item.BuyPrice) {
+		if p.Character.Money < item.Price {
 			// this should not happen (thanks to the validation above)
 			return fmt.Errorf("insufficient funds to make the purchase")
 		}
-		p.Character.Money -= int64(item.BuyPrice)
+		p.Character.Money -= item.Price
 		buyEvent := api.Event_BUY
 		game.LogEvent(&api.Event{
 			Type: &buyEvent,

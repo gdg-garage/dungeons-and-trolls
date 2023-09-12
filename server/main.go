@@ -51,6 +51,7 @@ func (s *server) Game(ctx context.Context, params *api.GameStateParams) (*api.Ga
 	}
 	g.Character = &p.Character
 	g.CurrentPosition = p.Position
+	g.CurrentLevel = p.Position.Level
 	return g, nil
 }
 

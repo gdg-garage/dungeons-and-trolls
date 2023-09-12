@@ -46,8 +46,8 @@ func (p *Player) ResetAttributes() error {
 		Willpower:    pointy.Float32(0),
 		Constitution: pointy.Float32(0),
 
-		SlashArmor:     pointy.Float32(0),
-		PiercingResist: pointy.Float32(0),
+		SlashResist:    pointy.Float32(0),
+		PierceResist:   pointy.Float32(0),
 		FireResist:     pointy.Float32(0),
 		PoisonResist:   pointy.Float32(0),
 		ElectricResist: pointy.Float32(0),

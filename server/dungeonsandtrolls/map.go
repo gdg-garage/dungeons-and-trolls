@@ -117,7 +117,10 @@ func parseTile(maybeTile interface{}, l *api.Level) error {
 		o.IsSpawn = &spawn
 	case "stairs":
 		o.IsStairs = true
-	case "decoration", "monster":
+	case "door":
+		o.IsDoor = true
+		o.IsFree = false
+	case "decoration", "monster", "chest":
 		// We do not care, the specific decoration is defined in the data field.
 	default:
 		log.Warn().Msgf("unknown terrain type %s", t)
