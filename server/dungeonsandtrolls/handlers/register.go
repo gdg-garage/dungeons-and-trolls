@@ -27,8 +27,9 @@ func generateApiKey() string {
 }
 
 func RegisterUser(game *dungeonsandtrolls.Game, user *api.User) (*api.Registration, error) {
-	game.GameLock.Lock()
-	defer game.GameLock.Unlock()
+	// TODO
+	//game.GameLock.Lock()
+	//defer game.GameLock.Unlock()
 	err := validateRegistration(game, user)
 	if err != nil {
 		return nil, err
