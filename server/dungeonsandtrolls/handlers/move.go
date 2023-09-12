@@ -27,6 +27,10 @@ func validateMove(game *dungeonsandtrolls.Game, c *api.Coordinates, p *gameobjec
 		return fmt.Errorf("there is no valid path from (%d, %d) to (%d, %d)",
 			p.Position.PositionX, p.Position.PositionY, c.PositionX, c.PositionY)
 	}
+	if path.Length() == 0 {
+		return fmt.Errorf("there is no valid path from (%d, %d) to (%d, %d)",
+			p.Position.PositionX, p.Position.PositionY, c.PositionX, c.PositionY)
+	}
 	p.MovingTo = path
 	return nil
 }
