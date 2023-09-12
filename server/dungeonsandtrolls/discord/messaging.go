@@ -2,7 +2,6 @@ package discord
 
 import (
 	"fmt"
-	"github.com/rs/zerolog/log"
 	"os"
 	"strings"
 
@@ -34,9 +33,6 @@ func parseUsernameAndDiscriminatorFromHandle(handle string) (string, string, err
 }
 
 func SendMessageToUser(message string, username string, discriminator string) error {
-	log.Info().Msgf("token ", os.Getenv("DISCORD_TOKEN"))
-	log.Info().Msgf("guild ", os.Getenv("GARAGE_GUILD_ID"))
-
 	discord, err := discordgo.New("Bot " + os.Getenv("DISCORD_TOKEN"))
 	if err != nil {
 		return err
