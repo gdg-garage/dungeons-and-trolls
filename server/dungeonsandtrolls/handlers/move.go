@@ -5,7 +5,6 @@ import (
 	"github.com/gdg-garage/dungeons-and-trolls/server/dungeonsandtrolls"
 	"github.com/gdg-garage/dungeons-and-trolls/server/dungeonsandtrolls/api"
 	"github.com/gdg-garage/dungeons-and-trolls/server/dungeonsandtrolls/gameobject"
-	"github.com/rs/zerolog/log"
 )
 
 func validateMove(game *dungeonsandtrolls.Game, c *api.Coordinates, p *gameobject.Player) error {
@@ -21,7 +20,6 @@ func validateMove(game *dungeonsandtrolls.Game, c *api.Coordinates, p *gameobjec
 	if c.PositionX >= lc.Width || c.PositionY >= lc.Height {
 		return fmt.Errorf("position (%d, %d) is out of the level map", c.PositionX, c.PositionY)
 	}
-	log.Info().Msgf("%v", lc.Grid)
 	path := lc.Grid.GetPathFromCells(
 		lc.Grid.Get(int(p.Position.PositionX), int(p.Position.PositionY)),
 		lc.Grid.Get(int(c.PositionX), int(c.PositionY)), false, true)

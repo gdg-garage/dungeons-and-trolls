@@ -23,6 +23,7 @@ func Buy(game *dungeonsandtrolls.Game, identifiers *api.Identifiers, token strin
 	}
 
 	pc := game.GetPlayerCommands(p.Character.Id)
+	// TODO per player lock
 	pc.Buy = identifiers
 
 	return nil

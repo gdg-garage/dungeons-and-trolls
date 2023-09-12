@@ -265,7 +265,7 @@ func (g *Game) processCommands() {
 			continue
 		}
 		p.MovingTo.Advance()
-		log.Info().Msgf("player is at (%d, %d), moving to (%d, %d)", p.Position.PositionX, p.Position.PositionY, p.MovingTo.Current().X, p.MovingTo.Current().Y)
+		//log.Info().Msgf("player is at (%d, %d), moving to (%d, %d)", p.Position.PositionX, p.Position.PositionY, p.MovingTo.Current().X, p.MovingTo.Current().Y)
 		g.MovePlayer(p, &api.Coordinates{
 			PositionX: int32(p.MovingTo.Current().X),
 			PositionY: int32(p.MovingTo.Current().Y)})
@@ -411,6 +411,7 @@ func (g *Game) GetPlayerCommands(pId string) *api.CommandsBatch {
 }
 
 func (g *Game) Register(o gameobject.Id) {
+	// TODO lock
 	g.idToObject[o.GetId()] = o
 }
 
