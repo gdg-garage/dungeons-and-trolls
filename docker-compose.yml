@@ -17,7 +17,7 @@ services:
       - traefik.http.routers.server.tls.certresolver=le
       - "traefik.http.middlewares.server_compress.compress=true"
       - "traefik.http.routers.server.middlewares=server_compress"
-      - traefik.port=8081
+      - traefik.port=8080
     restart: always
 
   traefik:
