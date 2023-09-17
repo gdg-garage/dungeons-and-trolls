@@ -39,7 +39,7 @@ func (s *Storage) write() error {
 		return err
 	}
 	tempFile := s.path + ".tmp"
-	err = os.WriteFile(s.path, j, 0644)
+	err = os.WriteFile(tempFile, j, 0644)
 	if err != nil {
 		return err
 	}
