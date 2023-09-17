@@ -20,6 +20,48 @@
     "application/json"
   ],
   "paths": {
+    "/v1/assign-skill-points": {
+      "post": {
+        "summary": "Send multiple commands to the Character bound to the logged user. The order\nof execution is defined in the message.",
+        "operationId": "DungeonsAndTrolls_AssignSkillPoints",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "type": "object",
+              "properties": {}
+            }
+          },
+          "403": {
+            "description": "Returned when the user does not have permission to access the resource.",
+            "schema": {}
+          },
+          "404": {
+            "description": "Returned when the resource does not exist.",
+            "schema": {}
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/dungeonsandtrollsAttributes"
+            }
+          }
+        ],
+        "tags": [
+          "DungeonsAndTrolls"
+        ]
+      }
+    },
     "/v1/buy": {
       "post": {
         "summary": "Buy Items identified by the provided ID for the Character bound to the\nlogged user.",
@@ -469,59 +511,73 @@
       "properties": {
         "strength": {
           "type": "number",
-          "format": "float"
+          "format": "float",
+          "x-nullable": true
         },
         "dexterity": {
           "type": "number",
-          "format": "float"
+          "format": "float",
+          "x-nullable": true
         },
         "intelligence": {
           "type": "number",
-          "format": "float"
+          "format": "float",
+          "x-nullable": true
         },
         "willpower": {
           "type": "number",
-          "format": "float"
+          "format": "float",
+          "x-nullable": true
         },
         "constitution": {
           "type": "number",
-          "format": "float"
+          "format": "float",
+          "x-nullable": true
         },
         "slashResist": {
           "type": "number",
-          "format": "float"
+          "format": "float",
+          "x-nullable": true
         },
         "pierceResist": {
           "type": "number",
-          "format": "float"
+          "format": "float",
+          "x-nullable": true
         },
         "fireResist": {
           "type": "number",
-          "format": "float"
+          "format": "float",
+          "x-nullable": true
         },
         "poisonResist": {
           "type": "number",
-          "format": "float"
+          "format": "float",
+          "x-nullable": true
         },
         "electricResist": {
           "type": "number",
-          "format": "float"
+          "format": "float",
+          "x-nullable": true
         },
         "life": {
           "type": "number",
-          "format": "float"
+          "format": "float",
+          "x-nullable": true
         },
         "stamina": {
           "type": "number",
-          "format": "float"
+          "format": "float",
+          "x-nullable": true
         },
         "mana": {
           "type": "number",
-          "format": "float"
+          "format": "float",
+          "x-nullable": true
         },
         "scalar": {
           "type": "number",
-          "format": "float"
+          "format": "float",
+          "x-nullable": true
         }
       }
     },
@@ -550,6 +606,10 @@
         "score": {
           "type": "number",
           "format": "float"
+        },
+        "skillPoints": {
+          "type": "integer",
+          "format": "int32"
         }
       }
     },
@@ -557,19 +617,24 @@
       "type": "object",
       "properties": {
         "buy": {
-          "$ref": "#/definitions/dungeonsandtrollsIdentifiers"
+          "$ref": "#/definitions/dungeonsandtrollsIdentifiers",
+          "x-nullable": true
         },
         "pickUp": {
-          "$ref": "#/definitions/dungeonsandtrollsIdentifier"
+          "$ref": "#/definitions/dungeonsandtrollsIdentifier",
+          "x-nullable": true
         },
         "move": {
-          "$ref": "#/definitions/dungeonsandtrollsCoordinates"
+          "$ref": "#/definitions/dungeonsandtrollsCoordinates",
+          "x-nullable": true
         },
         "skill": {
-          "$ref": "#/definitions/dungeonsandtrollsSkillUse"
+          "$ref": "#/definitions/dungeonsandtrollsSkillUse",
+          "x-nullable": true
         },
         "yell": {
-          "$ref": "#/definitions/dungeonsandtrollsMessage"
+          "$ref": "#/definitions/dungeonsandtrollsMessage",
+          "x-nullable": true
         }
       }
     },
@@ -590,7 +655,8 @@
       "properties": {
         "level": {
           "type": "integer",
-          "format": "int32"
+          "format": "int32",
+          "x-nullable": true
         },
         "positionX": {
           "type": "integer",
@@ -663,10 +729,12 @@
         },
         "areaOfEffect": {
           "type": "integer",
-          "format": "int32"
+          "format": "int32",
+          "x-nullable": true
         },
         "boosts": {
-          "$ref": "#/definitions/dungeonsandtrollsAttributes"
+          "$ref": "#/definitions/dungeonsandtrollsAttributes",
+          "x-nullable": true
         },
         "minStats": {
           "$ref": "#/definitions/dungeonsandtrollsStats"
@@ -708,10 +776,12 @@
           "type": "string"
         },
         "type": {
-          "$ref": "#/definitions/dungeonsandtrollsEventType"
+          "$ref": "#/definitions/dungeonsandtrollsEventType",
+          "x-nullable": true
         },
         "coordinates": {
-          "$ref": "#/definitions/dungeonsandtrollsCoordinates"
+          "$ref": "#/definitions/dungeonsandtrollsCoordinates",
+          "x-nullable": true
         }
       }
     },
@@ -739,14 +809,17 @@
           }
         },
         "character": {
-          "$ref": "#/definitions/dungeonsandtrollsCharacter"
+          "$ref": "#/definitions/dungeonsandtrollsCharacter",
+          "x-nullable": true
         },
         "currentPosition": {
-          "$ref": "#/definitions/dungeonsandtrollsCoordinates"
+          "$ref": "#/definitions/dungeonsandtrollsCoordinates",
+          "x-nullable": true
         },
         "currentLevel": {
           "type": "integer",
-          "format": "int32"
+          "format": "int32",
+          "x-nullable": true
         },
         "tick": {
           "type": "string",
@@ -946,6 +1019,7 @@
         },
         "isSpawn": {
           "type": "boolean",
+          "x-nullable": true,
           "title": "TODO: chests are not implemented yet\n bool chest = 4;"
         }
       }
@@ -1023,7 +1097,8 @@
       "type": "object",
       "properties": {
         "apiKey": {
-          "type": "string"
+          "type": "string",
+          "x-nullable": true
         }
       }
     },
@@ -1031,7 +1106,8 @@
       "type": "object",
       "properties": {
         "leadsTo": {
-          "$ref": "#/definitions/dungeonsandtrollsCoordinates"
+          "$ref": "#/definitions/dungeonsandtrollsCoordinates",
+          "x-nullable": true
         }
       }
     },
@@ -1083,46 +1159,60 @@
       "type": "object",
       "properties": {
         "strength": {
-          "$ref": "#/definitions/dungeonsandtrollsAttributes"
+          "$ref": "#/definitions/dungeonsandtrollsAttributes",
+          "x-nullable": true
         },
         "dexterity": {
-          "$ref": "#/definitions/dungeonsandtrollsAttributes"
+          "$ref": "#/definitions/dungeonsandtrollsAttributes",
+          "x-nullable": true
         },
         "intelligence": {
-          "$ref": "#/definitions/dungeonsandtrollsAttributes"
+          "$ref": "#/definitions/dungeonsandtrollsAttributes",
+          "x-nullable": true
         },
         "willpower": {
-          "$ref": "#/definitions/dungeonsandtrollsAttributes"
+          "$ref": "#/definitions/dungeonsandtrollsAttributes",
+          "x-nullable": true
         },
         "constitution": {
-          "$ref": "#/definitions/dungeonsandtrollsAttributes"
+          "$ref": "#/definitions/dungeonsandtrollsAttributes",
+          "x-nullable": true
         },
         "slashResist": {
-          "$ref": "#/definitions/dungeonsandtrollsAttributes"
+          "$ref": "#/definitions/dungeonsandtrollsAttributes",
+          "x-nullable": true
         },
         "pierceResist": {
-          "$ref": "#/definitions/dungeonsandtrollsAttributes"
+          "$ref": "#/definitions/dungeonsandtrollsAttributes",
+          "x-nullable": true
         },
         "fireResist": {
-          "$ref": "#/definitions/dungeonsandtrollsAttributes"
+          "$ref": "#/definitions/dungeonsandtrollsAttributes",
+          "x-nullable": true
         },
         "poisonResist": {
-          "$ref": "#/definitions/dungeonsandtrollsAttributes"
+          "$ref": "#/definitions/dungeonsandtrollsAttributes",
+          "x-nullable": true
         },
         "electricResist": {
-          "$ref": "#/definitions/dungeonsandtrollsAttributes"
+          "$ref": "#/definitions/dungeonsandtrollsAttributes",
+          "x-nullable": true
         },
         "life": {
-          "$ref": "#/definitions/dungeonsandtrollsAttributes"
+          "$ref": "#/definitions/dungeonsandtrollsAttributes",
+          "x-nullable": true
         },
         "stamina": {
-          "$ref": "#/definitions/dungeonsandtrollsAttributes"
+          "$ref": "#/definitions/dungeonsandtrollsAttributes",
+          "x-nullable": true
         },
         "mana": {
-          "$ref": "#/definitions/dungeonsandtrollsAttributes"
+          "$ref": "#/definitions/dungeonsandtrollsAttributes",
+          "x-nullable": true
         },
         "scalar": {
-          "$ref": "#/definitions/dungeonsandtrollsAttributes"
+          "$ref": "#/definitions/dungeonsandtrollsAttributes",
+          "x-nullable": true
         }
       }
     },
@@ -1153,10 +1243,12 @@
           "type": "string"
         },
         "targetId": {
-          "type": "string"
+          "type": "string",
+          "x-nullable": true
         },
         "location": {
-          "$ref": "#/definitions/dungeonsandtrollsCoordinates"
+          "$ref": "#/definitions/dungeonsandtrollsCoordinates",
+          "x-nullable": true
         }
       }
     },

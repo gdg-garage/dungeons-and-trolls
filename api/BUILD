@@ -11,6 +11,7 @@ gateway_openapiv2_compile(
         "@rules_proto_grpc//grpc-gateway:openapiv2_plugin": [
             "grpc_api_configuration=proto/service.yml",
             "openapi_configuration=api/openapi_options.yaml",
+            "proto3_optional_nullable=true"
         ]
     },
 )

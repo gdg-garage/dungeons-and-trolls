@@ -7,7 +7,7 @@ import (
 )
 
 // ValidateBuy validates identifiers, funds, and requirements
-func ValidateBuy(game *Game, identifiers *api.Identifiers, p *gameobject.Player) error {
+func ValidateBuy(game *Game, p *gameobject.Player, identifiers *api.Identifiers) error {
 	// this has to be a copy
 	playerMoney := p.Character.Money * 1
 	requirements := &api.Attributes{}
@@ -73,7 +73,7 @@ func ExecuteYell(game *Game, p *gameobject.Player, message *api.Message) error {
 }
 
 func ExecuteBuy(game *Game, p *gameobject.Player, identifiers *api.Identifiers) error {
-	err := ValidateBuy(game, identifiers, p)
+	err := ValidateBuy(game, p, identifiers)
 	if err != nil {
 		return err
 	}
@@ -99,7 +99,7 @@ func ExecuteBuy(game *Game, p *gameobject.Player, identifiers *api.Identifiers) 
 				p.Character.Id, p.Character.Name, itemId, item.Name)})
 
 		// Buying also means equip in the version without inventory
-		err = Equip(game, item, p)
+		err = Equip(game, p, item)
 		if err != nil {
 			return err
 		}
@@ -107,7 +107,7 @@ func ExecuteBuy(game *Game, p *gameobject.Player, identifiers *api.Identifiers) 
 	return nil
 }
 
-func Equip(game *Game, item *api.Item, player *gameobject.Player) error {
+func Equip(game *Game, player *gameobject.Player, item *api.Item) error {
 	equipEvent := api.Event_EQUIP
 	game.LogEvent(&api.Event{
 		Type: &equipEvent,
@@ -118,5 +118,111 @@ func Equip(game *Game, item *api.Item, player *gameobject.Player) error {
 
 func ExecutePickUp(game *Game, p *gameobject.Player, i *api.Identifier) error {
 	// TODO solve concurrent pickUp (more than one player wants to pick up the same item)
+	// TODO how to solve attributes consistently
 	return fmt.Errorf("not implemented")
+}
+
+func payForSkill(p *gameobject.Player, s *api.Skill) error {
+	if s.Cost != nil {
+		return nil
+	}
+	return gameobject.SubtractAllAttributes(p.Character.Attributes, s.Cost, false)
+
+}
+
+func ExecuteSkill(game *Game, player *gameobject.Player, su *api.SkillUse) error {
+	s, ok := player.Skills[su.SkillId]
+	if !ok {
+		return fmt.Errorf("skill %s not found for character", su.SkillId)
+	}
+	skillEvent := api.Event_SKILL
+	game.LogEvent(
+		&api.Event{
+			Type:        &skillEvent,
+			Message:     fmt.Sprintf("%s (%s): used skill: %s (%s)", player.Character.Id, player.Character.Name, s.Id, s.Name),
+			Coordinates: player.Position,
+		})
+
+	err := payForSkill(player, s)
+	if err != nil {
+		return err
+	}
+
+	var duration float64
+	if s.Duration != nil {
+		d, err := gameobject.AttributesValue(player.Character.Attributes, s.Duration)
+		if err != nil {
+			return err
+		}
+		duration = gameobject.RoundSkill(d)
+	}
+
+	if s.CasterEffects != nil {
+		e, err := gameobject.EvaluateSkillAttributes(s.CasterEffects.Attributes, player.Character.Attributes)
+		if err != nil {
+			return err
+		}
+		player.Character.Effects = append(player.Character.Effects, &api.Effect{
+			Effects:  e,
+			Duration: int32(duration),
+		})
+		// TODO summons
+		// TODO flags
+	}
+
+	switch s.Target {
+	case api.Skill_character:
+		character, err := game.GetObjectById(*su.TargetId)
+		if err != nil {
+			return err
+		}
+		if s.TargetEffects != nil {
+			e, err := gameobject.EvaluateSkillAttributes(s.TargetEffects.Attributes, player.Character.Attributes)
+			if err != nil {
+				return err
+			}
+			d, err := gameobject.AttributesValue(player.Character.Attributes, s.DamageAmount)
+			if err != nil {
+				return err
+			}
+			// TODO summons
+			// TODO flags
+			switch c := character.(type) {
+			case *gameobject.Monster:
+				c.Monster.Effects = append(c.Monster.Effects, &api.Effect{
+					Effects:      e,
+					DamageAmount: float32(d),
+					DamageType:   s.DamageType,
+					Duration:     int32(duration),
+				})
+			case *gameobject.Player:
+				c.Character.Effects = append(c.Character.Effects, &api.Effect{
+					Effects:      e,
+					DamageAmount: float32(d),
+					DamageType:   s.DamageType,
+					Duration:     int32(duration),
+				})
+			default:
+				return fmt.Errorf("tried to cast character spell on non-character")
+			}
+		}
+	case api.Skill_item:
+		//maybeItem, err := game.GetObjectById(*su.TargetId)
+		//if err != nil {
+		//	return err
+		//}
+		//i, ok := maybeItem.(*api.Item)
+		//if !ok {
+		//	return fmt.Errorf("tried to cast item spell on non-item")
+		//}
+		// TODO item effects?
+	case api.Skill_position:
+		// teleport
+		err = game.MovePlayer(player, su.Location)
+		if err != nil {
+			return err
+		}
+		return fmt.Errorf("not implemented")
+	}
+	return nil
 }

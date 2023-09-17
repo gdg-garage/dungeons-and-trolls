@@ -1,25 +1,25 @@
 package gameobject
 
-import "github.com/gdg-garage/dungeons-and-trolls/server/dungeonsandtrolls/api"
+import (
+	"github.com/gdg-garage/dungeons-and-trolls/server/dungeonsandtrolls/api"
+	"github.com/solarlune/paths"
+)
 
 // TODO this should be same class as player (or use same parent)
-// TODO player and monster are items on the map and players may interact with them, therfore they should have an ID.
 
 type Monster struct {
-	GameObject `json:",inline"`
-	Position   api.Coordinates `json:"-"`
-	MovingTo   api.Coordinates `json:"-"`
-	Monster    api.Monster     `json:"-"`
+	Position *api.Coordinates `json:"position"`
+	MovingTo *paths.Path      `json:"-"`
+	Monster  *api.Monster     `json:"-"`
 }
 
-func CreateMonster(name string) *Monster {
+func CreateMonster(m *api.Monster, p *api.Coordinates) *Monster {
 	return &Monster{
-		Monster: api.Monster{
-			Name: name,
-			Id:   GetNewId(),
-		},
-		GameObject: GameObject{
-			Type: "Monster",
-		},
+		Position: p,
+		Monster:  m,
 	}
+}
+
+func (m *Monster) GetId() string {
+	return m.Monster.Id
 }

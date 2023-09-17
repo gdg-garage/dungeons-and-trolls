@@ -35,6 +35,9 @@ service DungeonsAndTrolls {
   rpc Commands(CommandsBatch) returns (google.protobuf.Empty) {}
   // Control monsters. Admin only.
   rpc MonstersCommands(CommandsForMonsters) returns (google.protobuf.Empty) {}
+  // Send multiple commands to the Character bound to the logged user. The order
+  // of execution is defined in the message.
+  rpc AssignSkillPoints(Attributes) returns (google.protobuf.Empty) {}
 
   // TODO teleport home
   // maybe it is enough that you can always move to the 0 floor
@@ -62,7 +65,7 @@ message Key {
 }
 
 message Waypoint {
-  int32 destinationFloor = 1;
+  int32 destination_floor = 1;
 }
 
 message GameStateParams {
@@ -87,14 +90,6 @@ message CommandsForMonsters {
   map<string, CommandsBatch> commands = 1;
 }
 
-message Elements {
-  int32 cold = 1;
-  int32 fire = 2;
-  int32 lightning = 3;
-  int32 poison = 4;
-  int32 physical = 5;
-}
-
 enum DamageType {
   none = 0;
   slash = 1;
@@ -105,13 +100,10 @@ enum DamageType {
 }
 
 message Effect {
-  Elements min_damage = 1;
-  Elements max_damage = 2;
-  int32 duration = 3;
-  optional int32 area_of_effect = 4;
-  optional Attributes boosts = 5;
-  Stats min_stats = 6;
-  Stats max_stats = 7;
+  float damage_amount = 1;
+  DamageType damage_type = 2;
+  Attributes effects = 3;
+  int32 duration = 4;
 }
 
 message Attributes {
@@ -191,6 +183,8 @@ message Character {
   int32 money = 4;
   repeated Item equip = 5;
   float score = 6;
+  int32 skill_points = 7;
+  repeated Effect effects = 9;
 }
 
 message Skill {
@@ -204,15 +198,14 @@ message Skill {
   string id = 1;
   string name = 2;
   Target target = 3;
-  repeated Effect effects = 4;
-  Attributes cost = 5;
-  Attributes range = 6;
-  Attributes radius = 7;
-  Attributes duration = 8;
-  Attributes damageAmount = 9;
-  DamageType damage_type = 10;
-  SkillEffect caster_effects = 11;
-  SkillEffect target_effects = 12;
+  Attributes cost = 4;
+  Attributes range = 5;
+  Attributes radius = 6;
+  Attributes duration = 7;
+  Attributes damage_amount = 8;
+  DamageType damage_type = 9;
+  SkillEffect caster_effects = 10;
+  SkillEffect target_effects = 11;
 }
 
 message Item {
@@ -260,7 +253,7 @@ message MapObjects {
   repeated Monster monsters = 2;
   repeated Character players = 3;
   bool is_stairs = 4;
-  repeated Shortcut portals = 5;
+  optional Waypoint portal = 5;
   repeated Decoration decorations = 6;
   repeated Effect effects = 7;
   repeated Item items = 8;
@@ -270,17 +263,6 @@ message MapObjects {
   optional bool is_spawn = 12;
   // TODO: chests are not implemented yet
   // bool chest = 4;
-}
-
-// Those are useful for visualization and niche implementations (you do not need
-// them for your first bot).
-message MapDecorations {
-  bool carpet = 1;
-  bool rug = 2;
-  bool rope = 3;
-  bool lava = 4;
-  bool pedestal = 5;
-  bool spawn = 6;
 }
 
 message Level {
@@ -301,6 +283,7 @@ message Event {
     BUY = 2;
     EQUIP = 3;
     ERROR = 4;
+    SKILL = 5;
   }
 
   string message = 1;

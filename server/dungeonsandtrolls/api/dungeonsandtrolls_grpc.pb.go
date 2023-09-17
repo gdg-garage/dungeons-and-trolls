@@ -33,6 +33,7 @@ type DungeonsAndTrollsClient interface {
 	Yell(ctx context.Context, in *Message, opts ...grpc.CallOption) (*emptypb.Empty, error)
 	Commands(ctx context.Context, in *CommandsBatch, opts ...grpc.CallOption) (*emptypb.Empty, error)
 	MonstersCommands(ctx context.Context, in *CommandsForMonsters, opts ...grpc.CallOption) (*emptypb.Empty, error)
+	AssignSkillPoints(ctx context.Context, in *Attributes, opts ...grpc.CallOption) (*emptypb.Empty, error)
 }
 
 type dungeonsAndTrollsClient struct {
@@ -133,6 +134,15 @@ func (c *dungeonsAndTrollsClient) MonstersCommands(ctx context.Context, in *Comm
 	return out, nil
 }
 
+func (c *dungeonsAndTrollsClient) AssignSkillPoints(ctx context.Context, in *Attributes, opts ...grpc.CallOption) (*emptypb.Empty, error) {
+	out := new(emptypb.Empty)
+	err := c.cc.Invoke(ctx, "/dungeonsandtrolls.DungeonsAndTrolls/AssignSkillPoints", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // DungeonsAndTrollsServer is the server API for DungeonsAndTrolls service.
 // All implementations must embed UnimplementedDungeonsAndTrollsServer
 // for forward compatibility
@@ -147,6 +157,7 @@ type DungeonsAndTrollsServer interface {
 	Yell(context.Context, *Message) (*emptypb.Empty, error)
 	Commands(context.Context, *CommandsBatch) (*emptypb.Empty, error)
 	MonstersCommands(context.Context, *CommandsForMonsters) (*emptypb.Empty, error)
+	AssignSkillPoints(context.Context, *Attributes) (*emptypb.Empty, error)
 	mustEmbedUnimplementedDungeonsAndTrollsServer()
 }
 
@@ -183,6 +194,9 @@ func (UnimplementedDungeonsAndTrollsServer) Commands(context.Context, *CommandsB
 }
 func (UnimplementedDungeonsAndTrollsServer) MonstersCommands(context.Context, *CommandsForMonsters) (*emptypb.Empty, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method MonstersCommands not implemented")
+}
+func (UnimplementedDungeonsAndTrollsServer) AssignSkillPoints(context.Context, *Attributes) (*emptypb.Empty, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method AssignSkillPoints not implemented")
 }
 func (UnimplementedDungeonsAndTrollsServer) mustEmbedUnimplementedDungeonsAndTrollsServer() {}
 
@@ -377,6 +391,24 @@ func _DungeonsAndTrolls_MonstersCommands_Handler(srv interface{}, ctx context.Co
 	return interceptor(ctx, in, info, handler)
 }
 
+func _DungeonsAndTrolls_AssignSkillPoints_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(Attributes)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(DungeonsAndTrollsServer).AssignSkillPoints(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/dungeonsandtrolls.DungeonsAndTrolls/AssignSkillPoints",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(DungeonsAndTrollsServer).AssignSkillPoints(ctx, req.(*Attributes))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // DungeonsAndTrolls_ServiceDesc is the grpc.ServiceDesc for DungeonsAndTrolls service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -423,6 +455,10 @@ var DungeonsAndTrolls_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "MonstersCommands",
 			Handler:    _DungeonsAndTrolls_MonstersCommands_Handler,
+		},
+		{
+			MethodName: "AssignSkillPoints",
+			Handler:    _DungeonsAndTrolls_AssignSkillPoints_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

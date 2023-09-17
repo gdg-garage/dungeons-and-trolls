@@ -121,7 +121,7 @@ func parseTile(maybeTile interface{}, l *api.Level) error {
 		o.IsDoor = true
 		o.IsFree = false
 	case "decoration", "monster", "chest":
-		// We do not care, the specific decoration is defined in the data field.
+		// We do not care, the specifics are defined in the data field.
 	default:
 		log.Warn().Msgf("unknown terrain type %s", t)
 	}
@@ -157,21 +157,76 @@ func parseMapObjects(tile map[string]interface{}, o *api.MapObjects) error {
 			return fmt.Errorf("tile data is malformed %v", err)
 		}
 
+		nonNil(d)
+
 		switch i := d.Data.(type) {
 		case *api.Droppable_Item:
 			o.Items = append(o.Items, i.Item)
-			// log.Info().Msgf("I found item %v", i)
 		case *api.Droppable_Monster:
 			o.Monsters = append(o.Monsters, i.Monster)
-			// log.Info().Msgf("I found monster %v", i)
 		case *api.Droppable_Decoration:
 			o.Decorations = append(o.Decorations, i.Decoration)
-			// log.Info().Msgf("I found decoration %v", i)
+		case *api.Droppable_Waypoint:
+			o.Portal = i.Waypoint
 		default:
 			log.Info().Msgf("I found something(%T) %v", i, i)
 		}
 	}
 	return nil
+}
+
+func nonNil(d *api.Droppable) {
+	switch i := d.Data.(type) {
+	case *api.Droppable_Item:
+		nonNilItem(i.Item)
+	case *api.Droppable_Monster:
+		nonNilMonster(i.Monster)
+	}
+}
+
+func nonNilMonster(m *api.Monster) {
+	for _, i := range m.EquippedItems {
+		nonNilItem(i)
+	}
+	for _, d := range m.OnDeath {
+		nonNil(d)
+	}
+}
+
+func nonNilItem(i *api.Item) {
+	if i.Attributes == nil {
+		i.Attributes = &api.Attributes{}
+	}
+	if i.Requirements == nil {
+		i.Requirements = &api.Attributes{}
+	}
+	for _, s := range i.Skills {
+		nonNilISkill(s)
+	}
+}
+
+func nonNilISkill(s *api.Skill) {
+	if s.Cost == nil {
+		s.Cost = &api.Attributes{}
+	}
+	if s.Range == nil {
+		s.Range = &api.Attributes{}
+	}
+	if s.Radius == nil {
+		s.Radius = &api.Attributes{}
+	}
+	if s.Duration == nil {
+		s.Duration = &api.Attributes{}
+	}
+	if s.DamageAmount == nil {
+		s.DamageAmount = &api.Attributes{}
+	}
+	if s.CasterEffects == nil {
+		s.CasterEffects = &api.SkillEffect{Attributes: &api.SkillAttributes{}}
+	}
+	if s.TargetEffects == nil {
+		s.TargetEffects = &api.SkillEffect{Attributes: &api.SkillAttributes{}}
+	}
 }
 
 func addIds(mp *api.Map) {
@@ -253,7 +308,7 @@ func LevelsPostProcessing(g *Game, m *api.Map, mapCache *MapCache) error {
 				g.Register(i)
 			}
 			for _, m := range o.Monsters {
-				g.Register(m)
+				g.Register(gameobject.CreateMonster(m, o.Position))
 			}
 		}
 

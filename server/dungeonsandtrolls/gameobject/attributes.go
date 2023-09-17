@@ -29,7 +29,9 @@ func AttributesOperation(receiver *api.Attributes, booster *api.Attributes, skip
 			if r != nil {
 				operation(r, vv)
 			} else if !mustBePresent {
-				reflect.ValueOf(receiver).Elem().FieldByName(field.Name).Set(v)
+				var newVal float32
+				reflect.ValueOf(receiver).Elem().FieldByName(field.Name).Set(reflect.ValueOf(&newVal))
+				operation(&newVal, vv)
 			}
 		}
 	}

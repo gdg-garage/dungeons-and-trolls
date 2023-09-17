@@ -32,3 +32,6 @@ http:
     - selector: dungeonsandtrolls.DungeonsAndTrolls.Yell
       post: /v1/yell
       body: "*"
+    - selector: dungeonsandtrolls.DungeonsAndTrolls.AssignSkillPoints
+      post: /v1/assign-skill-points
+      body: "*"

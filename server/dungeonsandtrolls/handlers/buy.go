@@ -17,7 +17,7 @@ func Buy(game *dungeonsandtrolls.Game, identifiers *api.Identifiers, token strin
 		return fmt.Errorf("buying is availible only on the ground floor")
 	}
 
-	err = dungeonsandtrolls.ValidateBuy(game, identifiers, p)
+	err = dungeonsandtrolls.ValidateBuy(game, p, identifiers)
 	if err != nil {
 		return err
 	}

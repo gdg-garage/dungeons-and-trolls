@@ -95,8 +95,12 @@ func (s *server) Respawn(ctx context.Context, _ *emptypb.Empty) (*emptypb.Empty,
 	return &emptypb.Empty{}, handlers.Respawn(s.G, token)
 }
 
-func (s *server) Skill(ctx context.Context, spell *api.SkillUse) (*emptypb.Empty, error) {
-	return nil, nil
+func (s *server) Skill(ctx context.Context, skill *api.SkillUse) (*emptypb.Empty, error) {
+	token, err := getToken(ctx)
+	if err != nil {
+		return &emptypb.Empty{}, err
+	}
+	return &emptypb.Empty{}, handlers.Skill(s.G, skill, token)
 }
 
 func (s *server) Commands(ctx context.Context, commands *api.CommandsBatch) (*emptypb.Empty, error) {
@@ -117,6 +121,16 @@ func (s *server) Yell(ctx context.Context, message *api.Message) (*emptypb.Empty
 		return &emptypb.Empty{}, err
 	}
 	return &emptypb.Empty{}, handlers.Yell(s.G, message, token)
+}
+
+func (s *server) AssignSkillPoints(ctx context.Context, attributes *api.Attributes) (*emptypb.Empty, error) {
+	//token, err := getToken(ctx)
+	//if err != nil {
+	//	return &emptypb.Empty{}, err
+	//}
+	//return &emptypb.Empty{}, handlers.Yell(s.G, attributes, token)
+
+	return &emptypb.Empty{}, nil
 }
 
 func main() {

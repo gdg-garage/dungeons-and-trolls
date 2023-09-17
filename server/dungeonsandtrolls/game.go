@@ -258,6 +258,19 @@ func (g *Game) processCommands() {
 				})
 			}
 		}
+
+		//TODO skill on newly bought (picked up) items?
+		if c.Skill != nil {
+			err = ExecuteSkill(g, p, c.Skill)
+			if err != nil {
+				errorEvent := api.Event_ERROR
+				g.LogEvent(&api.Event{
+					Type:        &errorEvent,
+					Message:     fmt.Sprintf("%s (%s): failed to use skill: %s", p.Character.Id, p.Character.Name, err.Error()),
+					Coordinates: p.Position,
+				})
+			}
+		}
 	}
 
 	// move players based on move to
@@ -280,16 +293,57 @@ func (g *Game) processCommands() {
 			log.Warn().Err(err).Msg("")
 			continue
 		}
-		if !o.IsStairs {
+		if o.IsStairs {
+			// spawn in the next level.
+			g.SpawnPlayer(p, *p.Position.Level+1)
+			// cancel currently invalid path
+			p.MovingTo = nil
+			// TODO log level traverse stats
+			// TODO log newly discovered levels
+		}
+		if o.Portal != nil {
+			// spawn in the next level.
+			g.SpawnPlayer(p, *p.Position.Level+1)
+			// cancel currently invalid path
+			p.MovingTo = nil
+			// TODO log level traverse stats
+			// TODO log newly discovered levels
+		}
+	}
+
+	for _, i := range g.idToObject {
+		switch c := i.(type) {
+		case *gameobject.Monster:
+			e, err := gameobject.EvaluateEffects(c.Monster.Effects, c.Monster.Attributes)
+			if err != nil {
+				errorEvent := api.Event_ERROR
+				g.LogEvent(&api.Event{
+					Type:        &errorEvent,
+					Message:     fmt.Sprintf("failed to evaluate effects for monster %s: %s", c.GetId(), err.Error()),
+					Coordinates: c.Position,
+				})
+			} else {
+				c.Monster.Effects = e
+			}
+		case *gameobject.Player:
+			e, err := gameobject.EvaluateEffects(c.Character.Effects, c.Character.Attributes)
+			if err != nil {
+				errorEvent := api.Event_ERROR
+				g.LogEvent(&api.Event{
+					Type:        &errorEvent,
+					Message:     fmt.Sprintf("failed to evaluate effects for player %s: %s", c.GetId(), err.Error()),
+					Coordinates: c.Position,
+				})
+			} else {
+				c.Character.Effects = e
+			}
+		default:
+			// TODO items?
 			continue
 		}
-		// spawn in the next level.
-		g.SpawnPlayer(p, *p.Position.Level+1)
-		// cancel currently invalid path
-		p.MovingTo = nil
-		// TODO log level traverse stats
-		// TODO log newly discovered levels
 	}
+
+	// TODO kill what is dead
 
 	g.playerCommands = map[string]*api.CommandsBatch{}
 }

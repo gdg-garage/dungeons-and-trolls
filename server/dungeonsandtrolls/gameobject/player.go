@@ -10,13 +10,13 @@ import (
 const baseStat float32 = 100
 
 type Player struct {
-	GameObject     `json:",inline"`
 	Position       *api.Coordinates            `json:"position"`
 	MovingTo       *paths.Path                 `json:"-"`
 	Equipped       map[api.Item_Type]*api.Item `json:"-"`
 	Character      api.Character               `json:"character"`
 	ItemAttributes *api.Attributes             `json:"-"`
-	MaxStats       *api.Attributes
+	MaxStats       *api.Attributes             `json:"-"`
+	Skills         map[string]*api.Skill       `json:"-"`
 }
 
 func CreatePlayer(name string) *Player {
@@ -24,9 +24,6 @@ func CreatePlayer(name string) *Player {
 		Character: api.Character{
 			Name: name,
 			Id:   GetNewId(),
-		},
-		GameObject: GameObject{
-			Type: "Player",
 		},
 		Equipped: map[api.Item_Type]*api.Item{},
 	}
@@ -51,6 +48,9 @@ func (p *Player) ResetAttributes() error {
 		FireResist:     pointy.Float32(0),
 		PoisonResist:   pointy.Float32(0),
 		ElectricResist: pointy.Float32(0),
+
+		// necessary because scalar part in the skills would be zero or skipped
+		Scalar: pointy.Float32(1),
 	}
 	p.MaxStats = &api.Attributes{
 		Life:    pointy.Float32(baseStat),
@@ -98,11 +98,21 @@ func (p *Player) GetId() string {
 	return p.Character.Id
 }
 
+func (p *Player) generateSkills() {
+	p.Skills = map[string]*api.Skill{}
+	for _, i := range p.Equipped {
+		for _, s := range i.Skills {
+			p.Skills[s.Id] = s
+		}
+	}
+}
+
 func (p *Player) generateEquip() {
 	p.Character.Equip = []*api.Item{}
 	for _, item := range p.Equipped {
 		p.Character.Equip = append(p.Character.Equip, item)
 	}
+	p.generateSkills()
 }
 
 func (p *Player) Equip(item *api.Item) error {

@@ -18,7 +18,7 @@ func Commands(game *dungeonsandtrolls.Game, c *api.CommandsBatch, token string) 
 		}
 	}
 	if c.Buy != nil {
-		err = dungeonsandtrolls.ValidateBuy(game, c.Buy, p)
+		err = dungeonsandtrolls.ValidateBuy(game, p, c.Buy)
 		if err != nil {
 			return err
 		}
@@ -35,14 +35,20 @@ func Commands(game *dungeonsandtrolls.Game, c *api.CommandsBatch, token string) 
 			return err
 		}
 	}
-
-	// TODO validate all
+	if c.Skill != nil {
+		err = validateSkill(game, c.Skill, p)
+		if err != nil {
+			return err
+		}
+	}
+	// TODO skill points
 
 	pc := game.GetPlayerCommands(p.Character.Id)
 	pc.Move = c.Move
 	pc.Yell = c.Yell
 	pc.Buy = c.Buy
 	pc.PickUp = c.PickUp
+	pc.Skill = c.Skill
 
 	return nil
 }
