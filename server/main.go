@@ -49,6 +49,14 @@ func (s *server) Game(ctx context.Context, params *api.GameStateParams) (*api.Ga
 	if !ok {
 		return nil, fmt.Errorf("cloning GameState failed")
 	}
+	// filter monsters for non-monster players
+	for _, l := range g.Map.Levels {
+		for _, o := range l.Objects {
+			for _, m := range o.Monsters {
+				dungeonsandtrolls.HideNonPublicMonsterFields(s.G, m)
+			}
+		}
+	}
 	g.Character = &p.Character
 	g.CurrentPosition = p.Position
 	g.CurrentLevel = p.Position.Level

@@ -160,21 +160,18 @@ message Rewards {
 message Monster {
   string id = 1;
   string name = 2;
-  // Stats stats = 3;
-  // int32 level = 4;
-  Attributes attributes = 5;
-  // repeated Item inventory = 7;
-  repeated Effect effects = 8;
-  // int32 xp = 9;
-  repeated Item equipped_items = 11;
-  float score = 12;
-  string icon = 13;
-  string algorithm = 14;
-  string faction = 15;
-  repeated Droppable on_death = 16;
-}
+  string icon = 3;
+  repeated string items = 4;
+  repeated Effect effects = 5;
+  float life_percentage = 6;
 
-// TODO create user monster
+  optional Attributes attributes = 7;
+  repeated Item equipped_items = 8;
+  optional float score = 9;
+  optional string algorithm = 10;
+  optional string faction = 11;
+  repeated Droppable on_death = 12;
+}
 
 message Character {
   string id = 1;
@@ -261,8 +258,6 @@ message MapObjects {
   bool is_wall = 10;
   bool is_door = 11;
   optional bool is_spawn = 12;
-  // TODO: chests are not implemented yet
-  // bool chest = 4;
 }
 
 message Level {

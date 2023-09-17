@@ -610,6 +610,12 @@
         "skillPoints": {
           "type": "integer",
           "format": "int32"
+        },
+        "effects": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/dungeonsandtrollsEffect"
+          }
         }
       }
     },
@@ -717,53 +723,17 @@
     "dungeonsandtrollsEffect": {
       "type": "object",
       "properties": {
-        "minDamage": {
-          "$ref": "#/definitions/dungeonsandtrollsElements"
+        "damageAmount": {
+          "type": "number",
+          "format": "float"
         },
-        "maxDamage": {
-          "$ref": "#/definitions/dungeonsandtrollsElements"
+        "damageType": {
+          "$ref": "#/definitions/dungeonsandtrollsDamageType"
+        },
+        "effects": {
+          "$ref": "#/definitions/dungeonsandtrollsAttributes"
         },
         "duration": {
-          "type": "integer",
-          "format": "int32"
-        },
-        "areaOfEffect": {
-          "type": "integer",
-          "format": "int32",
-          "x-nullable": true
-        },
-        "boosts": {
-          "$ref": "#/definitions/dungeonsandtrollsAttributes",
-          "x-nullable": true
-        },
-        "minStats": {
-          "$ref": "#/definitions/dungeonsandtrollsStats"
-        },
-        "maxStats": {
-          "$ref": "#/definitions/dungeonsandtrollsStats"
-        }
-      }
-    },
-    "dungeonsandtrollsElements": {
-      "type": "object",
-      "properties": {
-        "cold": {
-          "type": "integer",
-          "format": "int32"
-        },
-        "fire": {
-          "type": "integer",
-          "format": "int32"
-        },
-        "lightning": {
-          "type": "integer",
-          "format": "int32"
-        },
-        "poison": {
-          "type": "integer",
-          "format": "int32"
-        },
-        "physical": {
           "type": "integer",
           "format": "int32"
         }
@@ -792,7 +762,8 @@
         "MESSAGE",
         "BUY",
         "EQUIP",
-        "ERROR"
+        "ERROR",
+        "SKILL"
       ],
       "default": "DAMAGE"
     },
@@ -984,11 +955,9 @@
         "isStairs": {
           "type": "boolean"
         },
-        "portals": {
-          "type": "array",
-          "items": {
-            "$ref": "#/definitions/dungeonsandtrollsShortcut"
-          }
+        "portal": {
+          "$ref": "#/definitions/dungeonsandtrollsWaypoint",
+          "x-nullable": true
         },
         "decorations": {
           "type": "array",
@@ -1019,8 +988,7 @@
         },
         "isSpawn": {
           "type": "boolean",
-          "x-nullable": true,
-          "title": "TODO: chests are not implemented yet\n bool chest = 4;"
+          "x-nullable": true
         }
       }
     },
@@ -1041,36 +1009,47 @@
         "name": {
           "type": "string"
         },
-        "attributes": {
-          "$ref": "#/definitions/dungeonsandtrollsAttributes",
-          "title": "Stats stats = 3;\nint32 level = 4;"
+        "icon": {
+          "type": "string"
+        },
+        "items": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
         },
         "effects": {
           "type": "array",
           "items": {
             "$ref": "#/definitions/dungeonsandtrollsEffect"
-          },
-          "title": "repeated Item inventory = 7;"
+          }
+        },
+        "lifePercentage": {
+          "type": "number",
+          "format": "float"
+        },
+        "attributes": {
+          "$ref": "#/definitions/dungeonsandtrollsAttributes",
+          "x-nullable": true
         },
         "equippedItems": {
           "type": "array",
           "items": {
             "$ref": "#/definitions/dungeonsandtrollsItem"
-          },
-          "title": "int32 xp = 9;"
+          }
         },
         "score": {
           "type": "number",
-          "format": "float"
-        },
-        "icon": {
-          "type": "string"
+          "format": "float",
+          "x-nullable": true
         },
         "algorithm": {
-          "type": "string"
+          "type": "string",
+          "x-nullable": true
         },
         "faction": {
-          "type": "string"
+          "type": "string",
+          "x-nullable": true
         },
         "onDeath": {
           "type": "array",
@@ -1102,15 +1081,6 @@
         }
       }
     },
-    "dungeonsandtrollsShortcut": {
-      "type": "object",
-      "properties": {
-        "leadsTo": {
-          "$ref": "#/definitions/dungeonsandtrollsCoordinates",
-          "x-nullable": true
-        }
-      }
-    },
     "dungeonsandtrollsSkill": {
       "type": "object",
       "properties": {
@@ -1122,12 +1092,6 @@
         },
         "target": {
           "$ref": "#/definitions/SkillTarget"
-        },
-        "effects": {
-          "type": "array",
-          "items": {
-            "$ref": "#/definitions/dungeonsandtrollsEffect"
-          }
         },
         "cost": {
           "$ref": "#/definitions/dungeonsandtrollsAttributes"
@@ -1249,23 +1213,6 @@
         "location": {
           "$ref": "#/definitions/dungeonsandtrollsCoordinates",
           "x-nullable": true
-        }
-      }
-    },
-    "dungeonsandtrollsStats": {
-      "type": "object",
-      "properties": {
-        "life": {
-          "type": "number",
-          "format": "float"
-        },
-        "mana": {
-          "type": "number",
-          "format": "float"
-        },
-        "stamina": {
-          "type": "number",
-          "format": "float"
         }
       }
     },

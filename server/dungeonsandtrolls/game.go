@@ -476,3 +476,27 @@ func (g *Game) GetObjectById(id string) (gameobject.Id, error) {
 	}
 	return nil, fmt.Errorf("object with id %s not found", id)
 }
+
+func HideNonPublicMonsterFields(g *Game, m *api.Monster) {
+	// Propagate partial info
+	for _, i := range m.EquippedItems {
+		m.Items = append(m.Items, i.Name)
+	}
+	o, err := g.GetObjectById(m.GetId())
+	if err != nil {
+		log.Warn().Err(err).Msg("")
+	}
+	mo, ok := o.(*gameobject.Monster)
+	if !ok {
+		log.Warn().Msg("not a monster")
+	}
+	m.LifePercentage = float32(math.Round(float64(*m.Attributes.Life) / float64(*mo.MaxStats.Life) * 100))
+
+	// Hide the rest
+	m.Attributes = nil
+	m.EquippedItems = []*api.Item{}
+	m.Score = nil
+	m.Algorithm = nil
+	m.Faction = nil
+	m.OnDeath = []*api.Droppable{}
+}

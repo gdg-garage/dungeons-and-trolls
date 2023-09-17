@@ -10,6 +10,7 @@ import (
 type Monster struct {
 	Position *api.Coordinates `json:"position"`
 	MovingTo *paths.Path      `json:"-"`
+	MaxStats *api.Attributes  `json:"-"`
 	Monster  *api.Monster     `json:"-"`
 }
 
@@ -17,6 +18,7 @@ func CreateMonster(m *api.Monster, p *api.Coordinates) *Monster {
 	return &Monster{
 		Position: p,
 		Monster:  m,
+		MaxStats: m.Attributes,
 	}
 }
 
