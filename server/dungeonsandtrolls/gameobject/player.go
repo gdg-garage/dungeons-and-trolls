@@ -17,6 +17,7 @@ type Player struct {
 	ItemAttributes *api.Attributes             `json:"-"`
 	MaxStats       *api.Attributes             `json:"-"`
 	Skills         map[string]*api.Skill       `json:"-"`
+	IsAdmin        bool                        `json:"admin"`
 }
 
 func CreatePlayer(name string) *Player {

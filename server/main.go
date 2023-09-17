@@ -38,13 +38,6 @@ type server struct {
 
 func (s *server) Game(ctx context.Context, params *api.GameStateParams) (*api.GameState, error) {
 	token, err := getToken(ctx)
-	if err != nil || len(token) == 0 {
-		return &s.G.Game, nil
-	}
-	p, err := s.G.GetPlayerByKey(token)
-	if err != nil {
-		return nil, err
-	}
 	g, ok := proto.Clone(&s.G.Game).(*api.GameState)
 	if !ok {
 		return nil, fmt.Errorf("cloning GameState failed")
@@ -56,6 +49,13 @@ func (s *server) Game(ctx context.Context, params *api.GameStateParams) (*api.Ga
 				dungeonsandtrolls.HideNonPublicMonsterFields(s.G, m)
 			}
 		}
+	}
+	if err != nil || len(token) == 0 {
+		return g, nil
+	}
+	p, err := s.G.GetPlayerByKey(token)
+	if err != nil {
+		return nil, err
 	}
 	g.Character = &p.Character
 	g.CurrentPosition = p.Position
