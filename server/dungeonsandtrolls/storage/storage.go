@@ -38,7 +38,12 @@ func (s *Storage) write() error {
 	if err != nil {
 		return err
 	}
-	return os.WriteFile(s.path, j, 0644)
+	tempFile := s.path + ".tmp"
+	err = os.WriteFile(s.path, j, 0644)
+	if err != nil {
+		return err
+	}
+	return os.Rename(tempFile, s.path)
 }
 
 // Write a value (has to be serializable to JSON) to the storage identified by the key.
