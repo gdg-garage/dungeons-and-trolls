@@ -36,26 +36,36 @@ type server struct {
 	G *dungeonsandtrolls.Game
 }
 
+func filterGameState(game *dungeonsandtrolls.Game, g *api.GameState) {
+	// filter monsters for non-monster players
+	for _, l := range g.Map.Levels {
+		for _, o := range l.Objects {
+			for _, m := range o.Monsters {
+				dungeonsandtrolls.HideNonPublicMonsterFields(game, m)
+			}
+		}
+	}
+}
+
 func (s *server) Game(ctx context.Context, params *api.GameStateParams) (*api.GameState, error) {
 	token, err := getToken(ctx)
 	g, ok := proto.Clone(&s.G.Game).(*api.GameState)
 	if !ok {
 		return nil, fmt.Errorf("cloning GameState failed")
 	}
-	// filter monsters for non-monster players
-	for _, l := range g.Map.Levels {
-		for _, o := range l.Objects {
-			for _, m := range o.Monsters {
-				dungeonsandtrolls.HideNonPublicMonsterFields(s.G, m)
-			}
-		}
-	}
+	// token not found
 	if err != nil || len(token) == 0 {
+		filterGameState(s.G, g)
 		return g, nil
 	}
+	// token is present
 	p, err := s.G.GetPlayerByKey(token)
 	if err != nil {
 		return nil, err
+	}
+	log.Info().Msgf("%v", p.IsAdmin)
+	if !p.IsAdmin {
+		filterGameState(s.G, g)
 	}
 	g.Character = &p.Character
 	g.CurrentPosition = p.Position
