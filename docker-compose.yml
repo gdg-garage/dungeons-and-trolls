@@ -15,9 +15,15 @@ services:
       - traefik.http.routers.server.tls=true
       - traefik.http.routers.server.entrypoints=websecure
       - traefik.http.routers.server.tls.certresolver=le
+      - "traefik.http.routers.server.middlewares=secured"
+      - "traefik.http.middlewares.secured.chain.middlewares=server_compress,cors"
       - "traefik.http.middlewares.server_compress.compress=true"
-      - "traefik.http.routers.server.middlewares=server_compress"
       - traefik.port=8080
+      - "traefik.http.middlewares.cors.headers.accesscontrolallowmethods=*"
+      - "traefik.http.middlewares.cors.headers.accesscontrolallowheaders=*"
+      - "traefik.http.middlewares.cors.headers.accesscontrolalloworiginlist=*"
+      - "traefik.http.middlewares.cors.headers.accesscontrolmaxage=100"
+      - "traefik.http.middlewares.cors.headers.addvaryheader=true"
     restart: always
 
   traefik:
@@ -44,6 +50,7 @@ services:
       #expose:
       #- 8080
     ports:
+      - "8080:8080"
       - "80:80"
       - "443:443"
     volumes:
