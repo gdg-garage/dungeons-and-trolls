@@ -303,7 +303,7 @@ func (g *Game) processCommands() {
 		}
 		if o.Portal != nil {
 			// spawn in the next level.
-			g.SpawnPlayer(p, *p.Position.Level+1)
+			g.SpawnPlayer(p, o.Portal.DestinationFloor)
 			// cancel currently invalid path
 			p.MovingTo = nil
 			// TODO log level traverse stats
