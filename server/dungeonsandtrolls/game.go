@@ -343,6 +343,9 @@ func (g *Game) processCommands() {
 		}
 	}
 
+	//for _, p := range g.Players {
+	//
+	//}
 	// TODO kill what is dead
 
 	g.playerCommands = map[string]*api.CommandsBatch{}

@@ -321,7 +321,7 @@ message Coordinates {
 message SkillUse {
   string skill_id = 1;
   optional string target_id = 2;
-  optional Coordinates location = 3;
+  optional Position coordinates = 3;
 }
 
 message Registration { optional string api_key = 1; }
