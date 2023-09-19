@@ -30,6 +30,7 @@ func RegisterUser(game *dungeonsandtrolls.Game, user *api.User) (*api.Registrati
 	// TODO
 	//game.GameLock.Lock()
 	//defer game.GameLock.Unlock()
+	// TODO maybe handle discord handles (part after #)
 	err := validateRegistration(game, user)
 	if err != nil {
 		return nil, err
