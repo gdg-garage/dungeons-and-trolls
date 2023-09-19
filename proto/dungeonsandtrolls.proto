@@ -165,12 +165,12 @@ message Monster {
   repeated SimpleItem items = 4;
   repeated Effect effects = 5;
   float life_percentage = 6;
+  string faction = 7;
 
-  optional Attributes attributes = 7;
-  repeated Item equipped_items = 8;
-  optional float score = 9;
-  optional string algorithm = 10;
-  optional string faction = 11;
+  optional Attributes attributes = 8;
+  repeated Item equipped_items = 9;
+  optional float score = 10;
+  optional string algorithm = 11;
   repeated Droppable on_death = 12;
 }
 
@@ -183,6 +183,8 @@ message Character {
   float score = 6;
   int32 skill_points = 7;
   repeated Effect effects = 9;
+  // TODO add max attributes
+  // TODo propagate positions
 }
 
 message Skill {

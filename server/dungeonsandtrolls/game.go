@@ -338,6 +338,7 @@ func (g *Game) processCommands() {
 		}
 	}
 
+	// Kill what is dead
 	for _, i := range g.idToObject {
 		switch c := i.(type) {
 		case *gameobject.Monster:

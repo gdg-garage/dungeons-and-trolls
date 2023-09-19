@@ -615,7 +615,8 @@
           "type": "array",
           "items": {
             "$ref": "#/definitions/dungeonsandtrollsEffect"
-          }
+          },
+          "title": "TODO add max attributes\n TODo propagate positions"
         }
       }
     },
@@ -693,6 +694,9 @@
           "type": "string"
         },
         "type": {
+          "type": "string"
+        },
+        "icon": {
           "type": "string"
         }
       }
@@ -1028,6 +1032,9 @@
           "type": "number",
           "format": "float"
         },
+        "faction": {
+          "type": "string"
+        },
         "attributes": {
           "$ref": "#/definitions/dungeonsandtrollsAttributes",
           "x-nullable": true
@@ -1044,10 +1051,6 @@
           "x-nullable": true
         },
         "algorithm": {
-          "type": "string",
-          "x-nullable": true
-        },
-        "faction": {
           "type": "string",
           "x-nullable": true
         },
@@ -1224,8 +1227,8 @@
           "type": "string",
           "x-nullable": true
         },
-        "location": {
-          "$ref": "#/definitions/dungeonsandtrollsCoordinates",
+        "coordinates": {
+          "$ref": "#/definitions/dungeonsandtrollsPosition",
           "x-nullable": true
         }
       }

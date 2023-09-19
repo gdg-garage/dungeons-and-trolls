@@ -308,7 +308,12 @@ func LevelsPostProcessing(g *Game, m *api.Map, mapCache *MapCache) error {
 				g.Register(i)
 			}
 			for _, m := range o.Monsters {
-				g.Register(gameobject.CreateMonster(m, o.Position))
+				levelPos := &api.Coordinates{
+					PositionX: o.Position.PositionX,
+					PositionY: o.Position.PositionY,
+					Level:     &l.Level,
+				}
+				g.Register(gameobject.CreateMonster(m, levelPos))
 			}
 		}
 
