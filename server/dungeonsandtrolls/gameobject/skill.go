@@ -4,7 +4,6 @@ import (
 	"fmt"
 	"github.com/gdg-garage/dungeons-and-trolls/server/dungeonsandtrolls/api"
 	"github.com/gdg-garage/dungeons-and-trolls/server/dungeonsandtrolls/utils"
-	"github.com/rs/zerolog/log"
 	"math"
 	"math/rand"
 	"reflect"
@@ -72,10 +71,7 @@ func EvaluateDamage(power float64, t api.DamageType, a *api.Attributes) {
 			resist = float64(*a.ElectricResist)
 		}
 	}
-	log.Info().Msgf("damage dealt %f", float32(RoundSkill(power)*10/(10+utils.Max(resist, -5))))
-	log.Info().Msgf("monster life %f", *a.Life)
 	*a.Life -= float32(RoundSkill(power) * 10 / (10 + utils.Max(resist, -5)))
-	log.Info().Msgf("monster life after %f", *a.Life)
 }
 
 func EvaluateSkillAttributes(sa *api.SkillAttributes, casterAttributes *api.Attributes) (*api.Attributes, error) {
@@ -104,7 +100,6 @@ func EvaluateSkillAttributes(sa *api.SkillAttributes, casterAttributes *api.Attr
 
 func EvaluateEffects(effects []*api.Effect, a *api.Attributes) ([]*api.Effect, error) {
 	var keptEffects []*api.Effect
-	log.Info().Msgf("monster effects %d", len(effects))
 	for _, e := range effects {
 		err := MergeAllAttributes(a, e.Effects, false)
 		EvaluateDamage(float64(e.DamageAmount), e.DamageType, a)
@@ -116,6 +111,5 @@ func EvaluateEffects(effects []*api.Effect, a *api.Attributes) ([]*api.Effect, e
 			keptEffects = append(keptEffects, e)
 		}
 	}
-	log.Info().Msgf("keps effects %d", len(keptEffects))
 	return keptEffects, nil
 }

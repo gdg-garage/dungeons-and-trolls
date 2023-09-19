@@ -211,6 +211,7 @@ func (g *Game) LogEvent(event *api.Event) {
 }
 
 func (g *Game) processCommands() {
+	errorEvent := api.Event_ERROR
 	for pId, c := range g.playerCommands {
 		maybePlayer, err := g.GetObjectById(pId)
 		if err != nil {
@@ -226,7 +227,6 @@ func (g *Game) processCommands() {
 		if c.PickUp != nil {
 			err = ExecutePickUp(g, p, c.PickUp)
 			if err != nil {
-				errorEvent := api.Event_ERROR
 				g.LogEvent(&api.Event{
 					Type:        &errorEvent,
 					Message:     fmt.Sprintf("%s (%s): failed to pick up %s: %s", p.Character.Id, p.Character.Name, c.PickUp, err.Error()),
@@ -238,7 +238,6 @@ func (g *Game) processCommands() {
 		if c.Yell != nil {
 			err = ExecuteYell(g, p, c.Yell)
 			if err != nil {
-				errorEvent := api.Event_ERROR
 				g.LogEvent(&api.Event{
 					Type:        &errorEvent,
 					Message:     fmt.Sprintf("%s (%s): failed to yell: %s", p.Character.Id, p.Character.Name, err.Error()),
@@ -250,7 +249,6 @@ func (g *Game) processCommands() {
 		if c.Buy != nil {
 			err = ExecuteBuy(g, p, c.Buy)
 			if err != nil {
-				errorEvent := api.Event_ERROR
 				g.LogEvent(&api.Event{
 					Type:        &errorEvent,
 					Message:     fmt.Sprintf("%s (%s): failed to buy: %s", p.Character.Id, p.Character.Name, err.Error()),
@@ -263,7 +261,6 @@ func (g *Game) processCommands() {
 		if c.Skill != nil {
 			err = ExecuteSkill(g, p, c.Skill)
 			if err != nil {
-				errorEvent := api.Event_ERROR
 				g.LogEvent(&api.Event{
 					Type:        &errorEvent,
 					Message:     fmt.Sprintf("%s (%s): failed to use skill: %s", p.Character.Id, p.Character.Name, err.Error()),
@@ -316,7 +313,6 @@ func (g *Game) processCommands() {
 		case *gameobject.Monster:
 			e, err := gameobject.EvaluateEffects(c.Monster.Effects, c.Monster.Attributes)
 			if err != nil {
-				errorEvent := api.Event_ERROR
 				g.LogEvent(&api.Event{
 					Type:        &errorEvent,
 					Message:     fmt.Sprintf("failed to evaluate effects for monster %s: %s", c.GetId(), err.Error()),
@@ -328,7 +324,6 @@ func (g *Game) processCommands() {
 		case *gameobject.Player:
 			e, err := gameobject.EvaluateEffects(c.Character.Effects, c.Character.Attributes)
 			if err != nil {
-				errorEvent := api.Event_ERROR
 				g.LogEvent(&api.Event{
 					Type:        &errorEvent,
 					Message:     fmt.Sprintf("failed to evaluate effects for player %s: %s", c.GetId(), err.Error()),
@@ -343,10 +338,39 @@ func (g *Game) processCommands() {
 		}
 	}
 
-	//for _, p := range g.Players {
-	//
-	//}
-	// TODO kill what is dead
+	for _, i := range g.idToObject {
+		switch c := i.(type) {
+		case *gameobject.Monster:
+			if c.Monster.Attributes.Life != nil && *c.Monster.Attributes.Life <= 0 {
+				g.Unregister(c)
+				o, err := g.GetObjectsOnPosition(c.Position)
+				if err != nil {
+					g.LogEvent(&api.Event{
+						Type:        &errorEvent,
+						Message:     fmt.Sprintf("failed to evaluate effects for monster %s: %s", c.GetId(), err.Error()),
+						Coordinates: c.Position,
+					})
+				} else {
+					var tmpMonsters []*api.Monster
+					for _, m := range o.Monsters {
+						if m.GetId() == c.GetId() {
+							continue
+						}
+						tmpMonsters = append(tmpMonsters, m)
+					}
+					o.Monsters = tmpMonsters
+					// TODO is cache ok?
+				}
+				// TODO on death effects
+			}
+		case *gameobject.Player:
+			if c.Character.Attributes.Life != nil && *c.Character.Attributes.Life <= 0 {
+				g.Respawn(c, true)
+			}
+		default:
+			continue
+		}
+	}
 
 	g.playerCommands = map[string]*api.CommandsBatch{}
 }
