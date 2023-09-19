@@ -63,7 +63,6 @@ func (s *server) Game(ctx context.Context, params *api.GameStateParams) (*api.Ga
 	if err != nil {
 		return nil, err
 	}
-	log.Info().Msgf("%v", p.IsAdmin)
 	if !p.IsAdmin {
 		filterGameState(s.G, g)
 	}
