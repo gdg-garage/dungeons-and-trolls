@@ -529,6 +529,5 @@ func HideNonPublicMonsterFields(g *Game, m *api.Monster) {
 	m.EquippedItems = []*api.Item{}
 	m.Score = nil
 	m.Algorithm = nil
-	m.Faction = nil
 	m.OnDeath = []*api.Droppable{}
 }

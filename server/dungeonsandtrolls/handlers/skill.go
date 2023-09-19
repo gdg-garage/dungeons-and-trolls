@@ -25,13 +25,13 @@ func validateSkill(game *dungeonsandtrolls.Game, skillUse *api.SkillUse, p *game
 	if !ok {
 		return fmt.Errorf("skill %s not found for Character %s", skillUse.SkillId, p.Character.Id)
 	}
-	if skillUse.TargetId != nil && skillUse.Location != nil {
+	if skillUse.TargetId != nil && skillUse.Coordinates != nil {
 		return fmt.Errorf("cannot use skill on target and location at the same time")
 	}
 	if skillUse.TargetId == nil && (s.Target == api.Skill_character || s.Target == api.Skill_item) {
 		return fmt.Errorf("skill targetId not specified")
 	}
-	if (skillUse.TargetId != nil || skillUse.Location != nil) && (s.Target == api.Skill_none) {
+	if (skillUse.TargetId != nil || skillUse.Coordinates != nil) && (s.Target == api.Skill_none) {
 		return fmt.Errorf("skill target should be none")
 	}
 	if skillUse.TargetId != nil {
@@ -73,18 +73,18 @@ func validateSkill(game *dungeonsandtrolls.Game, skillUse *api.SkillUse, p *game
 		}
 		// TODO check flags
 	}
-	if skillUse.Location != nil {
-		if skillUse.Location == nil && s.Target == api.Skill_position {
+	if skillUse.Coordinates != nil {
+		if skillUse.Coordinates == nil && s.Target == api.Skill_position {
 			return fmt.Errorf("skill location not specified")
 		}
 		l, err := game.GetCachedLevel(*p.Position.Level)
 		if err != nil {
 			return fmt.Errorf("level not found")
 		}
-		if skillUse.Location.PositionX >= l.Width && skillUse.Location.PositionY >= l.Height {
-			return fmt.Errorf("skill target position (%d, %d) not found in the level", skillUse.Location.PositionX, skillUse.Location.PositionY)
+		if skillUse.Coordinates.PositionX >= l.Width && skillUse.Coordinates.PositionY >= l.Height {
+			return fmt.Errorf("skill target position (%d, %d) not found in the level", skillUse.Coordinates.PositionX, skillUse.Coordinates.PositionY)
 		}
-		err = checkDistance(p.Position, p.Character.Attributes, skillUse.Location, s)
+		err = checkDistance(p.Position, p.Character.Attributes, gameobject.PositionToCoordinates(skillUse.Coordinates, *p.Position.Level), s)
 		if err != nil {
 			return err
 		}

@@ -678,14 +678,13 @@
     "dungeonsandtrollsDamageType": {
       "type": "string",
       "enum": [
-        "none",
         "slash",
         "pierce",
         "fire",
         "poison",
         "electric"
       ],
-      "default": "none"
+      "default": "slash"
     },
     "dungeonsandtrollsDecoration": {
       "type": "object",
@@ -868,7 +867,6 @@
     "dungeonsandtrollsItemType": {
       "type": "string",
       "enum": [
-        "none",
         "head",
         "mainHand",
         "offHand",
@@ -876,7 +874,7 @@
         "legs",
         "neck"
       ],
-      "default": "none"
+      "default": "head"
     },
     "dungeonsandtrollsKey": {
       "type": "object",

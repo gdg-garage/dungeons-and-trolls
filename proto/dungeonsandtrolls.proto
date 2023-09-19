@@ -92,12 +92,11 @@ message CommandsForMonsters {
 }
 
 enum DamageType {
-  none = 0;
-  slash = 1;
-  pierce = 2;
-  fire = 3;
-  poison = 4;
-  electric = 5;
+  slash = 0;
+  pierce = 1;
+  fire = 2;
+  poison = 3;
+  electric = 4;
 }
 
 message Effect {
@@ -210,13 +209,12 @@ message Skill {
 
 message Item {
   enum Type {
-    none = 0;
-    head = 1;
-    mainHand = 2;
-    offHand = 3;
-    body = 4;
-    legs = 5;
-    neck = 6;
+    head = 0;
+    mainHand = 1;
+    offHand = 2;
+    body = 3;
+    legs = 4;
+    neck = 5;
   }
 
   string id = 1;
