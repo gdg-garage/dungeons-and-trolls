@@ -1015,7 +1015,7 @@
         "items": {
           "type": "array",
           "items": {
-            "type": "string"
+            "$ref": "#/definitions/dungeonsandtrollsSimpleItem"
           }
         },
         "effects": {
@@ -1078,6 +1078,20 @@
         "apiKey": {
           "type": "string",
           "x-nullable": true
+        }
+      }
+    },
+    "dungeonsandtrollsSimpleItem": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string"
+        },
+        "slot": {
+          "$ref": "#/definitions/dungeonsandtrollsItemType"
+        },
+        "icon": {
+          "type": "string"
         }
       }
     },

@@ -51,15 +51,25 @@ func EvaluateDamage(power float64, t api.DamageType, a *api.Attributes) {
 	var resist float64
 	switch t {
 	case api.DamageType_slash:
-		resist = float64(*a.SlashResist)
+		if a.SlashResist != nil {
+			resist = float64(*a.SlashResist)
+		}
 	case api.DamageType_pierce:
-		resist = float64(*a.PierceResist)
+		if a.PierceResist != nil {
+			resist = float64(*a.PierceResist)
+		}
 	case api.DamageType_fire:
-		resist = float64(*a.FireResist)
+		if a.FireResist != nil {
+			resist = float64(*a.FireResist)
+		}
 	case api.DamageType_poison:
-		resist = float64(*a.PoisonResist)
+		if a.PoisonResist != nil {
+			resist = float64(*a.PoisonResist)
+		}
 	case api.DamageType_electric:
-		resist = float64(*a.ElectricResist)
+		if a.ElectricResist != nil {
+			resist = float64(*a.ElectricResist)
+		}
 	}
 	*a.Life -= float32(RoundSkill(power) * 10 / (10 + utils.Max(resist, -5)))
 }

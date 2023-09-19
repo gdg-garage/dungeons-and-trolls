@@ -480,7 +480,11 @@ func (g *Game) GetObjectById(id string) (gameobject.Id, error) {
 func HideNonPublicMonsterFields(g *Game, m *api.Monster) {
 	// Propagate partial info
 	for _, i := range m.EquippedItems {
-		m.Items = append(m.Items, i.Name)
+		m.Items = append(m.Items, &api.SimpleItem{
+			Name: i.Name,
+			Slot: i.Slot,
+			Icon: i.Icon,
+		})
 	}
 	o, err := g.GetObjectById(m.GetId())
 	if err != nil {

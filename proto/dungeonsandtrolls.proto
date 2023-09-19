@@ -161,7 +161,7 @@ message Monster {
   string id = 1;
   string name = 2;
   string icon = 3;
-  repeated string items = 4;
+  repeated SimpleItem items = 4;
   repeated Effect effects = 5;
   float life_percentage = 6;
 
@@ -224,6 +224,12 @@ message Item {
   Attributes attributes = 6;
   repeated Skill skills = 7;
   string icon = 8;
+}
+
+message SimpleItem {
+  string name = 1;
+  Item.Type slot = 2;
+  string icon = 3;
 }
 
 message Droppable {
