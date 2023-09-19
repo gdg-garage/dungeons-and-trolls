@@ -53,6 +53,7 @@ message Message { string text = 1; }
 message Decoration {
   string name = 1;
   string type = 2;
+  string icon = 3;
 }
 
 message Position {
