@@ -9,7 +9,7 @@ import (
 )
 
 func checkDistance(playerPosition *api.Coordinates, playerAttributes *api.Attributes, c *api.Coordinates, s *api.Skill) error {
-	distance := utils.ManhattanDistance(playerPosition.PositionY, playerPosition.PositionY, c.PositionX, c.PositionY)
+	distance := utils.ManhattanDistance(playerPosition.PositionX, playerPosition.PositionY, c.PositionX, c.PositionY)
 	distanceValue, err := gameobject.AttributesValue(playerAttributes, s.Range)
 	if err != nil {
 		return err
