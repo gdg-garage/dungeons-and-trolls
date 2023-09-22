@@ -41,6 +41,12 @@ func Commands(game *dungeonsandtrolls.Game, c *api.CommandsBatch, token string) 
 			return err
 		}
 	}
+	if c.AssignSkillPoints != nil {
+		err = validateAssignAttributes(p, c.AssignSkillPoints)
+		if err != nil {
+			return err
+		}
+	}
 	// TODO skill points
 
 	pc := game.GetPlayerCommands(p.Character.Id)
@@ -49,6 +55,7 @@ func Commands(game *dungeonsandtrolls.Game, c *api.CommandsBatch, token string) 
 	pc.Buy = c.Buy
 	pc.PickUp = c.PickUp
 	pc.Skill = c.Skill
+	pc.AssignSkillPoints = c.AssignSkillPoints
 
 	return nil
 }
