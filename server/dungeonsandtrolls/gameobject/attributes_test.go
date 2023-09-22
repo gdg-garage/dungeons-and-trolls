@@ -202,3 +202,18 @@ func TestRequirementsFailLow(t *testing.T) {
 		t.Errorf("requirements are satisfied")
 	}
 }
+
+func TestSum(t *testing.T) {
+	a := &api.Attributes{
+		Strength:  pointy.Float32(1),
+		Dexterity: pointy.Float32(3),
+	}
+
+	s, err := SumAttributes(a)
+	if err != nil {
+		t.Error(err)
+	}
+	if s != 4 {
+		t.Errorf("sum is not correct")
+	}
+}

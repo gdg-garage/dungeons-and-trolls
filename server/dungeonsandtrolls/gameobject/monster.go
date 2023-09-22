@@ -32,3 +32,11 @@ func CreateMonster(m *api.Monster, p *api.Coordinates) *Monster {
 func (m *Monster) GetId() string {
 	return m.Monster.Id
 }
+
+func (m *Monster) GetName() string {
+	return m.Monster.Name
+}
+
+func (m *Monster) GetPosition() *api.Coordinates {
+	return m.Position
+}

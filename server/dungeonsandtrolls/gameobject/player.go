@@ -14,6 +14,7 @@ type Player struct {
 	MovingTo       *paths.Path                 `json:"-"`
 	Equipped       map[api.Item_Type]*api.Item `json:"-"`
 	Character      api.Character               `json:"character"`
+	BaseAttributes *api.Attributes             `json:"-"`
 	ItemAttributes *api.Attributes             `json:"-"`
 	MaxStats       *api.Attributes             `json:"-"`
 	Skills         map[string]*api.Skill       `json:"-"`
@@ -28,15 +29,16 @@ func CreatePlayer(name string) *Player {
 		},
 		Equipped: map[api.Item_Type]*api.Item{},
 	}
+	p.InitAttributes()
 	p.ResetAttributes()
 	return p
 }
 
-func (p *Player) ResetAttributes() error {
-	p.ItemAttributes = &api.Attributes{
-		Life:    pointy.Float32(0),
-		Mana:    pointy.Float32(0),
-		Stamina: pointy.Float32(0),
+func (p *Player) InitAttributes() {
+	p.BaseAttributes = &api.Attributes{
+		Life:    pointy.Float32(baseStat),
+		Mana:    pointy.Float32(baseStat),
+		Stamina: pointy.Float32(baseStat),
 
 		Strength:     pointy.Float32(0),
 		Dexterity:    pointy.Float32(0),
@@ -58,9 +60,19 @@ func (p *Player) ResetAttributes() error {
 		Mana:    pointy.Float32(baseStat),
 		Stamina: pointy.Float32(baseStat),
 	}
+}
+
+func (p *Player) ResetAttributes() error {
+	p.ItemAttributes = &api.Attributes{}
+	//var ok bool
+	//p.ItemAttributes, ok = proto.Clone(p.BaseAttributes).(*api.Attributes)
+	//if !ok {
+	//	return fmt.Errorf("cloning base attributes failed")
+	//}
+
 	a := proto.Clone(p.ItemAttributes).(*api.Attributes)
 	p.Character.Attributes = a
-	return MergeAllAttributes(p.Character.Attributes, p.MaxStats, false)
+	return MergeAllAttributes(p.Character.Attributes, p.BaseAttributes, false)
 }
 
 func (p *Player) updateAttributesUsingEffects() {
@@ -83,11 +95,11 @@ func (p *Player) updateAttributes() error {
 	if err != nil {
 		return err
 	}
-	err = MergeAllAttributes(p.MaxStats, p.ItemAttributes, true)
+	err = MaxAllAttributes(p.MaxStats, p.ItemAttributes, true)
 	if err != nil {
 		return err
 	}
-	// This operation is not "healing" using newly added base attributes (life, stamina, mana) just setting the max values.
+	// TODO This operation is not "healing" using newly added base attributes (life, stamina, mana) just setting the max values.
 	p.Character.Attributes.Life = currentAttributes.Life
 	p.Character.Attributes.Mana = currentAttributes.Mana
 	p.Character.Attributes.Stamina = currentAttributes.Stamina
@@ -97,6 +109,14 @@ func (p *Player) updateAttributes() error {
 
 func (p *Player) GetId() string {
 	return p.Character.Id
+}
+
+func (p *Player) GetName() string {
+	return p.Character.Name
+}
+
+func (p *Player) GetPosition() *api.Coordinates {
+	return p.Position
 }
 
 func (p *Player) generateSkills() {

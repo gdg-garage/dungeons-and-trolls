@@ -47,7 +47,7 @@ func RoundSkill(r float64) float64 {
 	return whole
 }
 
-func EvaluateDamage(power float64, t api.DamageType, a *api.Attributes) {
+func EvaluateDamage(power float64, t api.DamageType, a *api.Attributes) float32 {
 	var resist float64
 	switch t {
 	case api.DamageType_slash:
@@ -71,7 +71,9 @@ func EvaluateDamage(power float64, t api.DamageType, a *api.Attributes) {
 			resist = float64(*a.ElectricResist)
 		}
 	}
-	*a.Life -= float32(RoundSkill(power) * 10 / (10 + utils.Max(resist, -5)))
+	damage := float32(RoundSkill(power) * 10 / (10 + utils.Max(resist, -5)))
+	*a.Life -= damage
+	return damage
 }
 
 func EvaluateSkillAttributes(sa *api.SkillAttributes, casterAttributes *api.Attributes) (*api.Attributes, error) {
@@ -96,20 +98,4 @@ func EvaluateSkillAttributes(sa *api.SkillAttributes, casterAttributes *api.Attr
 		}
 	}
 	return a, nil
-}
-
-func EvaluateEffects(effects []*api.Effect, a *api.Attributes) ([]*api.Effect, error) {
-	var keptEffects []*api.Effect
-	for _, e := range effects {
-		err := MergeAllAttributes(a, e.Effects, false)
-		EvaluateDamage(float64(e.DamageAmount), e.DamageType, a)
-		if err != nil {
-			return keptEffects, err
-		}
-		e.Duration--
-		if e.Duration > 0 {
-			keptEffects = append(keptEffects, e)
-		}
-	}
-	return keptEffects, nil
 }

@@ -82,3 +82,22 @@ func SatisfyingAttributes(attributes *api.Attributes, requirements *api.Attribut
 	}
 	return true, nil
 }
+
+func SumAttributes(attributes *api.Attributes) (float32, error) {
+	var sum float32
+	fields := reflect.VisibleFields(reflect.ValueOf(attributes).Elem().Type())
+	for _, field := range fields {
+		v := reflect.ValueOf(attributes).Elem().FieldByName(field.Name)
+		if !field.IsExported() {
+			continue
+		}
+		if !v.IsNil() {
+			vv, ok := v.Interface().(*float32)
+			if !ok {
+				return sum, fmt.Errorf("attribute field %s is unexpected type %s (instead of *float32)", field.Name, field.Type)
+			}
+			sum += *vv
+		}
+	}
+	return sum, nil
+}

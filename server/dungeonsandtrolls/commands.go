@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"github.com/gdg-garage/dungeons-and-trolls/server/dungeonsandtrolls/api"
 	"github.com/gdg-garage/dungeons-and-trolls/server/dungeonsandtrolls/gameobject"
+	"github.com/rs/zerolog/log"
 )
 
 // ValidateBuy validates identifiers, funds, and requirements
@@ -163,8 +164,9 @@ func ExecuteSkill(game *Game, player *gameobject.Player, su *api.SkillUse) error
 			return err
 		}
 		player.Character.Effects = append(player.Character.Effects, &api.Effect{
-			Effects:  e,
-			Duration: int32(duration),
+			Effects:   e,
+			Duration:  int32(duration),
+			XCasterId: player.GetId(),
 		})
 		// TODO summons
 		// TODO flags
@@ -194,6 +196,7 @@ func ExecuteSkill(game *Game, player *gameobject.Player, su *api.SkillUse) error
 					DamageAmount: float32(d),
 					DamageType:   s.DamageType,
 					Duration:     int32(duration),
+					XCasterId:    player.GetId(),
 				})
 			case *gameobject.Player:
 				c.Character.Effects = append(c.Character.Effects, &api.Effect{
@@ -201,6 +204,7 @@ func ExecuteSkill(game *Game, player *gameobject.Player, su *api.SkillUse) error
 					DamageAmount: float32(d),
 					DamageType:   s.DamageType,
 					Duration:     int32(duration),
+					XCasterId:    player.GetId(),
 				})
 			default:
 				return fmt.Errorf("tried to cast character spell on non-character")
@@ -225,4 +229,49 @@ func ExecuteSkill(game *Game, player *gameobject.Player, su *api.SkillUse) error
 		return fmt.Errorf("not implemented")
 	}
 	return nil
+}
+
+func ExecuteAssignSkillPoints(player *gameobject.Player, a *api.Attributes) error {
+	log.Info().Msgf("assign %s", a)
+	s, err := gameobject.SumAttributes(a)
+	if err != nil {
+		return err
+	}
+	player.Character.SkillPoints -= s
+	err = gameobject.MergeAllAttributes(player.BaseAttributes, a, false)
+	if err != nil {
+		return err
+	}
+	player.ResetAttributes()
+	return nil
+}
+
+func EvaluateEffects(g *Game, effects []*api.Effect, a *api.Attributes, receiver gameobject.Positioner) ([]*api.Effect, error) {
+	var keptEffects []*api.Effect
+	for _, e := range effects {
+		err := gameobject.MergeAllAttributes(a, e.Effects, false)
+		damage := gameobject.EvaluateDamage(float64(e.DamageAmount), e.DamageType, a)
+		if err != nil {
+			return keptEffects, err
+		}
+
+		attacker, err := g.GetObjectById(e.XCasterId)
+		var attackerName string
+		if err != nil {
+			attackerName = attacker.GetName()
+		}
+
+		damageEvent := api.Event_DAMAGE
+		g.LogEvent(&api.Event{
+			Type:        &damageEvent,
+			Message:     fmt.Sprintf("%s (%s): damaged %s (%s): %f with %s", e.XCasterId, attackerName, receiver.GetId(), receiver.GetName(), damage, e.DamageType.String()),
+			Coordinates: receiver.GetPosition(),
+		})
+
+		e.Duration--
+		if e.Duration > 0 {
+			keptEffects = append(keptEffects, e)
+		}
+	}
+	return keptEffects, nil
 }

@@ -11,7 +11,7 @@ func CreateWeapon(name string, minDamage, maxDamage int32) *api.Item {
 		// BuyPrice: 1,
 		// Skills: []*api.Skill{
 		// 	{
-		// 		Id:          GetNewId(),
+		// 		Ider:          GetNewId(),
 		// 		Name:        "attack",
 		// 		MaxDistance: 1,
 		// 		Cost: &api.Stats{

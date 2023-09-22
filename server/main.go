@@ -141,13 +141,11 @@ func (s *server) Yell(ctx context.Context, message *api.Message) (*emptypb.Empty
 }
 
 func (s *server) AssignSkillPoints(ctx context.Context, attributes *api.Attributes) (*emptypb.Empty, error) {
-	//token, err := getToken(ctx)
-	//if err != nil {
-	//	return &emptypb.Empty{}, err
-	//}
-	//return &emptypb.Empty{}, handlers.Yell(s.G, attributes, token)
-
-	return &emptypb.Empty{}, nil
+	token, err := getToken(ctx)
+	if err != nil {
+		return &emptypb.Empty{}, err
+	}
+	return &emptypb.Empty{}, handlers.AssignAttributes(s.G, attributes, token)
 }
 
 func main() {

@@ -43,7 +43,7 @@ type Game struct {
 
 	mapCache MapCache
 
-	idToObject map[string]gameobject.Id
+	idToObject map[string]gameobject.Ider
 
 	// todo create player cache
 
@@ -78,7 +78,7 @@ func NewGame() *Game {
 			Level: map[int32]*LevelCache{},
 		},
 		playerCommands: map[string]*api.CommandsBatch{},
-		idToObject:     map[string]gameobject.Id{},
+		idToObject:     map[string]gameobject.Ider{},
 		Score:          0,
 	}
 
@@ -179,10 +179,19 @@ func (g *Game) MarkVisitedLevel(level int32) {
 
 func (g *Game) Respawn(player *gameobject.Player, markDeath bool) {
 	// TODO mark death if appropriate
+	if markDeath {
+		deathEvent := api.Event_DEATH
+		g.LogEvent(&api.Event{
+			Type:        &deathEvent,
+			Message:     fmt.Sprintf("%s (%s) died", player.GetId(), player.Character.Name),
+			Coordinates: player.Position,
+		})
+	}
 
 	g.SpawnPlayer(player, gameobject.ZeroLevel)
 	player.ResetAttributes()
 	player.Character.Money = g.GetMoney()
+	player.Character.SkillPoints = float32(g.MaxLevelReached)
 	player.Character.Equip = []*api.Item{}
 	player.Equipped = map[api.Item_Type]*api.Item{}
 
@@ -192,6 +201,7 @@ func (g *Game) Respawn(player *gameobject.Player, markDeath bool) {
 func (g *Game) AddPlayer(player *gameobject.Player, registration *api.Registration) {
 	g.Players[player.Character.Name] = player
 	g.ApiKeyToPlayer[*registration.ApiKey] = player
+	player.InitAttributes()
 	g.Respawn(player, false)
 }
 
@@ -212,6 +222,8 @@ func (g *Game) LogEvent(event *api.Event) {
 
 func (g *Game) processCommands() {
 	errorEvent := api.Event_ERROR
+	deathEvent := api.Event_DEATH
+	scoreEvent := api.Event_SCORE
 	for pId, c := range g.playerCommands {
 		maybePlayer, err := g.GetObjectById(pId)
 		if err != nil {
@@ -222,6 +234,17 @@ func (g *Game) processCommands() {
 		if !ok {
 			log.Warn().Err(err).Msg("object retrieved by ID is not a player")
 			continue
+		}
+
+		if c.AssignSkillPoints != nil {
+			err = ExecuteAssignSkillPoints(p, c.AssignSkillPoints)
+			if err != nil {
+				g.LogEvent(&api.Event{
+					Type:        &errorEvent,
+					Message:     fmt.Sprintf("%s (%s): failed to assign skill point %s", p.Character.Id, p.Character.Name, err.Error()),
+					Coordinates: p.Position,
+				})
+			}
 		}
 
 		if c.PickUp != nil {
@@ -276,7 +299,7 @@ func (g *Game) processCommands() {
 			continue
 		}
 		p.MovingTo.Advance()
-		//log.Info().Msgf("player is at (%d, %d), moving to (%d, %d)", p.Position.PositionX, p.Position.PositionY, p.MovingTo.Current().X, p.MovingTo.Current().Y)
+		//log.Info().Msgf("player is at (%d, %d), moving to (%d, %d)", p.Positioner.PositionX, p.Positioner.PositionY, p.MovingTo.Current().X, p.MovingTo.Current().Y)
 		g.MovePlayer(p, &api.Coordinates{
 			PositionX: int32(p.MovingTo.Current().X),
 			PositionY: int32(p.MovingTo.Current().Y)})
@@ -305,13 +328,16 @@ func (g *Game) processCommands() {
 			p.MovingTo = nil
 			// TODO log level traverse stats
 			// TODO log newly discovered levels
+
 		}
 	}
+
+	// TODO ground effects - pass to players and monsters
 
 	for _, i := range g.idToObject {
 		switch c := i.(type) {
 		case *gameobject.Monster:
-			e, err := gameobject.EvaluateEffects(c.Monster.Effects, c.Monster.Attributes)
+			e, err := EvaluateEffects(g, c.Monster.Effects, c.Monster.Attributes, c)
 			if err != nil {
 				g.LogEvent(&api.Event{
 					Type:        &errorEvent,
@@ -322,7 +348,7 @@ func (g *Game) processCommands() {
 				c.Monster.Effects = e
 			}
 		case *gameobject.Player:
-			e, err := gameobject.EvaluateEffects(c.Character.Effects, c.Character.Attributes)
+			e, err := EvaluateEffects(g, c.Character.Effects, c.Character.Attributes, c)
 			if err != nil {
 				g.LogEvent(&api.Event{
 					Type:        &errorEvent,
@@ -334,11 +360,13 @@ func (g *Game) processCommands() {
 			}
 		default:
 			// TODO items?
+			// - not present anymore
 			continue
 		}
 	}
 
 	// Kill what is dead
+	// TODO solve kill stats (all players who interacted)
 	for _, i := range g.idToObject {
 		switch c := i.(type) {
 		case *gameobject.Monster:
@@ -352,6 +380,19 @@ func (g *Game) processCommands() {
 						Coordinates: c.Position,
 					})
 				} else {
+					g.LogEvent(&api.Event{
+						Type:        &deathEvent,
+						Message:     fmt.Sprintf("monster %s (%s) died", c.GetId(), c.Monster.Name),
+						Coordinates: c.Position,
+					})
+					if c.Monster.Score != nil {
+						g.Score += *c.Monster.Score
+						g.LogEvent(&api.Event{
+							Type:        &scoreEvent,
+							Message:     fmt.Sprintf("monster %s (%s) provided %f score", c.GetId(), c.Monster.Name, *c.Monster.Score),
+							Coordinates: c.Position,
+						})
+					}
 					var tmpMonsters []*api.Monster
 					for _, m := range o.Monsters {
 						if m.GetId() == c.GetId() {
@@ -489,16 +530,16 @@ func (g *Game) GetPlayerCommands(pId string) *api.CommandsBatch {
 	return g.playerCommands[pId]
 }
 
-func (g *Game) Register(o gameobject.Id) {
+func (g *Game) Register(o gameobject.Ider) {
 	// TODO lock
 	g.idToObject[o.GetId()] = o
 }
 
-func (g *Game) Unregister(o gameobject.Id) {
+func (g *Game) Unregister(o gameobject.Ider) {
 	delete(g.idToObject, o.GetId())
 }
 
-func (g *Game) GetObjectById(id string) (gameobject.Id, error) {
+func (g *Game) GetObjectById(id string) (gameobject.Ider, error) {
 	if o, ok := g.idToObject[id]; ok {
 		return o, nil
 	}

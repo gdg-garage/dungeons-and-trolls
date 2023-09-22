@@ -14,7 +14,7 @@ func Buy(game *dungeonsandtrolls.Game, identifiers *api.Identifiers, token strin
 	}
 
 	if p.Position.Level == &gameobject.ZeroLevel {
-		return fmt.Errorf("buying is availible only on the ground floor")
+		return fmt.Errorf("buying is available only on the ground floor")
 	}
 
 	err = dungeonsandtrolls.ValidateBuy(game, p, identifiers)

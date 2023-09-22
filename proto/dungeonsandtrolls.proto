@@ -80,10 +80,11 @@ message GameStateParams {
 
 message CommandsBatch {
   optional Identifiers buy = 1;
-  optional Identifier pickUp = 2;
+  optional Identifier pick_up = 2;
   optional Coordinates move = 3;
   optional SkillUse skill = 4;
   optional Message yell = 6;
+  optional Attributes assign_skill_points = 7;
 }
 
 message CommandsForMonsters {
@@ -104,6 +105,8 @@ message Effect {
   DamageType damage_type = 2;
   Attributes effects = 3;
   int32 duration = 4;
+  // Internal caster id field
+  string _caster_id = 5;
 }
 
 message Attributes {
@@ -123,7 +126,7 @@ message Attributes {
   optional float stamina = 12;
   optional float mana = 13;
 
-  optional float scalar = 14;
+  optional float scalar = 14; // TODO constant
 }
 
 message SkillAttributes {
@@ -143,7 +146,7 @@ message SkillAttributes {
   optional Attributes stamina = 12;
   optional Attributes mana = 13;
  
-  optional Attributes scalar = 14;
+  optional Attributes scalar = 14; // TODO constant
 }
 
 message Stats {
@@ -180,7 +183,7 @@ message Character {
   int32 money = 4;
   repeated Item equip = 5;
   float score = 6;
-  int32 skill_points = 7;
+  float skill_points = 7;
   repeated Effect effects = 9;
   // TODO add max attributes
   // TODo propagate positions
@@ -286,6 +289,8 @@ message Event {
     EQUIP = 3;
     ERROR = 4;
     SKILL = 5;
+    DEATH = 6;
+    SCORE = 7;
   }
 
   string message = 1;
