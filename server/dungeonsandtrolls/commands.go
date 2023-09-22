@@ -4,7 +4,6 @@ import (
 	"fmt"
 	"github.com/gdg-garage/dungeons-and-trolls/server/dungeonsandtrolls/api"
 	"github.com/gdg-garage/dungeons-and-trolls/server/dungeonsandtrolls/gameobject"
-	"github.com/rs/zerolog/log"
 )
 
 // ValidateBuy validates identifiers, funds, and requirements
@@ -232,7 +231,6 @@ func ExecuteSkill(game *Game, player *gameobject.Player, su *api.SkillUse) error
 }
 
 func ExecuteAssignSkillPoints(player *gameobject.Player, a *api.Attributes) error {
-	log.Info().Msgf("assign %s", a)
 	s, err := gameobject.SumAttributes(a)
 	if err != nil {
 		return err
