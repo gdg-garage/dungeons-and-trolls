@@ -27,7 +27,7 @@ type DungeonsAndTrollsClient interface {
 	Register(ctx context.Context, in *User, opts ...grpc.CallOption) (*Registration, error)
 	Buy(ctx context.Context, in *Identifiers, opts ...grpc.CallOption) (*emptypb.Empty, error)
 	PickUp(ctx context.Context, in *Identifier, opts ...grpc.CallOption) (*emptypb.Empty, error)
-	Move(ctx context.Context, in *Coordinates, opts ...grpc.CallOption) (*emptypb.Empty, error)
+	Move(ctx context.Context, in *Position, opts ...grpc.CallOption) (*emptypb.Empty, error)
 	Respawn(ctx context.Context, in *emptypb.Empty, opts ...grpc.CallOption) (*emptypb.Empty, error)
 	Skill(ctx context.Context, in *SkillUse, opts ...grpc.CallOption) (*emptypb.Empty, error)
 	Yell(ctx context.Context, in *Message, opts ...grpc.CallOption) (*emptypb.Empty, error)
@@ -80,7 +80,7 @@ func (c *dungeonsAndTrollsClient) PickUp(ctx context.Context, in *Identifier, op
 	return out, nil
 }
 
-func (c *dungeonsAndTrollsClient) Move(ctx context.Context, in *Coordinates, opts ...grpc.CallOption) (*emptypb.Empty, error) {
+func (c *dungeonsAndTrollsClient) Move(ctx context.Context, in *Position, opts ...grpc.CallOption) (*emptypb.Empty, error) {
 	out := new(emptypb.Empty)
 	err := c.cc.Invoke(ctx, "/dungeonsandtrolls.DungeonsAndTrolls/Move", in, out, opts...)
 	if err != nil {
@@ -151,7 +151,7 @@ type DungeonsAndTrollsServer interface {
 	Register(context.Context, *User) (*Registration, error)
 	Buy(context.Context, *Identifiers) (*emptypb.Empty, error)
 	PickUp(context.Context, *Identifier) (*emptypb.Empty, error)
-	Move(context.Context, *Coordinates) (*emptypb.Empty, error)
+	Move(context.Context, *Position) (*emptypb.Empty, error)
 	Respawn(context.Context, *emptypb.Empty) (*emptypb.Empty, error)
 	Skill(context.Context, *SkillUse) (*emptypb.Empty, error)
 	Yell(context.Context, *Message) (*emptypb.Empty, error)
@@ -177,7 +177,7 @@ func (UnimplementedDungeonsAndTrollsServer) Buy(context.Context, *Identifiers) (
 func (UnimplementedDungeonsAndTrollsServer) PickUp(context.Context, *Identifier) (*emptypb.Empty, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method PickUp not implemented")
 }
-func (UnimplementedDungeonsAndTrollsServer) Move(context.Context, *Coordinates) (*emptypb.Empty, error) {
+func (UnimplementedDungeonsAndTrollsServer) Move(context.Context, *Position) (*emptypb.Empty, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method Move not implemented")
 }
 func (UnimplementedDungeonsAndTrollsServer) Respawn(context.Context, *emptypb.Empty) (*emptypb.Empty, error) {
@@ -284,7 +284,7 @@ func _DungeonsAndTrolls_PickUp_Handler(srv interface{}, ctx context.Context, dec
 }
 
 func _DungeonsAndTrolls_Move_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(Coordinates)
+	in := new(Position)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
@@ -296,7 +296,7 @@ func _DungeonsAndTrolls_Move_Handler(srv interface{}, ctx context.Context, dec f
 		FullMethod: "/dungeonsandtrolls.DungeonsAndTrolls/Move",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(DungeonsAndTrollsServer).Move(ctx, req.(*Coordinates))
+		return srv.(DungeonsAndTrollsServer).Move(ctx, req.(*Position))
 	}
 	return interceptor(ctx, in, info, handler)
 }

@@ -171,7 +171,7 @@ func local_request_DungeonsAndTrolls_PickUp_0(ctx context.Context, marshaler run
 }
 
 func request_DungeonsAndTrolls_Move_0(ctx context.Context, marshaler runtime.Marshaler, client DungeonsAndTrollsClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
-	var protoReq Coordinates
+	var protoReq Position
 	var metadata runtime.ServerMetadata
 
 	newReader, berr := utilities.IOReaderFactory(req.Body)
@@ -188,7 +188,7 @@ func request_DungeonsAndTrolls_Move_0(ctx context.Context, marshaler runtime.Mar
 }
 
 func local_request_DungeonsAndTrolls_Move_0(ctx context.Context, marshaler runtime.Marshaler, server DungeonsAndTrollsServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
-	var protoReq Coordinates
+	var protoReq Position
 	var metadata runtime.ServerMetadata
 
 	newReader, berr := utilities.IOReaderFactory(req.Body)

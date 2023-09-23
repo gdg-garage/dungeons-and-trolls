@@ -76,10 +76,12 @@ func (p *Player) ResetAttributes() error {
 }
 
 func (p *Player) updateAttributesUsingEffects() {
-	// TODO affect only p.Character.Attributes
+	for _, e := range p.Character.Effects {
+		MergeAllAttributes(p.Character.Attributes, e.Effects, false)
+	}
 }
 
-func (p *Player) updateAttributes() error {
+func (p *Player) UpdateAttributes() error {
 	currentAttributes := proto.Clone(p.Character.Attributes).(*api.Attributes)
 	err := p.ResetAttributes()
 	if err != nil {
@@ -143,5 +145,5 @@ func (p *Player) generateEquip() {
 func (p *Player) Equip(item *api.Item) error {
 	p.Equipped[item.Slot] = item
 	p.generateEquip()
-	return p.updateAttributes()
+	return p.UpdateAttributes()
 }

@@ -7,8 +7,6 @@ import (
 	"google.golang.org/protobuf/proto"
 )
 
-// TODO this should be same class as player (or use same parent)
-
 type Monster struct {
 	Position *api.Coordinates `json:"position"`
 	MovingTo *paths.Path      `json:"-"`

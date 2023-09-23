@@ -55,7 +55,7 @@ func TestEvaluateSkillAttributes(t *testing.T) {
 		},
 		Dexterity: &api.Attributes{
 			Strength: pointy.Float32(0.5),
-			Scalar:   pointy.Float32(3),
+			Constant: pointy.Float32(3),
 		},
 		Willpower: &api.Attributes{
 			Willpower: pointy.Float32(1),
@@ -64,7 +64,7 @@ func TestEvaluateSkillAttributes(t *testing.T) {
 	}
 	caster := &api.Attributes{
 		Strength: pointy.Float32(2),
-		Scalar:   pointy.Float32(1),
+		Constant: pointy.Float32(1),
 	}
 
 	v, err := EvaluateSkillAttributes(a, caster)

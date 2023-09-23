@@ -7,10 +7,7 @@ import (
 	"github.com/gdg-garage/dungeons-and-trolls/server/dungeonsandtrolls/gameobject"
 )
 
-func validateMove(game *dungeonsandtrolls.Game, c *api.Coordinates, p *gameobject.Player) error {
-	if c.Level != nil && p.Position.Level != c.Level {
-		return fmt.Errorf("it is not possible to travel to another level directly, please use the stairs")
-	}
+func validateMove(game *dungeonsandtrolls.Game, c *api.Position, p *gameobject.Player) error {
 	// TODO check if visible
 	// check that path exists
 	lc, err := game.GetCachedLevel(*p.Position.Level)
@@ -35,7 +32,7 @@ func validateMove(game *dungeonsandtrolls.Game, c *api.Coordinates, p *gameobjec
 	return nil
 }
 
-func Move(game *dungeonsandtrolls.Game, c *api.Coordinates, token string) error {
+func Move(game *dungeonsandtrolls.Game, c *api.Position, token string) error {
 	p, err := game.GetCurrentPlayer(token)
 	if err != nil {
 		return err

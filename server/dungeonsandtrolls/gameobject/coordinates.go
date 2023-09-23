@@ -9,3 +9,10 @@ func PositionToCoordinates(p *api.Position, l int32) *api.Coordinates {
 		Level:     &l,
 	}
 }
+
+func CoordinatesToPosition(coordinates *api.Coordinates) *api.Position {
+	return &api.Position{
+		PositionY: coordinates.PositionY,
+		PositionX: coordinates.PositionX,
+	}
+}

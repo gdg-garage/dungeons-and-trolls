@@ -10,8 +10,6 @@ import (
 	"google.golang.org/protobuf/encoding/protojson"
 )
 
-type ObsoleteMap [][][]gameobject.Interface
-
 type LevelCache struct {
 	SpawnPoint *api.Coordinates
 	Width      int32

@@ -21,7 +21,7 @@ service DungeonsAndTrolls {
   rpc PickUp(Identifier) returns (google.protobuf.Empty) {}
   // Assign skill point to the attribute for the Character bound to the logged
   // user.
-  rpc Move(Coordinates) returns (google.protobuf.Empty) {}
+  rpc Move(Position) returns (google.protobuf.Empty) {}
   // Respawn the Character bound to the logged user.
   rpc Respawn(google.protobuf.Empty) returns (google.protobuf.Empty) {}
   // Use a skill (provided by an item) by the Character bound to the logged
@@ -81,7 +81,7 @@ message GameStateParams {
 message CommandsBatch {
   optional Identifiers buy = 1;
   optional Identifier pick_up = 2;
-  optional Coordinates move = 3;
+  optional Position move = 3;
   optional SkillUse skill = 4;
   optional Message yell = 6;
   optional Attributes assign_skill_points = 7;
@@ -314,7 +314,7 @@ message GameState {
   Map map = 1;
   repeated Item shop_items = 2;
   optional Character character = 3;
-  optional Coordinates current_position = 4;
+  optional Position current_position = 4;
   optional int32 current_level = 5;
   int64 tick = 6;
   // List of events which occurred in the previous tick. Useful for visualising

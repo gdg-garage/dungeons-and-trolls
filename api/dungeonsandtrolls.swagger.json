@@ -275,7 +275,7 @@
             "in": "body",
             "required": true,
             "schema": {
-              "$ref": "#/definitions/dungeonsandtrollsCoordinates"
+              "$ref": "#/definitions/dungeonsandtrollsPosition"
             }
           }
         ],
@@ -632,7 +632,7 @@
           "x-nullable": true
         },
         "move": {
-          "$ref": "#/definitions/dungeonsandtrollsCoordinates",
+          "$ref": "#/definitions/dungeonsandtrollsPosition",
           "x-nullable": true
         },
         "skill": {
@@ -797,7 +797,7 @@
           "x-nullable": true
         },
         "currentPosition": {
-          "$ref": "#/definitions/dungeonsandtrollsCoordinates",
+          "$ref": "#/definitions/dungeonsandtrollsPosition",
           "x-nullable": true
         },
         "currentLevel": {

@@ -81,7 +81,7 @@ func (s *server) Game(ctx context.Context, params *api.GameStateParams) (*api.Ga
 		filterGameState(s.G, g)
 	}
 	g.Character = p.Character
-	g.CurrentPosition = p.Position
+	g.CurrentPosition = gameobject.CoordinatesToPosition(p.Position)
 	g.CurrentLevel = p.Position.Level
 	return g, nil
 }
@@ -110,7 +110,7 @@ func (s *server) PickUp(ctx context.Context, identifier *api.Identifier) (*empty
 	return &emptypb.Empty{}, handlers.PickUp(s.G, identifier, token)
 }
 
-func (s *server) Move(ctx context.Context, coordinates *api.Coordinates) (*emptypb.Empty, error) {
+func (s *server) Move(ctx context.Context, coordinates *api.Position) (*emptypb.Empty, error) {
 	token, err := getToken(ctx)
 	if err != nil {
 		return &emptypb.Empty{}, err
