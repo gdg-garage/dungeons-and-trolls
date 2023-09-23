@@ -486,7 +486,7 @@ func (g *Game) MovePlayer(p *gameobject.Player, c *api.Coordinates) error {
 	} else {
 		o := lc.CacheObjectsOnPosition(c, nil)
 		if o != nil {
-			o.Players = append(o.Players, &p.Character)
+			o.Players = append(o.Players, p.Character)
 			p.Position = c
 		} else {
 			coord := proto.Clone(c).(*api.Coordinates)
@@ -494,7 +494,7 @@ func (g *Game) MovePlayer(p *gameobject.Player, c *api.Coordinates) error {
 			mo := &api.MapObjects{
 				Position: coord,
 				Players: []*api.Character{
-					&p.Character,
+					p.Character,
 				},
 				IsFree: true,
 			}

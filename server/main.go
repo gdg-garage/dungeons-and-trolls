@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"github.com/gdg-garage/dungeons-and-trolls/server/dungeonsandtrolls"
 	"github.com/gdg-garage/dungeons-and-trolls/server/dungeonsandtrolls/api"
+	"github.com/gdg-garage/dungeons-and-trolls/server/dungeonsandtrolls/gameobject"
 	"github.com/gdg-garage/dungeons-and-trolls/server/dungeonsandtrolls/handlers"
 	"github.com/grpc-ecosystem/grpc-gateway/v2/runtime"
 	"github.com/rs/zerolog/log"
@@ -45,6 +46,19 @@ func filterGameState(game *dungeonsandtrolls.Game, g *api.GameState) {
 			}
 		}
 	}
+	hideUnidentifiedItems(game, g)
+}
+
+func hideUnidentifiedItems(game *dungeonsandtrolls.Game, g *api.GameState) {
+	for _, i := range g.ShopItems {
+		if i.Unidentified == nil {
+			continue
+		}
+		if !*i.Unidentified {
+			continue
+		}
+		gameobject.HideUnidentifiedFields(i)
+	}
 }
 
 func (s *server) Game(ctx context.Context, params *api.GameStateParams) (*api.GameState, error) {
@@ -66,7 +80,7 @@ func (s *server) Game(ctx context.Context, params *api.GameStateParams) (*api.Ga
 	if !p.IsAdmin {
 		filterGameState(s.G, g)
 	}
-	g.Character = &p.Character
+	g.Character = p.Character
 	g.CurrentPosition = p.Position
 	g.CurrentLevel = p.Position.Level
 	return g, nil

@@ -49,10 +49,10 @@ func validateAssignAttributes(p *gameobject.Player, a *api.Attributes) error {
 	if a.Mana != nil && *a.Mana < 0 {
 		return fmt.Errorf("mana is <0")
 	}
-	if a.Scalar != nil && *a.Scalar < 0 {
+	if a.Constant != nil && *a.Constant < 0 {
 		return fmt.Errorf("scalar is <0")
 	}
-	if a.Scalar != nil && *a.Scalar != 0 {
+	if a.Constant != nil && *a.Constant != 0 {
 		return fmt.Errorf("scalar cannot be changed")
 	}
 

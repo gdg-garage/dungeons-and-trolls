@@ -574,11 +574,10 @@
           "format": "float",
           "x-nullable": true
         },
-        "scalar": {
+        "constant": {
           "type": "number",
           "format": "float",
-          "x-nullable": true,
-          "title": "TODO constant"
+          "x-nullable": true
         }
       }
     },
@@ -872,6 +871,10 @@
         },
         "icon": {
           "type": "string"
+        },
+        "unidentified": {
+          "type": "boolean",
+          "x-nullable": true
         }
       }
     },
@@ -1200,10 +1203,9 @@
           "$ref": "#/definitions/dungeonsandtrollsAttributes",
           "x-nullable": true
         },
-        "scalar": {
+        "constant": {
           "$ref": "#/definitions/dungeonsandtrollsAttributes",
-          "x-nullable": true,
-          "title": "TODO constant"
+          "x-nullable": true
         }
       }
     },
@@ -1214,16 +1216,50 @@
           "$ref": "#/definitions/dungeonsandtrollsSkillAttributes"
         },
         "flags": {
-          "type": "array",
-          "items": {
-            "type": "string"
-          }
+          "$ref": "#/definitions/dungeonsandtrollsSkillFlags"
         },
         "summons": {
           "type": "array",
           "items": {
             "$ref": "#/definitions/dungeonsandtrollsDroppable"
           }
+        }
+      }
+    },
+    "dungeonsandtrollsSkillFlags": {
+      "type": "object",
+      "properties": {
+        "requiresAlone": {
+          "type": "boolean",
+          "title": "requires that the caster is alone (no other creature (player or monster) are visible in 5 range), furthermore the skill is canceled if you take any damage while using it"
+        },
+        "requiresLineOfSight": {
+          "type": "boolean",
+          "title": "requires the target position be visible from the caster position"
+        },
+        "allowTargetSelf": {
+          "type": "boolean",
+          "title": "allows skills that target a character to target oneself"
+        },
+        "movement": {
+          "type": "boolean",
+          "title": "moves the caster to the target position, or the target to the caster position"
+        },
+        "knockback": {
+          "type": "boolean",
+          "title": "moves the caster/target one tile away from the other"
+        },
+        "stun": {
+          "type": "boolean",
+          "title": "prevents the caster/target from performing any actions for one tick, and grants immunity to stun for the following tick"
+        },
+        "groundEffect": {
+          "type": "boolean",
+          "title": "creates ground effect at caster/target position, which applies the effects of the skill"
+        },
+        "passive": {
+          "type": "boolean",
+          "title": "the effects of the skill are automatically applied every tick, assuming the cost can be paid; multiple passive skills are allowed"
         }
       }
     },

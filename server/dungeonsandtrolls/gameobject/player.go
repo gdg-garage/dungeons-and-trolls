@@ -13,7 +13,7 @@ type Player struct {
 	Position       *api.Coordinates            `json:"position"`
 	MovingTo       *paths.Path                 `json:"-"`
 	Equipped       map[api.Item_Type]*api.Item `json:"-"`
-	Character      api.Character               `json:"character"`
+	Character      *api.Character              `json:"character"`
 	BaseAttributes *api.Attributes             `json:"-"`
 	ItemAttributes *api.Attributes             `json:"-"`
 	MaxStats       *api.Attributes             `json:"-"`
@@ -23,7 +23,7 @@ type Player struct {
 
 func CreatePlayer(name string) *Player {
 	p := &Player{
-		Character: api.Character{
+		Character: &api.Character{
 			Name: name,
 			Id:   GetNewId(),
 		},
@@ -53,7 +53,7 @@ func (p *Player) InitAttributes() {
 		ElectricResist: pointy.Float32(0),
 
 		// necessary because scalar part in the skills would be zero or skipped
-		Scalar: pointy.Float32(1),
+		Constant: pointy.Float32(1),
 	}
 	p.MaxStats = &api.Attributes{
 		Life:    pointy.Float32(baseStat),
@@ -117,6 +117,10 @@ func (p *Player) GetName() string {
 
 func (p *Player) GetPosition() *api.Coordinates {
 	return p.Position
+}
+
+func (p *Player) SetPosition(c *api.Coordinates) {
+	p.Position = c
 }
 
 func (p *Player) generateSkills() {

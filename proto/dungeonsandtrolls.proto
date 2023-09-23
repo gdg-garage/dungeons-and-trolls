@@ -126,7 +126,7 @@ message Attributes {
   optional float stamina = 12;
   optional float mana = 13;
 
-  optional float scalar = 14; // TODO constant
+  optional float constant = 14;
 }
 
 message SkillAttributes {
@@ -146,7 +146,7 @@ message SkillAttributes {
   optional Attributes stamina = 12;
   optional Attributes mana = 13;
  
-  optional Attributes scalar = 14; // TODO constant
+  optional Attributes constant = 14;
 }
 
 message Stats {
@@ -228,6 +228,7 @@ message Item {
   Attributes attributes = 6;
   repeated Skill skills = 7;
   string icon = 8;
+  optional bool unidentified = 9;
 }
 
 message SimpleItem {
@@ -247,9 +248,20 @@ message Droppable {
   }
 }
 
+message SkillFlags {
+  bool requires_alone = 1; // requires that the caster is alone (no other creature (player or monster) are visible in 5 range), furthermore the skill is canceled if you take any damage while using it
+  bool requires_line_of_sight = 2;  // requires the target position be visible from the caster position
+  bool allow_target_self = 3; // allows skills that target a character to target oneself
+  bool movement = 4; // moves the caster to the target position, or the target to the caster position
+  bool knockback = 5; // moves the caster/target one tile away from the other
+  bool stun = 6; // prevents the caster/target from performing any actions for one tick, and grants immunity to stun for the following tick
+  bool ground_effect = 7; // creates ground effect at caster/target position, which applies the effects of the skill
+  bool passive = 8; // the effects of the skill are automatically applied every tick, assuming the cost can be paid; multiple passive skills are allowed
+}
+
 message SkillEffect {
 	SkillAttributes attributes = 1;
-	repeated string flags = 2;
+  SkillFlags flags = 2;
 	repeated Droppable summons = 3;
 };
 

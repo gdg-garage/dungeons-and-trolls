@@ -11,4 +11,5 @@ type Ider interface {
 type Positioner interface {
 	Ider
 	GetPosition() *api.Coordinates
+	SetPosition(c *api.Coordinates)
 }

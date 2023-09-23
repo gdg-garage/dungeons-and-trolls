@@ -40,3 +40,7 @@ func (m *Monster) GetName() string {
 func (m *Monster) GetPosition() *api.Coordinates {
 	return m.Position
 }
+
+func (m *Monster) SetPosition(c *api.Coordinates) {
+	m.Position = c
+}
