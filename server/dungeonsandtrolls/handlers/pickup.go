@@ -77,7 +77,7 @@ func PickUp(game *dungeonsandtrolls.Game, i *api.Identifier, token string) error
 		return err
 	}
 
-	pc := game.GetPlayerCommands(p.Character.Id)
+	pc := game.GetCommands(p.Character.Id)
 	pc.PickUp = i
 
 	return nil

@@ -62,12 +62,12 @@ func ValidateBuy(game *Game, p *gameobject.Player, identifiers *api.Identifiers)
 	return nil
 }
 
-func ExecuteYell(game *Game, p *gameobject.Player, message *api.Message) error {
+func ExecuteYell(game *Game, p gameobject.Positioner, message *api.Message) error {
 	messageEvent := api.Event_MESSAGE
 	game.LogEvent(&api.Event{
 		Type:        &messageEvent,
-		Message:     fmt.Sprintf("%s (%s): %s", p.Character.Id, p.Character.Name, message.Text),
-		Coordinates: p.Position,
+		Message:     fmt.Sprintf("%s (%s): %s", p.GetId(), p.GetName(), message.Text),
+		Coordinates: p.GetPosition(),
 	})
 	return nil
 }

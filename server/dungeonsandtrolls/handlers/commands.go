@@ -47,9 +47,8 @@ func Commands(game *dungeonsandtrolls.Game, c *api.CommandsBatch, token string) 
 			return err
 		}
 	}
-	// TODO skill points
 
-	pc := game.GetPlayerCommands(p.Character.Id)
+	pc := game.GetCommands(p.Character.Id)
 	pc.Move = c.Move
 	pc.Yell = c.Yell
 	pc.Buy = c.Buy

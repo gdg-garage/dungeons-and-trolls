@@ -27,7 +27,7 @@ func Yell(game *dungeonsandtrolls.Game, message *api.Message, token string) erro
 		return err
 	}
 
-	pc := game.GetPlayerCommands(p.Character.Id)
+	pc := game.GetCommands(p.Character.Id)
 	pc.Yell = message
 
 	return nil

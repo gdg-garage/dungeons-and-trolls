@@ -78,7 +78,7 @@ func AssignAttributes(game *dungeonsandtrolls.Game, a *api.Attributes, token str
 		return err
 	}
 
-	pc := game.GetPlayerCommands(p.Character.Id)
+	pc := game.GetCommands(p.Character.Id)
 	pc.AssignSkillPoints = a
 
 	return nil

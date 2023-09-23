@@ -112,7 +112,7 @@ func Skill(game *dungeonsandtrolls.Game, skillUse *api.SkillUse, token string) e
 		return err
 	}
 
-	pc := game.GetPlayerCommands(p.Character.Id)
+	pc := game.GetCommands(p.Character.Id)
 	pc.Skill = skillUse
 
 	return nil

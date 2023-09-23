@@ -42,3 +42,11 @@ func (m *Monster) GetPosition() *api.Coordinates {
 func (m *Monster) SetPosition(c *api.Coordinates) {
 	m.Position = c
 }
+
+func (m *Monster) GetMovingTo() *paths.Path {
+	return m.MovingTo
+}
+
+func (m *Monster) SetMovingTo(p *paths.Path) {
+	m.MovingTo = p
+}

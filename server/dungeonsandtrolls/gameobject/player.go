@@ -125,6 +125,14 @@ func (p *Player) SetPosition(c *api.Coordinates) {
 	p.Position = c
 }
 
+func (p *Player) GetMovingTo() *paths.Path {
+	return p.MovingTo
+}
+
+func (p *Player) SetMovingTo(m *paths.Path) {
+	p.MovingTo = m
+}
+
 func (p *Player) generateSkills() {
 	p.Skills = map[string]*api.Skill{}
 	for _, i := range p.Equipped {

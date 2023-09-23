@@ -47,7 +47,8 @@ type Game struct {
 
 	// todo create player cache
 
-	playerCommands map[string]*api.CommandsBatch
+	pCommands       map[string]*api.CommandsBatch
+	monsterCommands map[string]*api.CommandsBatch
 
 	// TODO last action in level probably in map cache
 	// TODO time since generated level
@@ -77,9 +78,9 @@ func NewGame() *Game {
 		mapCache: MapCache{
 			Level: map[int32]*LevelCache{},
 		},
-		playerCommands: map[string]*api.CommandsBatch{},
-		idToObject:     map[string]gameobject.Ider{},
-		Score:          0,
+		pCommands:  map[string]*api.CommandsBatch{},
+		idToObject: map[string]gameobject.Ider{},
+		Score:      0,
 	}
 
 	return g
@@ -224,12 +225,14 @@ func (g *Game) processCommands() {
 	errorEvent := api.Event_ERROR
 	deathEvent := api.Event_DEATH
 	scoreEvent := api.Event_SCORE
-	for pId, c := range g.playerCommands {
+
+	for pId, c := range g.pCommands {
 		maybePlayer, err := g.GetObjectById(pId)
 		if err != nil {
 			log.Warn().Err(err).Msg("")
 			continue
 		}
+		// TODO allow monster (use positioner for everything)
 		p, ok := maybePlayer.(*gameobject.Player)
 		if !ok {
 			log.Warn().Err(err).Msg("object retrieved by ID is not a player")
@@ -414,7 +417,7 @@ func (g *Game) processCommands() {
 		}
 	}
 
-	g.playerCommands = map[string]*api.CommandsBatch{}
+	g.pCommands = map[string]*api.CommandsBatch{}
 }
 
 func (g *Game) GetPlayerByKey(apiKey string) (*gameobject.Player, error) {
@@ -522,12 +525,12 @@ func (g *Game) GetCurrentPlayer(token string) (*gameobject.Player, error) {
 	return g.GetPlayerByKey(token)
 }
 
-func (g *Game) GetPlayerCommands(pId string) *api.CommandsBatch {
-	if pc, ok := g.playerCommands[pId]; ok {
+func (g *Game) GetCommands(pId string) *api.CommandsBatch {
+	if pc, ok := g.pCommands[pId]; ok {
 		return pc
 	}
-	g.playerCommands[pId] = &api.CommandsBatch{}
-	return g.playerCommands[pId]
+	g.pCommands[pId] = &api.CommandsBatch{}
+	return g.pCommands[pId]
 }
 
 func (g *Game) Register(o gameobject.Ider) {

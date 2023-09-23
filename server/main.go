@@ -143,7 +143,11 @@ func (s *server) Commands(ctx context.Context, commands *api.CommandsBatch) (*em
 }
 
 func (s *server) MonstersCommands(ctx context.Context, commands *api.CommandsForMonsters) (*emptypb.Empty, error) {
-	return nil, nil
+	token, err := getToken(ctx)
+	if err != nil {
+		return &emptypb.Empty{}, err
+	}
+	return &emptypb.Empty{}, handlers.MonsterCommands(s.G, commands, token)
 }
 
 func (s *server) Yell(ctx context.Context, message *api.Message) (*emptypb.Empty, error) {
