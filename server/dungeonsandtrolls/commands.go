@@ -123,7 +123,7 @@ func ExecutePickUp(game *Game, p *gameobject.Player, i *api.Identifier) error {
 }
 
 func payForSkill(p *gameobject.Player, s *api.Skill) error {
-	if s.Cost != nil {
+	if s.Cost == nil {
 		return nil
 	}
 	return gameobject.SubtractAllAttributes(p.Character.Attributes, s.Cost, false)
