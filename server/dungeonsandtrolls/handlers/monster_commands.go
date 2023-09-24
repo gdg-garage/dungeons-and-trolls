@@ -22,13 +22,13 @@ func validateMonsterCommands(game *dungeonsandtrolls.Game, mc *api.CommandsForMo
 		if !ok {
 			return fmt.Errorf("tried to control %s which is not a monster", mId)
 		}
-		if c.Move != nil {
-			err = validateMove(game, c.Move, m)
-			if err != nil {
-				return err
-			}
-		}
 		if c.Buy != nil {
+			return fmt.Errorf("monsters are not allowed to shop")
+		}
+		if c.PickUp != nil {
+			return fmt.Errorf("monsters are not allowed to pick up")
+		}
+		if c.AssignSkillPoints != nil {
 			return fmt.Errorf("monsters are not allowed to shop")
 		}
 		if c.Yell != nil {
@@ -37,19 +37,23 @@ func validateMonsterCommands(game *dungeonsandtrolls.Game, mc *api.CommandsForMo
 				return err
 			}
 		}
-		if c.PickUp != nil {
-			return fmt.Errorf("monsters are not allowed to pick up")
+		if c.Skill != nil {
+			err = validateSkill(game, c.Skill, m)
+			if err != nil {
+				return err
+			}
 		}
-		// TODO
-		//if c.Skill != nil {
-		//	err = validateSkill(game, c.Skill, m)
-		//	if err != nil {
-		//		return err
-		//	}
-		//}
-		if c.AssignSkillPoints != nil {
-			return fmt.Errorf("monsters are not allowed to shop")
+		// TODO player lock
+		if c.Move != nil {
+			err = validateAndSetMove(game, c.Move, m)
+			if err != nil {
+				return err
+			}
 		}
+
+		pc := game.GetCommands(mId)
+		pc.Yell = c.Yell
+		pc.Skill = c.Skill
 	}
 	return nil
 }

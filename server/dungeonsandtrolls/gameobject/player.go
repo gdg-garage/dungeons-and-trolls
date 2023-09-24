@@ -133,6 +133,15 @@ func (p *Player) SetMovingTo(m *paths.Path) {
 	p.MovingTo = m
 }
 
+func (p *Player) GetSkill(id string) (*api.Skill, bool) {
+	skill, ok := p.Skills[id]
+	return skill, ok
+}
+
+func (p *Player) GetAttributes() *api.Attributes {
+	return p.Character.Attributes
+}
+
 func (p *Player) generateSkills() {
 	p.Skills = map[string]*api.Skill{}
 	for _, i := range p.Equipped {

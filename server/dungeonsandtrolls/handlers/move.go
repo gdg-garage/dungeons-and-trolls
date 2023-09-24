@@ -7,7 +7,7 @@ import (
 	"github.com/gdg-garage/dungeons-and-trolls/server/dungeonsandtrolls/gameobject"
 )
 
-func validateMove(game *dungeonsandtrolls.Game, c *api.Position, p gameobject.Positioner) error {
+func validateAndSetMove(game *dungeonsandtrolls.Game, c *api.Position, p gameobject.Positioner) error {
 	// TODO check if visible
 	// check that path exists
 	lc, err := game.GetCachedLevel(p.GetPosition().Level)
@@ -41,7 +41,7 @@ func Move(game *dungeonsandtrolls.Game, c *api.Position, token string) error {
 		return fmt.Errorf("admin players are are not allowed to call non-monster commands")
 	}
 
-	err = validateMove(game, c, p)
+	err = validateAndSetMove(game, c, p)
 	if err != nil {
 		return err
 	}

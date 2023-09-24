@@ -8,23 +8,30 @@ import (
 )
 
 type Monster struct {
-	Position *api.Coordinates `json:"position"`
-	MovingTo *paths.Path      `json:"-"`
-	MaxStats *api.Attributes  `json:"-"`
-	Monster  *api.Monster     `json:"-"`
+	Position *api.Coordinates      `json:"position"`
+	MovingTo *paths.Path           `json:"-"`
+	MaxStats *api.Attributes       `json:"-"`
+	Monster  *api.Monster          `json:"-"`
+	Skills   map[string]*api.Skill `json:"-"`
 }
 
-func CreateMonster(m *api.Monster, p *api.Coordinates) *Monster {
-	maxAttributes, ok := proto.Clone(m.Attributes).(*api.Attributes)
+func CreateMonster(mon *api.Monster, p *api.Coordinates) *Monster {
+	for _, i := range mon.EquippedItems {
+		MergeAllAttributes(mon.Attributes, i.Attributes, true)
+	}
+
+	maxAttributes, ok := proto.Clone(mon.Attributes).(*api.Attributes)
 	if !ok {
 		log.Warn().Msgf("cloning monster attributes failed")
 	}
 	// TODO check
-	return &Monster{
+	m := &Monster{
 		Position: p,
-		Monster:  m,
+		Monster:  mon,
 		MaxStats: maxAttributes,
 	}
+	m.generateSkills()
+	return m
 }
 
 func (m *Monster) GetId() string {
@@ -49,4 +56,33 @@ func (m *Monster) GetMovingTo() *paths.Path {
 
 func (m *Monster) SetMovingTo(p *paths.Path) {
 	m.MovingTo = p
+}
+
+func (m *Monster) GetSkill(id string) (*api.Skill, bool) {
+	skill, ok := m.Skills[id]
+	return skill, ok
+}
+
+func (m *Monster) GetAttributes() *api.Attributes {
+	return m.Monster.Attributes
+}
+
+func (m *Monster) generateSkills() {
+	m.Skills = map[string]*api.Skill{}
+	for _, i := range m.Monster.EquippedItems {
+		for _, s := range i.Skills {
+			m.Skills[s.Id] = s
+		}
+	}
+}
+
+func (m *Monster) UpdateAttributes() {
+	currentAttributes := proto.Clone(m.GetAttributes()).(*api.Attributes)
+	m.Monster.Attributes = proto.Clone(m.MaxStats).(*api.Attributes)
+	m.GetAttributes().Life = currentAttributes.Life
+	m.GetAttributes().Mana = currentAttributes.Mana
+	m.GetAttributes().Stamina = currentAttributes.Stamina
+	for _, e := range m.Monster.Effects {
+		MergeAllAttributes(m.GetAttributes(), e.Effects, false)
+	}
 }

@@ -501,8 +501,7 @@
       "enum": [
         "none",
         "position",
-        "character",
-        "item"
+        "character"
       ],
       "default": "none"
     },
@@ -775,7 +774,8 @@
         "ERROR",
         "SKILL",
         "DEATH",
-        "SCORE"
+        "SCORE",
+        "MOVE"
       ],
       "default": "DAMAGE"
     },

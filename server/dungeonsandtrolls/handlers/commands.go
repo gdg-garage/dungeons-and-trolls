@@ -15,12 +15,6 @@ func Commands(game *dungeonsandtrolls.Game, c *api.CommandsBatch, token string) 
 		return fmt.Errorf("admin players are are not allowed to call non-monster commands")
 	}
 
-	if c.Move != nil {
-		err = validateMove(game, c.Move, p)
-		if err != nil {
-			return err
-		}
-	}
 	if c.Buy != nil {
 		err = dungeonsandtrolls.ValidateBuy(game, p, c.Buy)
 		if err != nil {
@@ -51,9 +45,15 @@ func Commands(game *dungeonsandtrolls.Game, c *api.CommandsBatch, token string) 
 			return err
 		}
 	}
+	// TODO player lock
+	if c.Move != nil {
+		err = validateAndSetMove(game, c.Move, p)
+		if err != nil {
+			return err
+		}
+	}
 
 	pc := game.GetCommands(p.Character.Id)
-	pc.Move = c.Move
 	pc.Yell = c.Yell
 	pc.Buy = c.Buy
 	pc.PickUp = c.PickUp

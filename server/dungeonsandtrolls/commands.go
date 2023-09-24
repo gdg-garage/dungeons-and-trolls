@@ -122,16 +122,16 @@ func ExecutePickUp(game *Game, p *gameobject.Player, i *api.Identifier) error {
 	return fmt.Errorf("not implemented")
 }
 
-func payForSkill(p *gameobject.Player, s *api.Skill) error {
+func payForSkill(p gameobject.Skiller, s *api.Skill) error {
 	if s.Cost == nil {
 		return nil
 	}
-	return gameobject.SubtractAllAttributes(p.Character.Attributes, s.Cost, false)
+	return gameobject.SubtractAllAttributes(p.GetAttributes(), s.Cost, false)
 
 }
 
-func ExecuteSkill(game *Game, player *gameobject.Player, su *api.SkillUse) error {
-	s, ok := player.Skills[su.SkillId]
+func ExecuteSkill(game *Game, player gameobject.Skiller, su *api.SkillUse) error {
+	s, ok := player.GetSkill(su.SkillId)
 	if !ok {
 		return fmt.Errorf("skill %s not found for character", su.SkillId)
 	}
@@ -139,8 +139,8 @@ func ExecuteSkill(game *Game, player *gameobject.Player, su *api.SkillUse) error
 	game.LogEvent(
 		&api.Event{
 			Type:        &skillEvent,
-			Message:     fmt.Sprintf("%s (%s): used skill: %s (%s)", player.Character.Id, player.Character.Name, s.Id, s.Name),
-			Coordinates: player.Position,
+			Message:     fmt.Sprintf("%s (%s): used skill: %s (%s)", player.GetId(), player.GetName(), s.Id, s.Name),
+			Coordinates: player.GetPosition(),
 		})
 
 	err := payForSkill(player, s)
@@ -150,7 +150,7 @@ func ExecuteSkill(game *Game, player *gameobject.Player, su *api.SkillUse) error
 
 	var duration float64
 	if s.Duration != nil {
-		d, err := gameobject.AttributesValue(player.Character.Attributes, s.Duration)
+		d, err := gameobject.AttributesValue(player.GetAttributes(), s.Duration)
 		if err != nil {
 			return err
 		}
@@ -158,15 +158,25 @@ func ExecuteSkill(game *Game, player *gameobject.Player, su *api.SkillUse) error
 	}
 
 	if s.CasterEffects != nil {
-		e, err := gameobject.EvaluateSkillAttributes(s.CasterEffects.Attributes, player.Character.Attributes)
+		e, err := gameobject.EvaluateSkillAttributes(s.CasterEffects.Attributes, player.GetAttributes())
 		if err != nil {
 			return err
 		}
-		player.Character.Effects = append(player.Character.Effects, &api.Effect{
-			Effects:   e,
-			Duration:  int32(duration),
-			XCasterId: player.GetId(),
-		})
+		switch pt := player.(type) {
+		case *gameobject.Player:
+			pt.Character.Effects = append(pt.Character.Effects, &api.Effect{
+				Effects:   e,
+				Duration:  int32(duration),
+				XCasterId: player.GetId(),
+			})
+		case *gameobject.Monster:
+			pt.Monster.Effects = append(pt.Monster.Effects, &api.Effect{
+				Effects:   e,
+				Duration:  int32(duration),
+				XCasterId: player.GetId(),
+			})
+		}
+
 		// TODO summons
 		// TODO flags
 	}
@@ -178,11 +188,11 @@ func ExecuteSkill(game *Game, player *gameobject.Player, su *api.SkillUse) error
 			return err
 		}
 		if s.TargetEffects != nil {
-			e, err := gameobject.EvaluateSkillAttributes(s.TargetEffects.Attributes, player.Character.Attributes)
+			e, err := gameobject.EvaluateSkillAttributes(s.TargetEffects.Attributes, player.GetAttributes())
 			if err != nil {
 				return err
 			}
-			d, err := gameobject.AttributesValue(player.Character.Attributes, s.DamageAmount)
+			d, err := gameobject.AttributesValue(player.GetAttributes(), s.DamageAmount)
 			if err != nil {
 				return err
 			}
@@ -209,19 +219,9 @@ func ExecuteSkill(game *Game, player *gameobject.Player, su *api.SkillUse) error
 				return fmt.Errorf("tried to cast character spell on non-character")
 			}
 		}
-	case api.Skill_item:
-		//maybeItem, err := game.GetObjectById(*su.TargetId)
-		//if err != nil {
-		//	return err
-		//}
-		//i, ok := maybeItem.(*api.Item)
-		//if !ok {
-		//	return fmt.Errorf("tried to cast item spell on non-item")
-		//}
-		// TODO item effects?
 	case api.Skill_position:
 		// teleport
-		err = game.MovePlayer(player, gameobject.PositionToCoordinates(su.Position, player.Position.Level))
+		err = game.MoveCharacter(player, gameobject.PositionToCoordinates(su.Position, player.GetPosition().Level))
 		if err != nil {
 			return err
 		}

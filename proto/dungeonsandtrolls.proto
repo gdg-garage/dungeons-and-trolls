@@ -194,7 +194,6 @@ message Skill {
     none = 0;
     position = 1;
     character = 2;
-    item = 3;
   }
 
   string id = 1;
@@ -303,6 +302,7 @@ message Event {
     SKILL = 5;
     DEATH = 6;
     SCORE = 7;
+    MOVE = 8;
   }
 
   string message = 1;

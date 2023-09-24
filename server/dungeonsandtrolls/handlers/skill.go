@@ -20,15 +20,16 @@ func checkDistance(playerPosition *api.Coordinates, playerAttributes *api.Attrib
 	return nil
 }
 
-func validateSkill(game *dungeonsandtrolls.Game, skillUse *api.SkillUse, p *gameobject.Player) error {
-	s, ok := p.Skills[skillUse.SkillId]
+func validateSkill(game *dungeonsandtrolls.Game, skillUse *api.SkillUse, p gameobject.Skiller) error {
+	s, ok := p.GetSkill(skillUse.SkillId)
 	if !ok {
-		return fmt.Errorf("skill %s not found for Character %s", skillUse.SkillId, p.Character.Id)
+		return fmt.Errorf("skill %s not found for Character %s", skillUse.SkillId, p.GetId())
 	}
+
 	if skillUse.TargetId != nil && skillUse.Position != nil {
 		return fmt.Errorf("cannot use skill on target and location at the same time")
 	}
-	if skillUse.TargetId == nil && (s.Target == api.Skill_character || s.Target == api.Skill_item) {
+	if skillUse.TargetId == nil && (s.Target == api.Skill_character) {
 		return fmt.Errorf("skill targetId not specified")
 	}
 	if (skillUse.TargetId != nil || skillUse.Position != nil) && (s.Target == api.Skill_none) {
@@ -41,25 +42,11 @@ func validateSkill(game *dungeonsandtrolls.Game, skillUse *api.SkillUse, p *game
 			return fmt.Errorf("targetId %s is not valid", *skillUse.TargetId)
 		}
 		switch v := t.(type) {
-		case *api.Item:
-			if s.Target != api.Skill_item {
-				return fmt.Errorf("the skill %s is not supposed to be used on items", skillUse.SkillId)
-			}
-			found := false
-			for _, i := range p.Equipped {
-				if i.Id == *skillUse.TargetId {
-					found = true
-					break
-				}
-			}
-			if !found {
-				return fmt.Errorf("trying to cast to a non-owned item %s", *skillUse.TargetId)
-			}
 		case *gameobject.Monster:
 			if s.Target != api.Skill_character {
 				return fmt.Errorf("the skill %s is not supposed to be used on characters", skillUse.SkillId)
 			}
-			err = checkDistance(p.Position, p.Character.Attributes, v.Position, s)
+			err = checkDistance(p.GetPosition(), p.GetAttributes(), v.Position, s)
 			if err != nil {
 				return err
 			}
@@ -67,10 +54,12 @@ func validateSkill(game *dungeonsandtrolls.Game, skillUse *api.SkillUse, p *game
 			if s.Target != api.Skill_character {
 				return fmt.Errorf("the skill %s is not supposed to be used on characters", skillUse.SkillId)
 			}
-			err = checkDistance(p.Position, p.Character.Attributes, v.Position, s)
+			err = checkDistance(p.GetPosition(), p.GetAttributes(), v.Position, s)
 			if err != nil {
 				return err
 			}
+		default:
+			return fmt.Errorf("using skill on wrong object type with id %s", *skillUse.TargetId)
 		}
 		// TODO check flags
 	}
@@ -78,20 +67,20 @@ func validateSkill(game *dungeonsandtrolls.Game, skillUse *api.SkillUse, p *game
 		if skillUse.Position == nil && s.Target == api.Skill_position {
 			return fmt.Errorf("skill location not specified")
 		}
-		l, err := game.GetCachedLevel(p.Position.Level)
+		l, err := game.GetCachedLevel(p.GetPosition().Level)
 		if err != nil {
 			return fmt.Errorf("level not found")
 		}
 		if skillUse.Position.PositionX >= l.Width && skillUse.Position.PositionY >= l.Height {
 			return fmt.Errorf("skill target position (%d, %d) not found in the level", skillUse.Position.PositionX, skillUse.Position.PositionY)
 		}
-		err = checkDistance(p.Position, p.Character.Attributes, gameobject.PositionToCoordinates(skillUse.Position, p.Position.Level), s)
+		err = checkDistance(p.GetPosition(), p.GetAttributes(), gameobject.PositionToCoordinates(skillUse.Position, p.GetPosition().Level), s)
 		if err != nil {
 			return err
 		}
 	}
 	if s.Cost != nil {
-		satisfied, err := gameobject.SatisfyingAttributes(p.Character.Attributes, s.Cost)
+		satisfied, err := gameobject.SatisfyingAttributes(p.GetAttributes(), s.Cost)
 		if err != nil {
 			return err
 		}

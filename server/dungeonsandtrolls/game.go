@@ -46,8 +46,7 @@ type Game struct {
 
 	// todo create player cache
 
-	pCommands       map[string]*api.CommandsBatch
-	monsterCommands map[string]*api.CommandsBatch
+	Commands map[string]*api.CommandsBatch
 
 	// TODO last action in level probably in map cache
 	// TODO time since generated level
@@ -77,7 +76,7 @@ func NewGame() *Game {
 		mapCache: MapCache{
 			Level: map[int32]*LevelCache{},
 		},
-		pCommands:  map[string]*api.CommandsBatch{},
+		Commands:   map[string]*api.CommandsBatch{},
 		idToObject: map[string]gameobject.Ider{},
 		Score:      0,
 	}
@@ -229,13 +228,12 @@ func (g *Game) processCommands() {
 	deathEvent := api.Event_DEATH
 	scoreEvent := api.Event_SCORE
 
-	for pId, c := range g.pCommands {
+	for pId, c := range g.Commands {
 		maybePlayer, err := g.GetObjectById(pId)
 		if err != nil {
 			log.Warn().Err(err).Msg("")
 			continue
 		}
-		// TODO allow monster (use positioner for everything)
 		p, ok := maybePlayer.(*gameobject.Player)
 		if !ok {
 			log.Warn().Err(err).Msg("object retrieved by ID is not a player")
@@ -247,8 +245,8 @@ func (g *Game) processCommands() {
 			if err != nil {
 				g.LogEvent(&api.Event{
 					Type:        &errorEvent,
-					Message:     fmt.Sprintf("%s (%s): failed to assign skill point %s", p.Character.Id, p.Character.Name, err.Error()),
-					Coordinates: p.Position,
+					Message:     fmt.Sprintf("%s (%s): failed to assign skill point %s", p.GetId(), p.GetName(), err.Error()),
+					Coordinates: p.GetPosition(),
 				})
 			}
 		}
@@ -258,19 +256,8 @@ func (g *Game) processCommands() {
 			if err != nil {
 				g.LogEvent(&api.Event{
 					Type:        &errorEvent,
-					Message:     fmt.Sprintf("%s (%s): failed to pick up %s: %s", p.Character.Id, p.Character.Name, c.PickUp, err.Error()),
-					Coordinates: p.Position,
-				})
-			}
-		}
-
-		if c.Yell != nil {
-			err = ExecuteYell(g, p, c.Yell)
-			if err != nil {
-				g.LogEvent(&api.Event{
-					Type:        &errorEvent,
-					Message:     fmt.Sprintf("%s (%s): failed to yell: %s", p.Character.Id, p.Character.Name, err.Error()),
-					Coordinates: p.Position,
+					Message:     fmt.Sprintf("%s (%s): failed to pick up %s: %s", p.GetId(), p.GetName(), c.PickUp, err.Error()),
+					Coordinates: p.GetPosition(),
 				})
 			}
 		}
@@ -280,20 +267,37 @@ func (g *Game) processCommands() {
 			if err != nil {
 				g.LogEvent(&api.Event{
 					Type:        &errorEvent,
-					Message:     fmt.Sprintf("%s (%s): failed to buy: %s", p.Character.Id, p.Character.Name, err.Error()),
-					Coordinates: p.Position,
+					Message:     fmt.Sprintf("%s (%s): failed to buy: %s", p.GetId(), p.GetName(), err.Error()),
+					Coordinates: p.GetPosition(),
+				})
+			}
+		}
+
+		skiller, ok := maybePlayer.(gameobject.Skiller)
+		if !ok {
+			log.Warn().Err(err).Msg("object retrieved by ID is not a skiller")
+			continue
+		}
+
+		if c.Yell != nil {
+			err = ExecuteYell(g, skiller, c.Yell)
+			if err != nil {
+				g.LogEvent(&api.Event{
+					Type:        &errorEvent,
+					Message:     fmt.Sprintf("%s (%s): failed to yell: %s", skiller.GetId(), skiller.GetName(), err.Error()),
+					Coordinates: skiller.GetPosition(),
 				})
 			}
 		}
 
 		//TODO skill on newly bought (picked up) items?
 		if c.Skill != nil {
-			err = ExecuteSkill(g, p, c.Skill)
+			err = ExecuteSkill(g, skiller, c.Skill)
 			if err != nil {
 				g.LogEvent(&api.Event{
 					Type:        &errorEvent,
-					Message:     fmt.Sprintf("%s (%s): failed to use skill: %s", p.Character.Id, p.Character.Name, err.Error()),
-					Coordinates: p.Position,
+					Message:     fmt.Sprintf("%s (%s): failed to use skill: %s", skiller.GetId(), skiller.GetName(), err.Error()),
+					Coordinates: skiller.GetPosition(),
 				})
 			}
 		}
@@ -306,7 +310,7 @@ func (g *Game) processCommands() {
 		}
 		p.MovingTo.Advance()
 		//log.Info().Msgf("player is at (%d, %d), moving to (%d, %d)", p.Positioner.PositionX, p.Positioner.PositionY, p.MovingTo.Current().X, p.MovingTo.Current().Y)
-		g.MovePlayer(p, &api.Coordinates{
+		g.MoveCharacter(p, &api.Coordinates{
 			PositionX: int32(p.MovingTo.Current().X),
 			PositionY: int32(p.MovingTo.Current().Y),
 			Level:     int32(p.GetPosition().Level),
@@ -337,6 +341,28 @@ func (g *Game) processCommands() {
 			// TODO log level traverse stats
 			// TODO log newly discovered levels
 
+		}
+	}
+
+	// move monsters based on move to
+	for _, o := range g.idToObject {
+		switch m := o.(type) {
+		case *gameobject.Monster:
+			if m.MovingTo == nil {
+				continue
+			}
+			m.MovingTo.Advance()
+			g.MoveCharacter(m, &api.Coordinates{
+				PositionX: int32(m.MovingTo.Current().X),
+				PositionY: int32(m.MovingTo.Current().Y),
+				Level:     int32(m.GetPosition().Level),
+			})
+			// TODO log errors
+			if m.MovingTo.AtEnd() {
+				m.MovingTo = nil
+			}
+		default:
+			continue
 		}
 	}
 
@@ -422,7 +448,7 @@ func (g *Game) processCommands() {
 		}
 	}
 
-	g.pCommands = map[string]*api.CommandsBatch{}
+	g.Commands = map[string]*api.CommandsBatch{}
 }
 
 func (g *Game) GetPlayerByKey(apiKey string) (*gameobject.Player, error) {
@@ -451,12 +477,13 @@ func (g *Game) SpawnPlayer(p *gameobject.Player, level int32) {
 	}
 
 	c := lc.SpawnPoint
-	err = g.MovePlayer(p, c)
+	err = g.MoveCharacter(p, c)
 	if err != nil {
 		log.Warn().Err(err).Msg("")
 	}
 }
 
+// Todo more generic version?
 func (g *Game) removePlayerFromPosition(p *gameobject.Player) {
 	o, err := g.GetObjectsOnPosition(p.Position)
 	if err != nil {
@@ -476,34 +503,89 @@ func (g *Game) removePlayerFromPosition(p *gameobject.Player) {
 	}
 }
 
-// MovePlayer The coordinates must include level.
-func (g *Game) MovePlayer(p *gameobject.Player, c *api.Coordinates) error {
-	// TODO log move event
+func (g *Game) removeMonsterFromPosition(m *gameobject.Monster) {
+	o, err := g.GetObjectsOnPosition(m.Position)
+	if err != nil {
+		// maybe destroyed level
+		log.Warn().Err(err).Msg("")
+	}
+	if o != nil {
+		for pi, pd := range o.Monsters {
+			if pd.Id == m.GetId() {
+				// move last element to removed position
+				o.Monsters[pi] = o.Monsters[len(o.Monsters)-1]
+				// shorten the slice
+				o.Monsters = o.Monsters[:len(o.Monsters)-1]
+				break
+			}
+		}
+	}
+}
+
+// Todo more generic version?
+func (g *Game) addPlayerToNewPosition(o *api.MapObjects, p *api.Character, c *api.Coordinates, lc *LevelCache) {
+	if o != nil {
+		o.Players = append(o.Players, p)
+	} else {
+		mo := &api.MapObjects{
+			Position: gameobject.CoordinatesToPosition(c),
+			Players: []*api.Character{
+				p,
+			},
+			IsFree: true,
+		}
+		g.Game.Map.Levels[c.Level].Objects = append(g.Game.Map.Levels[c.Level].Objects, mo)
+		lc.CacheObjectsOnPosition(c, mo)
+	}
+}
+
+func (g *Game) addMonsterToNewPosition(o *api.MapObjects, m *api.Monster, c *api.Coordinates, lc *LevelCache) {
+	if o != nil {
+		o.Monsters = append(o.Monsters, m)
+	} else {
+		mo := &api.MapObjects{
+			Position: gameobject.CoordinatesToPosition(c),
+			Monsters: []*api.Monster{
+				m,
+			},
+			IsFree: true,
+		}
+		g.Game.Map.Levels[c.Level].Objects = append(g.Game.Map.Levels[c.Level].Objects, mo)
+		lc.CacheObjectsOnPosition(c, mo)
+	}
+}
+
+// MoveCharacter The coordinates must include level.
+func (g *Game) MoveCharacter(p gameobject.Positioner, c *api.Coordinates) error {
+	equipEvent := api.Event_MOVE
+	g.LogEvent(&api.Event{
+		Type: &equipEvent,
+		Message: fmt.Sprintf("Character %s (%s) moved from (%d, %d) to (%d, %d)",
+			p.GetId(), p.GetName(), p.GetPosition().PositionX, p.GetPosition().PositionY, c.PositionX, c.PositionY),
+		Coordinates: p.GetPosition()})
 	if p.GetPosition() != nil {
-		// remove player from the previous position
-		g.removePlayerFromPosition(p)
+		switch pt := p.(type) {
+		case *gameobject.Player:
+			// remove player from the previous position
+			g.removePlayerFromPosition(pt)
+		case *gameobject.Monster:
+			g.removeMonsterFromPosition(pt)
+		}
 	}
 	lc, err := g.mapCache.CachedLevel(c.Level)
 	if err != nil {
 		log.Warn().Err(err).Msg("")
 	} else {
 		o := lc.CacheObjectsOnPosition(c, nil)
-		if o != nil {
-			o.Players = append(o.Players, p.Character)
-			p.Position = c
-		} else {
-			mo := &api.MapObjects{
-				Position: gameobject.CoordinatesToPosition(c),
-				Players: []*api.Character{
-					p.Character,
-				},
-				IsFree: true,
-			}
-			g.Game.Map.Levels[c.Level].Objects = append(g.Game.Map.Levels[c.Level].Objects, mo)
-			lc.CacheObjectsOnPosition(c, mo)
+		switch pt := p.(type) {
+		case *gameobject.Player:
+			g.addPlayerToNewPosition(o, pt.Character, c, lc)
+		case *gameobject.Monster:
+			g.addMonsterToNewPosition(o, pt.Monster, c, lc)
 		}
+
 	}
-	p.Position = c
+	p.SetPosition(c)
 	return nil
 }
 
@@ -524,11 +606,11 @@ func (g *Game) GetCurrentPlayer(token string) (*gameobject.Player, error) {
 }
 
 func (g *Game) GetCommands(pId string) *api.CommandsBatch {
-	if pc, ok := g.pCommands[pId]; ok {
+	if pc, ok := g.Commands[pId]; ok {
 		return pc
 	}
-	g.pCommands[pId] = &api.CommandsBatch{}
-	return g.pCommands[pId]
+	g.Commands[pId] = &api.CommandsBatch{}
+	return g.Commands[pId]
 }
 
 func (g *Game) Register(o gameobject.Ider) {
