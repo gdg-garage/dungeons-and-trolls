@@ -18,6 +18,9 @@ func Yell(game *dungeonsandtrolls.Game, message *api.Message, token string) erro
 	if err != nil {
 		return err
 	}
+	if p.IsAdmin {
+		return fmt.Errorf("admin players are are not allowed to call non-monster commands")
+	}
 
 	// TODO translate IDs to names
 	// - consider IDs as one char?

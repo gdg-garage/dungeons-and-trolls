@@ -1,6 +1,7 @@
 package handlers
 
 import (
+	"fmt"
 	"github.com/gdg-garage/dungeons-and-trolls/server/dungeonsandtrolls"
 	"github.com/gdg-garage/dungeons-and-trolls/server/dungeonsandtrolls/api"
 )
@@ -9,6 +10,9 @@ func Commands(game *dungeonsandtrolls.Game, c *api.CommandsBatch, token string) 
 	p, err := game.GetCurrentPlayer(token)
 	if err != nil {
 		return err
+	}
+	if p.IsAdmin {
+		return fmt.Errorf("admin players are are not allowed to call non-monster commands")
 	}
 
 	if c.Move != nil {

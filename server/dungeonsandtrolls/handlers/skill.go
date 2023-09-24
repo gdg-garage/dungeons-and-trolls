@@ -107,6 +107,9 @@ func Skill(game *dungeonsandtrolls.Game, skillUse *api.SkillUse, token string) e
 	if err != nil {
 		return err
 	}
+	if p.IsAdmin {
+		return fmt.Errorf("admin players are are not allowed to call non-monster commands")
+	}
 
 	err = validateSkill(game, skillUse, p)
 	if err != nil {

@@ -71,6 +71,9 @@ func PickUp(game *dungeonsandtrolls.Game, i *api.Identifier, token string) error
 	if err != nil {
 		return err
 	}
+	if p.IsAdmin {
+		return fmt.Errorf("admin players are are not allowed to call non-monster commands")
+	}
 
 	err = validatePickUp(game, i, p)
 	if err != nil {

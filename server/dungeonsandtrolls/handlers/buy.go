@@ -12,6 +12,9 @@ func Buy(game *dungeonsandtrolls.Game, identifiers *api.Identifiers, token strin
 	if err != nil {
 		return err
 	}
+	if p.IsAdmin {
+		return fmt.Errorf("admin players are are not allowed to call non-monster commands")
+	}
 
 	if p.Position.Level != gameobject.ZeroLevel {
 		return fmt.Errorf("buying is available only on the ground floor")

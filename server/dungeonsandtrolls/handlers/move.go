@@ -37,6 +37,9 @@ func Move(game *dungeonsandtrolls.Game, c *api.Position, token string) error {
 	if err != nil {
 		return err
 	}
+	if p.IsAdmin {
+		return fmt.Errorf("admin players are are not allowed to call non-monster commands")
+	}
 
 	err = validateMove(game, c, p)
 	if err != nil {

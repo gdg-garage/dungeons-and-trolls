@@ -72,6 +72,9 @@ func AssignAttributes(game *dungeonsandtrolls.Game, a *api.Attributes, token str
 	if err != nil {
 		return err
 	}
+	if p.IsAdmin {
+		return fmt.Errorf("admin players are are not allowed to call non-monster commands")
+	}
 
 	err = validateAssignAttributes(p, a)
 	if err != nil {

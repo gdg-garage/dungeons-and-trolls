@@ -91,8 +91,6 @@ func CreateGame() (*Game, error) {
 
 	// TODO this needs to be properly thought out
 
-	// TODO do not load admin accounts
-
 	err := g.gameStorage.ReadTo(gameStorageKey, g)
 	if err != nil {
 		log.Warn().Msgf("Game was not loaded from the storage %v", err)
@@ -112,6 +110,10 @@ func CreateGame() (*Game, error) {
 
 func (g *Game) handleStoredPlayers() {
 	for key, p := range g.ApiKeyToPlayer {
+		if p.IsAdmin {
+			// Do not show admin users in the game
+			continue
+		}
 		g.AddPlayer(p, &api.Registration{ApiKey: &key})
 	}
 }
