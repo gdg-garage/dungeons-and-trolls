@@ -15,7 +15,6 @@ import (
 	"github.com/gdg-garage/dungeons-and-trolls/server/dungeonsandtrolls/utils"
 	"github.com/gdg-garage/dungeons-and-trolls/server/generator"
 	"github.com/rs/zerolog/log"
-	"google.golang.org/protobuf/proto"
 )
 
 const LoopTime = time.Second
@@ -309,7 +308,9 @@ func (g *Game) processCommands() {
 		//log.Info().Msgf("player is at (%d, %d), moving to (%d, %d)", p.Positioner.PositionX, p.Positioner.PositionY, p.MovingTo.Current().X, p.MovingTo.Current().Y)
 		g.MovePlayer(p, &api.Coordinates{
 			PositionX: int32(p.MovingTo.Current().X),
-			PositionY: int32(p.MovingTo.Current().Y)})
+			PositionY: int32(p.MovingTo.Current().Y),
+			Level:     int32(p.GetPosition().Level),
+		})
 		// TODO log errors
 		if p.MovingTo.AtEnd() {
 			p.MovingTo = nil
@@ -449,8 +450,7 @@ func (g *Game) SpawnPlayer(p *gameobject.Player, level int32) {
 		}
 	}
 
-	c := proto.Clone(lc.SpawnPoint).(*api.Coordinates)
-	c.Level = level
+	c := lc.SpawnPoint
 	err = g.MovePlayer(p, c)
 	if err != nil {
 		log.Warn().Err(err).Msg("")
@@ -479,7 +479,7 @@ func (g *Game) removePlayerFromPosition(p *gameobject.Player) {
 // MovePlayer The coordinates must include level.
 func (g *Game) MovePlayer(p *gameobject.Player, c *api.Coordinates) error {
 	// TODO log move event
-	if p.Position != nil {
+	if p.GetPosition() != nil {
 		// remove player from the previous position
 		g.removePlayerFromPosition(p)
 	}
