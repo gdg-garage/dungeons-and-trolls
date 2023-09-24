@@ -79,10 +79,10 @@ func (s *server) Game(ctx context.Context, params *api.GameStateParams) (*api.Ga
 	}
 	if !p.IsAdmin {
 		filterGameState(s.G, g)
+		g.Character = p.Character
+		g.CurrentPosition = gameobject.CoordinatesToPosition(p.Position)
+		g.CurrentLevel = &p.Position.Level
 	}
-	g.Character = p.Character
-	g.CurrentPosition = gameobject.CoordinatesToPosition(p.Position)
-	g.CurrentLevel = p.Position.Level
 	return g, nil
 }
 

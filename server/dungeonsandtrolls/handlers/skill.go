@@ -25,15 +25,16 @@ func validateSkill(game *dungeonsandtrolls.Game, skillUse *api.SkillUse, p *game
 	if !ok {
 		return fmt.Errorf("skill %s not found for Character %s", skillUse.SkillId, p.Character.Id)
 	}
-	if skillUse.TargetId != nil && skillUse.Coordinates != nil {
+	if skillUse.TargetId != nil && skillUse.Position != nil {
 		return fmt.Errorf("cannot use skill on target and location at the same time")
 	}
 	if skillUse.TargetId == nil && (s.Target == api.Skill_character || s.Target == api.Skill_item) {
 		return fmt.Errorf("skill targetId not specified")
 	}
-	if (skillUse.TargetId != nil || skillUse.Coordinates != nil) && (s.Target == api.Skill_none) {
+	if (skillUse.TargetId != nil || skillUse.Position != nil) && (s.Target == api.Skill_none) {
 		return fmt.Errorf("skill target should be none")
 	}
+	// TODO check none skills - no position and no target
 	if skillUse.TargetId != nil {
 		t, err := game.GetObjectById(*skillUse.TargetId)
 		if err != nil {
@@ -73,18 +74,18 @@ func validateSkill(game *dungeonsandtrolls.Game, skillUse *api.SkillUse, p *game
 		}
 		// TODO check flags
 	}
-	if skillUse.Coordinates != nil {
-		if skillUse.Coordinates == nil && s.Target == api.Skill_position {
+	if skillUse.Position != nil {
+		if skillUse.Position == nil && s.Target == api.Skill_position {
 			return fmt.Errorf("skill location not specified")
 		}
-		l, err := game.GetCachedLevel(*p.Position.Level)
+		l, err := game.GetCachedLevel(p.Position.Level)
 		if err != nil {
 			return fmt.Errorf("level not found")
 		}
-		if skillUse.Coordinates.PositionX >= l.Width && skillUse.Coordinates.PositionY >= l.Height {
-			return fmt.Errorf("skill target position (%d, %d) not found in the level", skillUse.Coordinates.PositionX, skillUse.Coordinates.PositionY)
+		if skillUse.Position.PositionX >= l.Width && skillUse.Position.PositionY >= l.Height {
+			return fmt.Errorf("skill target position (%d, %d) not found in the level", skillUse.Position.PositionX, skillUse.Position.PositionY)
 		}
-		err = checkDistance(p.Position, p.Character.Attributes, gameobject.PositionToCoordinates(skillUse.Coordinates, *p.Position.Level), s)
+		err = checkDistance(p.Position, p.Character.Attributes, gameobject.PositionToCoordinates(skillUse.Position, p.Position.Level), s)
 		if err != nil {
 			return err
 		}

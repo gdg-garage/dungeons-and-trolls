@@ -10,7 +10,7 @@ import (
 func validateMove(game *dungeonsandtrolls.Game, c *api.Position, p gameobject.Positioner) error {
 	// TODO check if visible
 	// check that path exists
-	lc, err := game.GetCachedLevel(*p.GetPosition().Level)
+	lc, err := game.GetCachedLevel(p.GetPosition().Level)
 	if err != nil {
 		return err
 	}

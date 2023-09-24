@@ -6,7 +6,7 @@ func PositionToCoordinates(p *api.Position, l int32) *api.Coordinates {
 	return &api.Coordinates{
 		PositionX: p.PositionX,
 		PositionY: p.PositionY,
-		Level:     &l,
+		Level:     l,
 	}
 }
 

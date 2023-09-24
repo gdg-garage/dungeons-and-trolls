@@ -666,8 +666,7 @@
       "properties": {
         "level": {
           "type": "integer",
-          "format": "int32",
-          "x-nullable": true
+          "format": "int32"
         },
         "positionX": {
           "type": "integer",
@@ -954,7 +953,7 @@
       "type": "object",
       "properties": {
         "position": {
-          "$ref": "#/definitions/dungeonsandtrollsCoordinates"
+          "$ref": "#/definitions/dungeonsandtrollsPosition"
         },
         "monsters": {
           "type": "array",
@@ -1273,7 +1272,7 @@
           "type": "string",
           "x-nullable": true
         },
-        "coordinates": {
+        "position": {
           "$ref": "#/definitions/dungeonsandtrollsPosition",
           "x-nullable": true
         }

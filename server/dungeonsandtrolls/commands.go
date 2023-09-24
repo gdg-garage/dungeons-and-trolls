@@ -221,7 +221,7 @@ func ExecuteSkill(game *Game, player *gameobject.Player, su *api.SkillUse) error
 		// TODO item effects?
 	case api.Skill_position:
 		// teleport
-		err = game.MovePlayer(player, gameobject.PositionToCoordinates(su.Coordinates, *player.Position.Level))
+		err = game.MovePlayer(player, gameobject.PositionToCoordinates(su.Position, player.Position.Level))
 		if err != nil {
 			return err
 		}

@@ -318,7 +318,7 @@ func (g *Game) processCommands() {
 		}
 		if o.IsStairs {
 			// spawn in the next level.
-			g.SpawnPlayer(p, *p.Position.Level+1)
+			g.SpawnPlayer(p, p.Position.Level+1)
 			// cancel currently invalid path
 			p.MovingTo = nil
 			// TODO log level traverse stats
@@ -446,7 +446,7 @@ func (g *Game) SpawnPlayer(p *gameobject.Player, level int32) {
 	}
 
 	c := proto.Clone(lc.SpawnPoint).(*api.Coordinates)
-	c.Level = &level
+	c.Level = level
 	err = g.MovePlayer(p, c)
 	if err != nil {
 		log.Warn().Err(err).Msg("")
@@ -475,15 +475,11 @@ func (g *Game) removePlayerFromPosition(p *gameobject.Player) {
 // MovePlayer The coordinates must include level.
 func (g *Game) MovePlayer(p *gameobject.Player, c *api.Coordinates) error {
 	// TODO log move event
-	// we can assume the same level if not provided
-	if c.Level == nil {
-		c.Level = p.Position.Level
-	}
 	if p.Position != nil {
 		// remove player from the previous position
 		g.removePlayerFromPosition(p)
 	}
-	lc, err := g.mapCache.CachedLevel(*c.Level)
+	lc, err := g.mapCache.CachedLevel(c.Level)
 	if err != nil {
 		log.Warn().Err(err).Msg("")
 	} else {
@@ -492,16 +488,14 @@ func (g *Game) MovePlayer(p *gameobject.Player, c *api.Coordinates) error {
 			o.Players = append(o.Players, p.Character)
 			p.Position = c
 		} else {
-			coord := proto.Clone(c).(*api.Coordinates)
-			coord.Level = nil
 			mo := &api.MapObjects{
-				Position: coord,
+				Position: gameobject.CoordinatesToPosition(c),
 				Players: []*api.Character{
 					p.Character,
 				},
 				IsFree: true,
 			}
-			g.Game.Map.Levels[*c.Level].Objects = append(g.Game.Map.Levels[*c.Level].Objects, mo)
+			g.Game.Map.Levels[c.Level].Objects = append(g.Game.Map.Levels[c.Level].Objects, mo)
 			lc.CacheObjectsOnPosition(c, mo)
 		}
 	}
@@ -514,7 +508,7 @@ func (g *Game) GetCachedLevel(level int32) (*LevelCache, error) {
 }
 
 func (g *Game) GetObjectsOnPosition(c *api.Coordinates) (*api.MapObjects, error) {
-	lc, err := g.mapCache.CachedLevel(*c.Level)
+	lc, err := g.mapCache.CachedLevel(c.Level)
 	if err != nil {
 		return nil, err
 	}

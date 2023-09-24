@@ -97,7 +97,7 @@ func parseTile(maybeTile interface{}, l *api.Level) error {
 
 	// This silently assumes that positions exist.
 	o := &api.MapObjects{
-		Position: &api.Coordinates{
+		Position: &api.Position{
 			PositionX: int32(tile["x"].(float64)),
 			PositionY: int32(tile["y"].(float64)),
 		},
@@ -254,7 +254,7 @@ func addIds(mp *api.Map) {
 func findLevelSpawnPoint(l *api.Level) (*api.Coordinates, error) {
 	for _, o := range l.Objects {
 		if o.IsSpawn != nil && *o.IsSpawn {
-			return o.Position, nil
+			return gameobject.PositionToCoordinates(o.Position, l.Level), nil
 		}
 	}
 	return nil, fmt.Errorf("spawn point not found in the level")
@@ -315,7 +315,7 @@ func LevelsPostProcessing(g *Game, m *api.Map, mapCache *MapCache) error {
 				levelPos := &api.Coordinates{
 					PositionX: o.Position.PositionX,
 					PositionY: o.Position.PositionY,
-					Level:     &l.Level,
+					Level:     l.Level,
 				}
 				g.Register(gameobject.CreateMonster(m, levelPos))
 			}
@@ -333,7 +333,7 @@ func LevelsPostProcessing(g *Game, m *api.Map, mapCache *MapCache) error {
 		lc.SpawnPoint = spawn
 
 		for _, o := range l.Objects {
-			lc.CacheObjectsOnPosition(o.Position, o)
+			lc.CacheObjectsOnPosition(gameobject.PositionToCoordinates(o.Position, l.Level), o)
 		}
 	}
 	return nil

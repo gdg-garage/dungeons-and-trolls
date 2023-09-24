@@ -268,7 +268,7 @@ message SkillEffect {
 message Shortcut { optional Coordinates leads_to = 1; }
 
 message MapObjects {
-  Coordinates position = 1;
+  Position position = 1;
   repeated Monster monsters = 2;
   repeated Character players = 3;
   bool is_stairs = 4;
@@ -330,7 +330,7 @@ message Identifier { string id = 1; }
 message Identifiers { repeated string ids = 1; }
 
 message Coordinates {
-  optional int32 level = 1;
+  int32 level = 1;
   int32 position_x = 2;
   int32 position_y = 3;
 }
@@ -338,7 +338,7 @@ message Coordinates {
 message SkillUse {
   string skill_id = 1;
   optional string target_id = 2;
-  optional Position coordinates = 3;
+  optional Position position = 3;
 }
 
 message Registration { optional string api_key = 1; }
