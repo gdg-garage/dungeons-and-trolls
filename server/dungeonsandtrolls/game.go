@@ -234,9 +234,38 @@ func (g *Game) processCommands() {
 			log.Warn().Err(err).Msg("")
 			continue
 		}
+		skiller, ok := maybePlayer.(gameobject.Skiller)
+		if !ok {
+			log.Warn().Err(err).Msg("object retrieved by ID is not a skiller")
+			continue
+		}
+
+		if c.Yell != nil {
+			err = ExecuteYell(g, skiller, c.Yell)
+			if err != nil {
+				g.LogEvent(&api.Event{
+					Type:        &errorEvent,
+					Message:     fmt.Sprintf("%s (%s): failed to yell: %s", skiller.GetId(), skiller.GetName(), err.Error()),
+					Coordinates: skiller.GetPosition(),
+				})
+			}
+		}
+
+		//TODO skill on newly bought (picked up) items?
+		if c.Skill != nil {
+			err = ExecuteSkill(g, skiller, c.Skill)
+			if err != nil {
+				g.LogEvent(&api.Event{
+					Type:        &errorEvent,
+					Message:     fmt.Sprintf("%s (%s): failed to use skill: %s", skiller.GetId(), skiller.GetName(), err.Error()),
+					Coordinates: skiller.GetPosition(),
+				})
+			}
+		}
+
 		p, ok := maybePlayer.(*gameobject.Player)
 		if !ok {
-			log.Warn().Err(err).Msg("object retrieved by ID is not a player")
+			//log.Warn().Err(err).Msg("object retrieved by ID is not a player")
 			continue
 		}
 
@@ -269,35 +298,6 @@ func (g *Game) processCommands() {
 					Type:        &errorEvent,
 					Message:     fmt.Sprintf("%s (%s): failed to buy: %s", p.GetId(), p.GetName(), err.Error()),
 					Coordinates: p.GetPosition(),
-				})
-			}
-		}
-
-		skiller, ok := maybePlayer.(gameobject.Skiller)
-		if !ok {
-			log.Warn().Err(err).Msg("object retrieved by ID is not a skiller")
-			continue
-		}
-
-		if c.Yell != nil {
-			err = ExecuteYell(g, skiller, c.Yell)
-			if err != nil {
-				g.LogEvent(&api.Event{
-					Type:        &errorEvent,
-					Message:     fmt.Sprintf("%s (%s): failed to yell: %s", skiller.GetId(), skiller.GetName(), err.Error()),
-					Coordinates: skiller.GetPosition(),
-				})
-			}
-		}
-
-		//TODO skill on newly bought (picked up) items?
-		if c.Skill != nil {
-			err = ExecuteSkill(g, skiller, c.Skill)
-			if err != nil {
-				g.LogEvent(&api.Event{
-					Type:        &errorEvent,
-					Message:     fmt.Sprintf("%s (%s): failed to use skill: %s", skiller.GetId(), skiller.GetName(), err.Error()),
-					Coordinates: skiller.GetPosition(),
 				})
 			}
 		}
@@ -392,10 +392,6 @@ func (g *Game) processCommands() {
 			} else {
 				c.Character.Effects = e
 			}
-		default:
-			// TODO items?
-			// - not present anymore
-			continue
 		}
 	}
 
@@ -437,7 +433,40 @@ func (g *Game) processCommands() {
 					o.Monsters = tmpMonsters
 					// TODO is cache ok?
 				}
-				// TODO on death effects
+				lc, err := g.mapCache.CachedLevel(c.GetPosition().Level)
+				if err != nil {
+					log.Warn().Err(err).Msg("")
+				}
+				po := lc.CacheObjectsOnPosition(c.GetPosition(), &api.MapObjects{
+					Position: gameobject.CoordinatesToPosition(c.GetPosition()),
+					IsFree:   true,
+				})
+				for _, d := range c.Monster.OnDeath {
+					switch o := d.Data.(type) {
+					case *api.Droppable_Skill:
+						// TODO
+					case *api.Droppable_Item:
+						o.Item.Id = gameobject.GetNewId()
+						po.Items = append(po.Items, o.Item)
+					case *api.Droppable_Monster:
+						o.Monster.Id = gameobject.GetNewId()
+						po.Monsters = append(po.Monsters, o.Monster)
+						g.Register(gameobject.CreateMonster(o.Monster, c.GetPosition()))
+					case *api.Droppable_Decoration:
+						po.Decorations = append(po.Decorations, o.Decoration)
+					case *api.Droppable_Waypoint:
+						po.Portal = o.Waypoint
+					case *api.Droppable_Key:
+						for _, d := range o.Key.Doors {
+							// find door and remove it
+							dp := lc.CacheObjectsOnPosition(gameobject.PositionToCoordinates(d, c.GetPosition().Level), nil)
+							if dp != nil {
+								dp.IsDoor = false
+								dp.IsFree = dp.IsWall
+							}
+						}
+					}
+				}
 			}
 		case *gameobject.Player:
 			if c.Character.Attributes.Life != nil && *c.Character.Attributes.Life <= 0 {

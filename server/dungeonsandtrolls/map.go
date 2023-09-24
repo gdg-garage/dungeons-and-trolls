@@ -81,6 +81,66 @@ func parseLevel(level interface{}) (*api.Level, error) {
 	return l, nil
 }
 
+func nonNil(d *api.Droppable) {
+	switch i := d.Data.(type) {
+	case *api.Droppable_Item:
+		nonNilItem(i.Item)
+	case *api.Droppable_Monster:
+		nonNilMonster(i.Monster)
+	}
+}
+
+func nonNilMonster(m *api.Monster) {
+	for _, i := range m.EquippedItems {
+		nonNilItem(i)
+	}
+	for _, d := range m.OnDeath {
+		nonNil(d)
+	}
+}
+
+func nonNilItem(i *api.Item) {
+	if i.Attributes == nil {
+		i.Attributes = &api.Attributes{}
+	}
+	if i.Requirements == nil {
+		i.Requirements = &api.Attributes{}
+	}
+	for _, s := range i.Skills {
+		nonNilISkill(s)
+	}
+}
+
+func nonNilISkill(s *api.Skill) {
+	if s.Cost == nil {
+		s.Cost = &api.Attributes{}
+	}
+	if s.Range == nil {
+		s.Range = &api.Attributes{}
+	}
+	if s.Radius == nil {
+		s.Radius = &api.Attributes{}
+	}
+	if s.Duration == nil {
+		s.Duration = &api.Attributes{}
+	}
+	if s.DamageAmount == nil {
+		s.DamageAmount = &api.Attributes{}
+	}
+	if s.CasterEffects == nil {
+		s.CasterEffects = &api.SkillEffect{Attributes: &api.SkillAttributes{}, Flags: &api.SkillFlags{}}
+	}
+	if s.TargetEffects == nil {
+		s.TargetEffects = &api.SkillEffect{Attributes: &api.SkillAttributes{}, Flags: &api.SkillFlags{}}
+	}
+	if s.CasterEffects.Flags == nil {
+		s.TargetEffects.Flags = &api.SkillFlags{}
+	}
+	if s.TargetEffects.Flags == nil {
+		s.TargetEffects.Flags = &api.SkillFlags{}
+	}
+}
+
 func parseTile(maybeTile interface{}, l *api.Level) error {
 	tile, ok := maybeTile.(map[string]interface{})
 	if !ok {
@@ -154,7 +214,6 @@ func parseMapObjects(tile map[string]interface{}, o *api.MapObjects) error {
 			fmt.Println(string(j))
 			return fmt.Errorf("tile data is malformed %v", err)
 		}
-
 		nonNil(d)
 
 		switch i := d.Data.(type) {
@@ -173,73 +232,17 @@ func parseMapObjects(tile map[string]interface{}, o *api.MapObjects) error {
 	return nil
 }
 
-func nonNil(d *api.Droppable) {
-	switch i := d.Data.(type) {
-	case *api.Droppable_Item:
-		nonNilItem(i.Item)
-	case *api.Droppable_Monster:
-		nonNilMonster(i.Monster)
-	}
-}
-
-func nonNilMonster(m *api.Monster) {
-	for _, i := range m.EquippedItems {
-		nonNilItem(i)
-	}
-	for _, d := range m.OnDeath {
-		nonNil(d)
-	}
-}
-
-func nonNilItem(i *api.Item) {
-	if i.Attributes == nil {
-		i.Attributes = &api.Attributes{}
-	}
-	if i.Requirements == nil {
-		i.Requirements = &api.Attributes{}
-	}
-	for _, s := range i.Skills {
-		nonNilISkill(s)
-	}
-}
-
-func nonNilISkill(s *api.Skill) {
-	if s.Cost == nil {
-		s.Cost = &api.Attributes{}
-	}
-	if s.Range == nil {
-		s.Range = &api.Attributes{}
-	}
-	if s.Radius == nil {
-		s.Radius = &api.Attributes{}
-	}
-	if s.Duration == nil {
-		s.Duration = &api.Attributes{}
-	}
-	if s.DamageAmount == nil {
-		s.DamageAmount = &api.Attributes{}
-	}
-	if s.CasterEffects == nil {
-		s.CasterEffects = &api.SkillEffect{Attributes: &api.SkillAttributes{}, Flags: &api.SkillFlags{}}
-	}
-	if s.TargetEffects == nil {
-		s.TargetEffects = &api.SkillEffect{Attributes: &api.SkillAttributes{}, Flags: &api.SkillFlags{}}
-	}
-	if s.CasterEffects.Flags == nil {
-		s.TargetEffects.Flags = &api.SkillFlags{}
-	}
-	if s.TargetEffects.Flags == nil {
-		s.TargetEffects.Flags = &api.SkillFlags{}
-	}
-}
-
 func addIds(mp *api.Map) {
 	for _, l := range mp.Levels {
 		for _, o := range l.Objects {
 			for _, m := range o.Monsters {
-				// when to handle on death items
-				// skills and items are not needed
+				// Items are not needed
 				m.Id = gameobject.GetNewId()
+				for _, i := range m.EquippedItems {
+					for _, s := range i.Skills {
+						s.Id = gameobject.GetNewId()
+					}
+				}
 			}
 			for _, i := range o.Items {
 				i.Id = gameobject.GetNewId()
