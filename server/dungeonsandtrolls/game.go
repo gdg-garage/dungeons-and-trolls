@@ -401,7 +401,6 @@ func (g *Game) processCommands() {
 		switch c := i.(type) {
 		case *gameobject.Monster:
 			if c.Monster.Attributes.Life != nil && *c.Monster.Attributes.Life <= 0 {
-				g.Unregister(c)
 				o, err := g.GetObjectsOnPosition(c.Position)
 				if err != nil {
 					g.LogEvent(&api.Event{
@@ -431,7 +430,6 @@ func (g *Game) processCommands() {
 						tmpMonsters = append(tmpMonsters, m)
 					}
 					o.Monsters = tmpMonsters
-					// TODO is cache ok?
 				}
 				lc, err := g.mapCache.CachedLevel(c.GetPosition().Level)
 				if err != nil {
@@ -467,6 +465,7 @@ func (g *Game) processCommands() {
 						}
 					}
 				}
+				g.Unregister(c)
 			}
 		case *gameobject.Player:
 			if c.Character.Attributes.Life != nil && *c.Character.Attributes.Life <= 0 {
