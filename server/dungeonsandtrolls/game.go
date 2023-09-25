@@ -133,6 +133,7 @@ func (g *Game) gameLoop() {
 	for {
 		startTime := time.Now()
 		// TODO lock
+		g.GameLock.Lock()
 		g.Game.Events = []*api.Event{}
 		g.processCommands()
 		// TODO map garbage collection
@@ -144,6 +145,7 @@ func (g *Game) gameLoop() {
 		// Copy score - for storage reasons
 		// TODO maybe use the same solution as for tick or find something more elegant
 		g.Game.Score = g.Score
+		g.GameLock.Unlock()
 		g.storeGameState()
 		// TODO regenerate levels
 		// TODO generate new levels (based on all the skips)

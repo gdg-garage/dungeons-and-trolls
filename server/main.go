@@ -63,6 +63,9 @@ func hideUnidentifiedItems(game *dungeonsandtrolls.Game, g *api.GameState) {
 
 func (s *server) Game(ctx context.Context, params *api.GameStateParams) (*api.GameState, error) {
 	token, err := getToken(ctx)
+	s.G.GameLock.RLock()
+	// TODO not with wait
+	defer s.G.GameLock.RUnlock()
 	g, ok := proto.Clone(&s.G.Game).(*api.GameState)
 	if !ok {
 		return nil, fmt.Errorf("cloning GameState failed")
