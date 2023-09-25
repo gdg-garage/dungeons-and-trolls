@@ -1,0 +1,13 @@
+[sources.vector]
+type = "internal_logs"
+
+[sources.logtail_docker_logs]
+type = "docker_logs"
+
+[sinks.logtail_http_sink]
+type = "http"
+uri = "https://in.logtail.com/"
+encoding.codec = "json"
+auth.strategy = "bearer"
+auth.token = ""
+inputs = ["logtail_docker_logs", "vector"]

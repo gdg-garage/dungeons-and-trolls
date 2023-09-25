@@ -58,5 +58,14 @@ services:
       - "/var/run/docker.sock:/var/run/docker.sock:ro"
     restart: always
 
+  vector:
+    container_name: vector
+    image: timberio/vector:latest-debian
+    restart: always
+    volumes:
+      - /config/vector.toml:/etc/vector/vector.toml:ro
+      - /var/lib/docker/containers:/var/lib/docker/containers:ro
+      - /var/run/docker.sock:/var/run/docker.sock
+
 
 
