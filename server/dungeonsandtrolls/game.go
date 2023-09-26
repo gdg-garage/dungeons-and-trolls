@@ -457,7 +457,7 @@ func (g *Game) processCommands() {
 							dp := lc.CacheObjectsOnPosition(gameobject.PositionToCoordinates(d, c.GetPosition().Level), nil)
 							if dp != nil {
 								dp.IsDoor = false
-								dp.IsFree = dp.IsWall
+								dp.IsFree = !dp.IsWall
 								g := lc.Grid.Get(int(c.GetPosition().PositionX), int(c.GetPosition().PositionY))
 								g.Walkable = dp.IsFree
 							}
