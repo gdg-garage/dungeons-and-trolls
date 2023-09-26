@@ -672,7 +672,6 @@ func HideNonPublicMonsterFields(g *Game, m *api.Monster) {
 	}
 
 	// Hide the rest
-	m.Attributes = nil
 	m.EquippedItems = []*api.Item{}
 	m.Score = nil
 	m.Algorithm = nil
@@ -695,4 +694,5 @@ func HideNonPublicMonsterFields(g *Game, m *api.Monster) {
 		m.LifePercentage = float32(math.Round(float64(*m.Attributes.Life) / float64(*mo.MaxStats.Life) * 100))
 	}
 
+	m.Attributes = nil
 }
