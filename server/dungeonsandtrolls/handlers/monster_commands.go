@@ -16,7 +16,7 @@ func validateMonsterCommands(game *dungeonsandtrolls.Game, mc *api.CommandsForMo
 	for mId, c := range mc.Commands {
 		o, err := game.GetObjectById(mId)
 		if err != nil {
-			log.Warn().Err(err).Msgf("monster admin tried to control monster with ID %s which does not exist", mId)
+			return fmt.Errorf("tried to control monster with ID %s which does not exist", mId)
 		}
 		m, ok := o.(*gameobject.Monster)
 		if !ok {
@@ -24,7 +24,7 @@ func validateMonsterCommands(game *dungeonsandtrolls.Game, mc *api.CommandsForMo
 		}
 		if c.Buy != nil {
 			return fmt.Errorf("monsters are not allowed to shop")
-		}
+		} 
 		if c.PickUp != nil {
 			return fmt.Errorf("monsters are not allowed to pick up")
 		}
