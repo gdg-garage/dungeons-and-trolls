@@ -164,16 +164,18 @@ func ExecuteSkill(game *Game, player gameobject.Skiller, su *api.SkillUse) error
 		}
 		switch pt := player.(type) {
 		case *gameobject.Player:
+			casterId := player.GetId()
 			pt.Character.Effects = append(pt.Character.Effects, &api.Effect{
 				Effects:   e,
 				Duration:  int32(duration),
-				XCasterId: player.GetId(),
+				XCasterId: &casterId,
 			})
 		case *gameobject.Monster:
+			casterId := player.GetId()
 			pt.Monster.Effects = append(pt.Monster.Effects, &api.Effect{
 				Effects:   e,
 				Duration:  int32(duration),
-				XCasterId: player.GetId(),
+				XCasterId: &casterId,
 			})
 		}
 
@@ -200,20 +202,22 @@ func ExecuteSkill(game *Game, player gameobject.Skiller, su *api.SkillUse) error
 			// TODO flags
 			switch c := character.(type) {
 			case *gameobject.Monster:
+				casterId := player.GetId()
 				c.Monster.Effects = append(c.Monster.Effects, &api.Effect{
 					Effects:      e,
 					DamageAmount: float32(d),
 					DamageType:   s.DamageType,
 					Duration:     int32(duration),
-					XCasterId:    player.GetId(),
+					XCasterId:    &casterId,
 				})
 			case *gameobject.Player:
+				casterId := player.GetId()
 				c.Character.Effects = append(c.Character.Effects, &api.Effect{
 					Effects:      e,
 					DamageAmount: float32(d),
 					DamageType:   s.DamageType,
 					Duration:     int32(duration),
-					XCasterId:    player.GetId(),
+					XCasterId:    &casterId,
 				})
 			default:
 				return fmt.Errorf("tried to cast character spell on non-character")
@@ -253,16 +257,18 @@ func EvaluateEffects(g *Game, effects []*api.Effect, a *api.Attributes, receiver
 			return keptEffects, err
 		}
 
-		attacker, err := g.GetObjectById(e.XCasterId)
 		var attackerName string
-		if err != nil {
-			attackerName = attacker.GetName()
+		if e.XCasterId != nil {
+			attacker, err := g.GetObjectById(*e.XCasterId)
+			if err == nil {
+				attackerName = attacker.GetName()
+			}
 		}
 
 		damageEvent := api.Event_DAMAGE
 		g.LogEvent(&api.Event{
 			Type:        &damageEvent,
-			Message:     fmt.Sprintf("%s (%s): damaged %s (%s): %f with %s", e.XCasterId, attackerName, receiver.GetId(), receiver.GetName(), damage, e.DamageType.String()),
+			Message:     fmt.Sprintf("%s (%s): damaged %s (%s): %f with %s", *e.XCasterId, attackerName, receiver.GetId(), receiver.GetName(), damage, e.DamageType.String()),
 			Coordinates: receiver.GetPosition(),
 		})
 

@@ -458,6 +458,8 @@ func (g *Game) processCommands() {
 							if dp != nil {
 								dp.IsDoor = false
 								dp.IsFree = dp.IsWall
+								g := lc.Grid.Get(int(c.GetPosition().PositionX), int(c.GetPosition().PositionY))
+								g.Walkable = dp.IsFree
 							}
 						}
 					}
@@ -647,6 +649,9 @@ func HideNonPublicMonsterFields(g *Game, m *api.Monster) {
 			Icon: i.Icon,
 		})
 	}
+	for _, e := range m.Effects {
+		gameobject.FilterEffect(e)
+	}
 	o, err := g.GetObjectById(m.GetId())
 	if err != nil {
 		log.Warn().Err(err).Msg("")
@@ -654,6 +659,8 @@ func HideNonPublicMonsterFields(g *Game, m *api.Monster) {
 	mo, ok := o.(*gameobject.Monster)
 	if !ok {
 		log.Warn().Msg("not a monster")
+	} else {
+		m.LifePercentage = float32(math.Round(float64(*m.Attributes.Life) / float64(*mo.MaxStats.Life) * 100))
 	}
 
 	// Hide the rest
@@ -661,24 +668,6 @@ func HideNonPublicMonsterFields(g *Game, m *api.Monster) {
 	m.Score = nil
 	m.Algorithm = nil
 	m.OnDeath = []*api.Droppable{}
-
-	// TODO this is debug
-	if mo == nil {
-		log.Warn().Msgf("monster object is nil for %s", m.GetId())
-	} else if mo.MaxStats == nil {
-		log.Warn().Msgf("monster object maxStats are nil for %s", m.GetId())
-	} else if mo.MaxStats.Life == nil {
-		log.Warn().Msgf("monster object maxStats.life are nil for %s", m.GetId())
-	} else if m == nil {
-		log.Warn().Msgf("monster object is nil")
-	} else if m.Attributes == nil {
-		log.Warn().Msgf("monster attributes are nil for %s", m.GetId())
-	} else if m.Attributes.Life == nil {
-		log.Warn().Msgf("monster attributes.Life is nil for %s", m.GetId())
-	} else {
-		m.LifePercentage = float32(math.Round(float64(*m.Attributes.Life) / float64(*mo.MaxStats.Life) * 100))
-	}
-
 	m.Attributes = nil
 }
 

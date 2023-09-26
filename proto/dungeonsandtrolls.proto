@@ -106,7 +106,7 @@ message Effect {
   Attributes effects = 3;
   int32 duration = 4;
   // Internal caster id field
-  string _caster_id = 5;
+  optional string _caster_id = 5;
 }
 
 message Attributes {

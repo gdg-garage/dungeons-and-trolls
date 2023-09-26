@@ -2,7 +2,7 @@
   "swagger": "2.0",
   "info": {
     "title": "Dungeons and Trolls",
-    "version": "1.1.0"
+    "version": "1.1.1"
   },
   "tags": [
     {
@@ -744,6 +744,7 @@
         },
         "CasterId": {
           "type": "string",
+          "x-nullable": true,
           "title": "Internal caster id field"
         }
       }

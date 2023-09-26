@@ -44,6 +44,14 @@ func filterGameState(game *dungeonsandtrolls.Game, g *api.GameState) {
 			for _, m := range o.Monsters {
 				dungeonsandtrolls.HideNonPublicMonsterFields(game, m)
 			}
+			for _, p := range o.Players {
+				for _, e := range p.Effects {
+					gameobject.FilterEffect(e)
+				}
+			}
+			for _, e := range o.Effects {
+				gameobject.FilterEffect(e)
+			}
 		}
 	}
 	hideUnidentifiedItems(game, g)
