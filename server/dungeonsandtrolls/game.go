@@ -458,8 +458,9 @@ func (g *Game) processCommands() {
 							if dp != nil {
 								dp.IsDoor = false
 								dp.IsFree = !dp.IsWall
-								g := lc.Grid.Get(int(c.GetPosition().PositionX), int(c.GetPosition().PositionY))
-								g.Walkable = dp.IsFree
+								gr := lc.Grid.Get(int(c.GetPosition().PositionX), int(c.GetPosition().PositionY))
+								log.Info().Msgf("Opened doors on (%d, %d): %t", c.GetPosition().PositionX, c.GetPosition().PositionY, dp.IsFree)
+								gr.Walkable = dp.IsFree
 							}
 						}
 					}
