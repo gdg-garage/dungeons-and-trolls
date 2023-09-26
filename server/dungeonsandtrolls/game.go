@@ -685,6 +685,12 @@ func HideNonPublicMonsterFields(g *Game, m *api.Monster) {
 		log.Warn().Msgf("monster object maxStats are nil for %s", m.GetId())
 	} else if mo.MaxStats.Life == nil {
 		log.Warn().Msgf("monster object maxStats.life are nil for %s", m.GetId())
+	} else if m == nil {
+		log.Warn().Msgf("monster object is nil")
+	} else if m.Attributes == nil {
+		log.Warn().Msgf("monster attributes are nil for %s", m.GetId())
+	} else if m.Attributes.Life == nil {
+		log.Warn().Msgf("monster attributes.Life is nil for %s", m.GetId())
 	} else {
 		m.LifePercentage = float32(math.Round(float64(*m.Attributes.Life) / float64(*mo.MaxStats.Life) * 100))
 	}
