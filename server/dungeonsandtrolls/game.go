@@ -176,9 +176,6 @@ func (g *Game) AddLevel(level int32) {
 }
 
 func (g *Game) MarkVisitedLevel(level int32) {
-	// TODO maybe this lock will be more global.
-	g.GameLock.Lock()
-	defer g.GameLock.Unlock()
 	g.MaxLevelReached = utils.Max(g.MaxLevelReached, level)
 }
 
@@ -218,9 +215,6 @@ func (g *Game) AddItem(item *api.Item) {
 }
 
 func (g *Game) LogEvent(event *api.Event) {
-	g.GameLock.Lock()
-	defer g.GameLock.Unlock()
-
 	g.Game.Events = append(g.Game.Events, event)
 	log.Info().Msgf(event.String())
 }
