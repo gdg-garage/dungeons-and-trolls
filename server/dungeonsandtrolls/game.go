@@ -190,6 +190,14 @@ func (g *Game) Respawn(player *gameobject.Player, markDeath bool) {
 		})
 	}
 
+	if player.Position != nil {
+		o, err := g.GetObjectsOnPosition(player.Position)
+		if err != nil {
+			log.Warn().Err(err).Msg("")
+		} else {
+			RemovePlayerFromTile(o, player)
+		}
+	}
 	g.SpawnPlayer(player, gameobject.ZeroLevel)
 	player.ResetAttributes()
 	player.Character.Money = g.GetMoney()
@@ -397,7 +405,7 @@ func (g *Game) processCommands() {
 		switch c := i.(type) {
 		case *gameobject.Monster:
 			if c.Monster.Attributes.Life != nil && *c.Monster.Attributes.Life <= 0 {
-				o, err := g.GetObjectsOnPosition(c.Position)
+				o, err := g.GetObjectsOnPosition(c.GetPosition())
 				if err != nil {
 					g.LogEvent(&api.Event{
 						Type:        &errorEvent,
@@ -418,14 +426,7 @@ func (g *Game) processCommands() {
 							Coordinates: c.Position,
 						})
 					}
-					var tmpMonsters []*api.Monster
-					for _, m := range o.Monsters {
-						if m.GetId() == c.GetId() {
-							continue
-						}
-						tmpMonsters = append(tmpMonsters, m)
-					}
-					o.Monsters = tmpMonsters
+					RemoveMonsterFromTile(o, c)
 				}
 				lc, err := g.mapCache.CachedLevel(c.GetPosition().Level)
 				if err != nil {
@@ -515,15 +516,7 @@ func (g *Game) removePlayerFromPosition(p *gameobject.Player) {
 		log.Warn().Err(err).Msg("")
 	}
 	if o != nil {
-		for pi, pd := range o.Players {
-			if pd.Id == p.Character.Id {
-				// move last element to removed position
-				o.Players[pi] = o.Players[len(o.Players)-1]
-				// shorten the slice
-				o.Players = o.Players[:len(o.Players)-1]
-				break
-			}
-		}
+		RemovePlayerFromTile(o, p)
 	}
 }
 
@@ -534,15 +527,7 @@ func (g *Game) removeMonsterFromPosition(m *gameobject.Monster) {
 		log.Warn().Err(err).Msg("")
 	}
 	if o != nil {
-		for pi, pd := range o.Monsters {
-			if pd.Id == m.GetId() {
-				// move last element to removed position
-				o.Monsters[pi] = o.Monsters[len(o.Monsters)-1]
-				// shorten the slice
-				o.Monsters = o.Monsters[:len(o.Monsters)-1]
-				break
-			}
-		}
+		RemoveMonsterFromTile(o, m)
 	}
 }
 
@@ -695,4 +680,28 @@ func HideNonPublicMonsterFields(g *Game, m *api.Monster) {
 	}
 
 	m.Attributes = nil
+}
+
+func RemovePlayerFromTile(o *api.MapObjects, p *gameobject.Player) {
+	for pi, pd := range o.Players {
+		if pd.Id == p.Character.Id {
+			// move last element to removed position
+			o.Players[pi] = o.Players[len(o.Players)-1]
+			// shorten the slice
+			o.Players = o.Players[:len(o.Players)-1]
+			break
+		}
+	}
+}
+
+func RemoveMonsterFromTile(o *api.MapObjects, m *gameobject.Monster) {
+	for pi, pd := range o.Monsters {
+		if pd.Id == m.GetId() {
+			// move last element to removed position
+			o.Monsters[pi] = o.Monsters[len(o.Monsters)-1]
+			// shorten the slice
+			o.Monsters = o.Monsters[:len(o.Monsters)-1]
+			break
+		}
+	}
 }

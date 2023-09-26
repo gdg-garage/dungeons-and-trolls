@@ -267,6 +267,11 @@ func (lc *LevelCache) CacheObjectsOnPosition(p *api.Coordinates, mo *api.MapObje
 	if _, ok := lc.Objects[p.PositionX]; !ok {
 		lc.Objects[p.PositionX] = map[int32]*api.MapObjects{}
 	}
+	v, ok := lc.Objects[p.PositionX][p.PositionY]
+	if ok {
+		return v
+	}
+	// Does not exist yet
 	if mo != nil {
 		lc.Objects[p.PositionX][p.PositionY] = mo
 		if !mo.IsFree {
