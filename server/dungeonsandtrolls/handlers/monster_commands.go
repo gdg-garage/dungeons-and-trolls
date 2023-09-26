@@ -5,7 +5,6 @@ import (
 	"github.com/gdg-garage/dungeons-and-trolls/server/dungeonsandtrolls"
 	"github.com/gdg-garage/dungeons-and-trolls/server/dungeonsandtrolls/api"
 	"github.com/gdg-garage/dungeons-and-trolls/server/dungeonsandtrolls/gameobject"
-	"github.com/rs/zerolog/log"
 )
 
 func validateMonsterCommands(game *dungeonsandtrolls.Game, mc *api.CommandsForMonsters, p *gameobject.Player) error {
