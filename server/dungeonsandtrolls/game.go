@@ -452,14 +452,13 @@ func (g *Game) processCommands() {
 					case *api.Droppable_Waypoint:
 						po.Portal = o.Waypoint
 					case *api.Droppable_Key:
-						for _, d := range o.Key.Doors {
+						for _, door := range o.Key.Doors {
 							// find door and remove it
-							dp := lc.CacheObjectsOnPosition(gameobject.PositionToCoordinates(d, c.GetPosition().Level), nil)
+							dp := lc.CacheObjectsOnPosition(gameobject.PositionToCoordinates(door, c.GetPosition().Level), nil)
 							if dp != nil {
 								dp.IsDoor = false
 								dp.IsFree = !dp.IsWall
-								gr := lc.Grid.Get(int(c.GetPosition().PositionX), int(c.GetPosition().PositionY))
-								log.Info().Msgf("Opened doors on (%d, %d): %t", c.GetPosition().PositionX, c.GetPosition().PositionY, dp.IsFree)
+								gr := lc.Grid.Get(int(door.PositionX), int(door.PositionY))
 								gr.Walkable = dp.IsFree
 							}
 						}
