@@ -15,29 +15,29 @@ service DungeonsAndTrolls {
   rpc Register(User) returns (Registration) {}
   // Buy Items identified by the provided ID for the Character bound to the
   // logged user.
-  rpc Buy(Identifiers) returns (google.protobuf.Empty) {}
+  rpc Buy(IdentifiersWithParams) returns (google.protobuf.Empty) {}
   // Equip the Item from the ground identified by the provided ID for the Character bound to the
   // logged user (unused).
-  rpc PickUp(Identifier) returns (google.protobuf.Empty) {}
+  rpc PickUp(IdentifierWithParams) returns (google.protobuf.Empty) {}
   // Assign skill point to the attribute for the Character bound to the logged
   // user.
-  rpc Move(Position) returns (google.protobuf.Empty) {}
+  rpc Move(PositionWithParams) returns (google.protobuf.Empty) {}
   // Respawn the Character bound to the logged user.
-  rpc Respawn(google.protobuf.Empty) returns (google.protobuf.Empty) {}
+  rpc Respawn(RespawnWithParams) returns (google.protobuf.Empty) {}
   // Use a skill (provided by an item) by the Character bound to the logged
   // user.
-  rpc Skill(SkillUse) returns (google.protobuf.Empty) {}
+  rpc Skill(SkillUseWithParams) returns (google.protobuf.Empty) {}
   // The Character bound to the logged user yells a messages (visible for
   // everyone).
-  rpc Yell(Message) returns (google.protobuf.Empty) {}
+  rpc Yell(MessageWithParams) returns (google.protobuf.Empty) {}
   // Send multiple commands to the Character bound to the logged user. The order
   // of execution is defined in the message.
-  rpc Commands(CommandsBatch) returns (google.protobuf.Empty) {}
+  rpc Commands(CommandsBatchWithParams) returns (google.protobuf.Empty) {}
   // Control monsters. Admin only.
-  rpc MonstersCommands(CommandsForMonsters) returns (google.protobuf.Empty) {}
+  rpc MonstersCommands(CommandsForMonstersWithParams) returns (google.protobuf.Empty) {}
   // Send multiple commands to the Character bound to the logged user. The order
   // of execution is defined in the message.
-  rpc AssignSkillPoints(Attributes) returns (google.protobuf.Empty) {}
+  rpc AssignSkillPoints(AttributesWithParams) returns (google.protobuf.Empty) {}
 
   // TODO teleport home
   // maybe it is enough that you can always move to the 0 floor
@@ -46,6 +46,60 @@ service DungeonsAndTrolls {
   //  * this is probably just a condition for move.
   // TODO: Stats? Those will be probably in Grafana (not sure if we need an rpc
   // for that).
+}
+
+message IdentifierWithParams {
+  Identifier identifier = 1;
+  // default true
+  optional bool blocking =2;
+}
+
+message IdentifiersWithParams {
+  Identifiers identifiers = 1;
+  // default true
+  optional bool blocking =2;
+}
+
+message PositionWithParams {
+  Position position = 1;
+  // default true
+  optional bool blocking =2;
+}
+
+message RespawnWithParams {
+  google.protobuf.Empty respawn = 1;
+  // default true
+  optional bool blocking =2;
+}
+
+message SkillUseWithParams {
+  SkillUse skill_use = 1;
+  // default true
+  optional bool blocking =2;
+}
+
+message MessageWithParams {
+  Message message = 1;
+  // default true
+  optional bool blocking =2;
+}
+
+message CommandsBatchWithParams {
+  CommandsBatch commands_batch = 1;
+  // default true
+  optional bool blocking =2;
+}
+
+message CommandsForMonstersWithParams {
+  CommandsForMonsters commands_for_monsters = 1;
+  // default true
+  optional bool blocking =2;
+}
+
+message AttributesWithParams {
+  Attributes attributes = 1;
+  // default true
+  optional bool blocking =2;
 }
 
 message Message { string text = 1; }
@@ -71,10 +125,6 @@ message Waypoint {
 
 message GameStateParams {
   // default false
-  optional bool ascii = 1;
-  // default false
-  optional bool events = 2;
-  // default true
   optional bool blocking = 3;
 }
 
@@ -316,7 +366,7 @@ message GameState {
   optional Character character = 3;
   optional Position current_position = 4;
   optional int32 current_level = 5;
-  int64 tick = 6;
+  int32 tick = 6;
   // List of events which occurred in the previous tick. Useful for visualising
   // effects, debugging and communication.
   repeated Event events = 7;

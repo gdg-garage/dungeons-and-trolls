@@ -69,15 +69,30 @@ func hideUnidentifiedItems(game *dungeonsandtrolls.Game, g *api.GameState) {
 	}
 }
 
+func isBlocking(blocking *bool) bool {
+	if blocking == nil {
+		return true
+	}
+	return *blocking
+}
+
 func (s *server) Game(ctx context.Context, params *api.GameStateParams) (*api.GameState, error) {
 	token, err := getToken(ctx)
+
 	s.G.GameLock.RLock()
-	// TODO not with wait
-	defer s.G.GameLock.RUnlock()
+	tick := s.G.Game.Tick
+	s.G.GameLock.RUnlock()
+
+	// GameContext is special and is not blocking by default also it is blocking before the actual work
+	if params.Blocking != nil && *params.Blocking {
+		s.G.WaitForNextTick(tick)
+	}
+
 	g, ok := proto.Clone(&s.G.Game).(*api.GameState)
 	if !ok {
 		return nil, fmt.Errorf("cloning GameState failed")
 	}
+
 	// token not found
 	if err != nil || len(token) == 0 {
 		filterGameState(s.G, g)
@@ -94,6 +109,7 @@ func (s *server) Game(ctx context.Context, params *api.GameStateParams) (*api.Ga
 		g.CurrentPosition = gameobject.CoordinatesToPosition(p.Position)
 		g.CurrentLevel = &p.Position.Level
 	}
+
 	return g, nil
 }
 
@@ -105,76 +121,166 @@ func (s *server) Register(ctx context.Context, user *api.User) (*api.Registratio
 	return r, nil
 }
 
-func (s *server) Buy(ctx context.Context, identifiers *api.Identifiers) (*emptypb.Empty, error) {
+func (s *server) Buy(ctx context.Context, identifiers *api.IdentifiersWithParams) (*emptypb.Empty, error) {
 	token, err := getToken(ctx)
 	if err != nil {
 		return &emptypb.Empty{}, err
 	}
-	return &emptypb.Empty{}, handlers.Buy(s.G, identifiers, token)
+
+	s.G.GameLock.RLock()
+	tick := s.G.Game.Tick
+	// TODO add player write lock
+	err = handlers.Buy(s.G, identifiers.Identifiers, token)
+	s.G.GameLock.RUnlock()
+	if isBlocking(identifiers.Blocking) {
+		s.G.WaitForNextTick(tick)
+	}
+
+	return &emptypb.Empty{}, err
 }
 
-func (s *server) PickUp(ctx context.Context, identifier *api.Identifier) (*emptypb.Empty, error) {
+func (s *server) PickUp(ctx context.Context, identifier *api.IdentifierWithParams) (*emptypb.Empty, error) {
 	token, err := getToken(ctx)
 	if err != nil {
 		return &emptypb.Empty{}, err
 	}
-	return &emptypb.Empty{}, handlers.PickUp(s.G, identifier, token)
+
+	s.G.GameLock.RLock()
+	tick := s.G.Game.Tick
+	// TODO add player write lock
+	err = handlers.PickUp(s.G, identifier.Identifier, token)
+	s.G.GameLock.RUnlock()
+	if isBlocking(identifier.Blocking) {
+		s.G.WaitForNextTick(tick)
+	}
+
+	return &emptypb.Empty{}, err
 }
 
-func (s *server) Move(ctx context.Context, coordinates *api.Position) (*emptypb.Empty, error) {
+func (s *server) Move(ctx context.Context, coordinates *api.PositionWithParams) (*emptypb.Empty, error) {
 	token, err := getToken(ctx)
 	if err != nil {
 		return &emptypb.Empty{}, err
 	}
-	return &emptypb.Empty{}, handlers.Move(s.G, coordinates, token)
+
+	s.G.GameLock.RLock()
+	tick := s.G.Game.Tick
+	// TODO add player write lock
+	err = handlers.Move(s.G, coordinates.Position, token)
+	s.G.GameLock.RUnlock()
+	if isBlocking(coordinates.Blocking) {
+		s.G.WaitForNextTick(tick)
+	}
+
+	return &emptypb.Empty{}, err
 }
 
-func (s *server) Respawn(ctx context.Context, _ *emptypb.Empty) (*emptypb.Empty, error) {
+func (s *server) Respawn(ctx context.Context, res *api.RespawnWithParams) (*emptypb.Empty, error) {
 	token, err := getToken(ctx)
 	if err != nil {
 		return &emptypb.Empty{}, err
 	}
-	return &emptypb.Empty{}, handlers.Respawn(s.G, token)
+
+	s.G.GameLock.RLock()
+	tick := s.G.Game.Tick
+	// TODO add player write lock
+	err = handlers.Respawn(s.G, token)
+	s.G.GameLock.RUnlock()
+	if isBlocking(res.Blocking) {
+		s.G.WaitForNextTick(tick)
+	}
+
+	return &emptypb.Empty{}, err
 }
 
-func (s *server) Skill(ctx context.Context, skill *api.SkillUse) (*emptypb.Empty, error) {
+func (s *server) Skill(ctx context.Context, skill *api.SkillUseWithParams) (*emptypb.Empty, error) {
 	token, err := getToken(ctx)
 	if err != nil {
 		return &emptypb.Empty{}, err
 	}
-	return &emptypb.Empty{}, handlers.Skill(s.G, skill, token)
+
+	s.G.GameLock.RLock()
+	tick := s.G.Game.Tick
+	// TODO add player write lock
+	err = handlers.Skill(s.G, skill.SkillUse, token)
+	s.G.GameLock.RUnlock()
+	if isBlocking(skill.Blocking) {
+		s.G.WaitForNextTick(tick)
+	}
+
+	return &emptypb.Empty{}, err
 }
 
-func (s *server) Commands(ctx context.Context, commands *api.CommandsBatch) (*emptypb.Empty, error) {
+func (s *server) Commands(ctx context.Context, commands *api.CommandsBatchWithParams) (*emptypb.Empty, error) {
 	token, err := getToken(ctx)
 	if err != nil {
 		return &emptypb.Empty{}, err
 	}
-	return &emptypb.Empty{}, handlers.Commands(s.G, commands, token)
+
+	s.G.GameLock.RLock()
+	tick := s.G.Game.Tick
+	// TODO add player write lock
+	err = handlers.Commands(s.G, commands.CommandsBatch, token)
+	s.G.GameLock.RUnlock()
+	if isBlocking(commands.Blocking) {
+		s.G.WaitForNextTick(tick)
+	}
+
+	return &emptypb.Empty{}, err
 }
 
-func (s *server) MonstersCommands(ctx context.Context, commands *api.CommandsForMonsters) (*emptypb.Empty, error) {
+func (s *server) MonstersCommands(ctx context.Context, commands *api.CommandsForMonstersWithParams) (*emptypb.Empty, error) {
 	token, err := getToken(ctx)
 	if err != nil {
 		return &emptypb.Empty{}, err
 	}
-	return &emptypb.Empty{}, handlers.MonsterCommands(s.G, commands, token)
+
+	s.G.GameLock.RLock()
+	tick := s.G.Game.Tick
+	// TODO add player write lock
+	err = handlers.MonsterCommands(s.G, commands.CommandsForMonsters, token)
+	s.G.GameLock.RUnlock()
+	if isBlocking(commands.Blocking) {
+		s.G.WaitForNextTick(tick)
+	}
+
+	return &emptypb.Empty{}, err
 }
 
-func (s *server) Yell(ctx context.Context, message *api.Message) (*emptypb.Empty, error) {
+func (s *server) Yell(ctx context.Context, message *api.MessageWithParams) (*emptypb.Empty, error) {
 	token, err := getToken(ctx)
 	if err != nil {
 		return &emptypb.Empty{}, err
 	}
-	return &emptypb.Empty{}, handlers.Yell(s.G, message, token)
+
+	s.G.GameLock.RLock()
+	tick := s.G.Game.Tick
+	// TODO add player write lock
+	err = handlers.Yell(s.G, message.Message, token)
+	s.G.GameLock.RUnlock()
+	if isBlocking(message.Blocking) {
+		s.G.WaitForNextTick(tick)
+	}
+
+	return &emptypb.Empty{}, err
 }
 
-func (s *server) AssignSkillPoints(ctx context.Context, attributes *api.Attributes) (*emptypb.Empty, error) {
+func (s *server) AssignSkillPoints(ctx context.Context, attributes *api.AttributesWithParams) (*emptypb.Empty, error) {
 	token, err := getToken(ctx)
 	if err != nil {
 		return &emptypb.Empty{}, err
 	}
-	return &emptypb.Empty{}, handlers.AssignAttributes(s.G, attributes, token)
+
+	s.G.GameLock.RLock()
+	tick := s.G.Game.Tick
+	// TODO add player write lock
+	err = handlers.AssignAttributes(s.G, attributes.Attributes, token)
+	s.G.GameLock.RUnlock()
+	if isBlocking(attributes.Blocking) {
+		s.G.WaitForNextTick(tick)
+	}
+
+	return &emptypb.Empty{}, err
 }
 
 func main() {

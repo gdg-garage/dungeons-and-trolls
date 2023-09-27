@@ -2,7 +2,7 @@
   "swagger": "2.0",
   "info": {
     "title": "Dungeons and Trolls",
-    "version": "1.1.1"
+    "version": "1.2.0"
   },
   "tags": [
     {
@@ -49,12 +49,19 @@
         },
         "parameters": [
           {
-            "name": "body",
+            "name": "attributes",
             "in": "body",
             "required": true,
             "schema": {
               "$ref": "#/definitions/dungeonsandtrollsAttributes"
             }
+          },
+          {
+            "name": "blocking",
+            "description": "default true",
+            "in": "query",
+            "required": false,
+            "type": "boolean"
           }
         ],
         "tags": [
@@ -91,12 +98,19 @@
         },
         "parameters": [
           {
-            "name": "body",
+            "name": "identifiers",
             "in": "body",
             "required": true,
             "schema": {
               "$ref": "#/definitions/dungeonsandtrollsIdentifiers"
             }
+          },
+          {
+            "name": "blocking",
+            "description": "default true",
+            "in": "query",
+            "required": false,
+            "type": "boolean"
           }
         ],
         "tags": [
@@ -133,12 +147,19 @@
         },
         "parameters": [
           {
-            "name": "body",
+            "name": "commandsBatch",
             "in": "body",
             "required": true,
             "schema": {
               "$ref": "#/definitions/dungeonsandtrollsCommandsBatch"
             }
+          },
+          {
+            "name": "blocking",
+            "description": "default true",
+            "in": "query",
+            "required": false,
+            "type": "boolean"
           }
         ],
         "tags": [
@@ -174,22 +195,8 @@
         },
         "parameters": [
           {
-            "name": "ascii",
-            "description": "default false",
-            "in": "query",
-            "required": false,
-            "type": "boolean"
-          },
-          {
-            "name": "events",
-            "description": "default false",
-            "in": "query",
-            "required": false,
-            "type": "boolean"
-          },
-          {
             "name": "blocking",
-            "description": "default true",
+            "description": "default false",
             "in": "query",
             "required": false,
             "type": "boolean"
@@ -229,12 +236,19 @@
         },
         "parameters": [
           {
-            "name": "body",
+            "name": "commandsForMonsters",
             "in": "body",
             "required": true,
             "schema": {
               "$ref": "#/definitions/dungeonsandtrollsCommandsForMonsters"
             }
+          },
+          {
+            "name": "blocking",
+            "description": "default true",
+            "in": "query",
+            "required": false,
+            "type": "boolean"
           }
         ],
         "tags": [
@@ -271,12 +285,19 @@
         },
         "parameters": [
           {
-            "name": "body",
+            "name": "position",
             "in": "body",
             "required": true,
             "schema": {
               "$ref": "#/definitions/dungeonsandtrollsPosition"
             }
+          },
+          {
+            "name": "blocking",
+            "description": "default true",
+            "in": "query",
+            "required": false,
+            "type": "boolean"
           }
         ],
         "tags": [
@@ -313,12 +334,19 @@
         },
         "parameters": [
           {
-            "name": "body",
+            "name": "identifier",
             "in": "body",
             "required": true,
             "schema": {
               "$ref": "#/definitions/dungeonsandtrollsIdentifier"
             }
+          },
+          {
+            "name": "blocking",
+            "description": "default true",
+            "in": "query",
+            "required": false,
+            "type": "boolean"
           }
         ],
         "tags": [
@@ -396,13 +424,20 @@
         },
         "parameters": [
           {
-            "name": "body",
+            "name": "respawn",
             "in": "body",
             "required": true,
             "schema": {
               "type": "object",
               "properties": {}
             }
+          },
+          {
+            "name": "blocking",
+            "description": "default true",
+            "in": "query",
+            "required": false,
+            "type": "boolean"
           }
         ],
         "tags": [
@@ -439,12 +474,19 @@
         },
         "parameters": [
           {
-            "name": "body",
+            "name": "skillUse",
             "in": "body",
             "required": true,
             "schema": {
               "$ref": "#/definitions/dungeonsandtrollsSkillUse"
             }
+          },
+          {
+            "name": "blocking",
+            "description": "default true",
+            "in": "query",
+            "required": false,
+            "type": "boolean"
           }
         ],
         "tags": [
@@ -481,12 +523,19 @@
         },
         "parameters": [
           {
-            "name": "body",
+            "name": "message",
             "in": "body",
             "required": true,
             "schema": {
               "$ref": "#/definitions/dungeonsandtrollsMessage"
             }
+          },
+          {
+            "name": "blocking",
+            "description": "default true",
+            "in": "query",
+            "required": false,
+            "type": "boolean"
           }
         ],
         "tags": [
@@ -806,8 +855,8 @@
           "x-nullable": true
         },
         "tick": {
-          "type": "string",
-          "format": "int64"
+          "type": "integer",
+          "format": "int32"
         },
         "events": {
           "type": "array",

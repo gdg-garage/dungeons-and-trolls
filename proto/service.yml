@@ -10,28 +10,28 @@ http:
       body: "*"
     - selector: dungeonsandtrolls.DungeonsAndTrolls.Buy
       post: /v1/buy
-      body: "*"
+      body: "identifiers"
     - selector: dungeonsandtrolls.DungeonsAndTrolls.PickUp
       post: /v1/pick-up
-      body: "*"
+      body: "identifier"
     - selector: dungeonsandtrolls.DungeonsAndTrolls.Move
       post: /v1/move
-      body: "*"
+      body: "position"
     - selector: dungeonsandtrolls.DungeonsAndTrolls.Respawn
       post: /v1/respawn
-      body: "*"
+      body: "respawn"
     - selector: dungeonsandtrolls.DungeonsAndTrolls.Skill
       post: /v1/skill
-      body: "*"
+      body: "skill_use"
     - selector: dungeonsandtrolls.DungeonsAndTrolls.Commands
       post: /v1/commands
-      body: "*"
+      body: "commands_batch"
     - selector: dungeonsandtrolls.DungeonsAndTrolls.MonstersCommands
       post: /v1/monsters-commands
-      body: "*"
+      body: "commands_for_monsters"
     - selector: dungeonsandtrolls.DungeonsAndTrolls.Yell
       post: /v1/yell
-      body: "*"
+      body: "message"
     - selector: dungeonsandtrolls.DungeonsAndTrolls.AssignSkillPoints
       post: /v1/assign-skill-points
-      body: "*"
+      body: "attributes"

@@ -34,6 +34,7 @@ type Game struct {
 	MaxLevelReached int32                         `json:"max_reached_level"`
 	Game            api.GameState                 `json:"-"`
 	GameLock        sync.RWMutex                  `json:"-"`
+	TickCond        *sync.Cond                    `json:"-"`
 
 	generatorLock sync.RWMutex
 
@@ -79,6 +80,7 @@ func NewGame() *Game {
 		Commands:   map[string]*api.CommandsBatch{},
 		idToObject: map[string]gameobject.Ider{},
 		Score:      0,
+		TickCond:   sync.NewCond(&sync.Mutex{}),
 	}
 
 	return g
@@ -141,7 +143,11 @@ func (g *Game) gameLoop() {
 		// - sort by position
 		// - update the cache
 		// - unregister IDs
+		g.TickCond.L.Lock()
 		g.Game.Tick++
+		g.TickCond.L.Unlock()
+		g.TickCond.Broadcast()
+
 		// Copy score - for storage reasons
 		// TODO maybe use the same solution as for tick or find something more elegant
 		g.Game.Score = g.Score
@@ -638,6 +644,14 @@ func (g *Game) GetObjectById(id string) (gameobject.Ider, error) {
 		return o, nil
 	}
 	return nil, fmt.Errorf("object with id %s not found", id)
+}
+
+func (g *Game) WaitForNextTick(tick int32) {
+	g.TickCond.L.Lock()
+	defer g.TickCond.L.Unlock()
+	for g.Game.Tick <= tick {
+		g.TickCond.Wait()
+	}
 }
 
 func HideNonPublicMonsterFields(g *Game, m *api.Monster) {

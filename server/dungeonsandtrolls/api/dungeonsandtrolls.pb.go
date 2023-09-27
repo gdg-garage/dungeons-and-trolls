@@ -123,7 +123,7 @@ func (x Skill_Target) Number() protoreflect.EnumNumber {
 
 // Deprecated: Use Skill_Target.Descriptor instead.
 func (Skill_Target) EnumDescriptor() ([]byte, []int) {
-	return file_proto_dungeonsandtrolls_proto_rawDescGZIP(), []int{15, 0}
+	return file_proto_dungeonsandtrolls_proto_rawDescGZIP(), []int{24, 0}
 }
 
 type Item_Type int32
@@ -181,7 +181,7 @@ func (x Item_Type) Number() protoreflect.EnumNumber {
 
 // Deprecated: Use Item_Type.Descriptor instead.
 func (Item_Type) EnumDescriptor() ([]byte, []int) {
-	return file_proto_dungeonsandtrolls_proto_rawDescGZIP(), []int{16, 0}
+	return file_proto_dungeonsandtrolls_proto_rawDescGZIP(), []int{25, 0}
 }
 
 type Event_Type int32
@@ -248,7 +248,502 @@ func (x Event_Type) Number() protoreflect.EnumNumber {
 
 // Deprecated: Use Event_Type.Descriptor instead.
 func (Event_Type) EnumDescriptor() ([]byte, []int) {
-	return file_proto_dungeonsandtrolls_proto_rawDescGZIP(), []int{25, 0}
+	return file_proto_dungeonsandtrolls_proto_rawDescGZIP(), []int{34, 0}
+}
+
+type IdentifierWithParams struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	Identifier *Identifier `protobuf:"bytes,1,opt,name=identifier,proto3" json:"identifier,omitempty"`
+	Blocking   *bool       `protobuf:"varint,2,opt,name=blocking,proto3,oneof" json:"blocking,omitempty"`
+}
+
+func (x *IdentifierWithParams) Reset() {
+	*x = IdentifierWithParams{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_proto_dungeonsandtrolls_proto_msgTypes[0]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *IdentifierWithParams) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*IdentifierWithParams) ProtoMessage() {}
+
+func (x *IdentifierWithParams) ProtoReflect() protoreflect.Message {
+	mi := &file_proto_dungeonsandtrolls_proto_msgTypes[0]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use IdentifierWithParams.ProtoReflect.Descriptor instead.
+func (*IdentifierWithParams) Descriptor() ([]byte, []int) {
+	return file_proto_dungeonsandtrolls_proto_rawDescGZIP(), []int{0}
+}
+
+func (x *IdentifierWithParams) GetIdentifier() *Identifier {
+	if x != nil {
+		return x.Identifier
+	}
+	return nil
+}
+
+func (x *IdentifierWithParams) GetBlocking() bool {
+	if x != nil && x.Blocking != nil {
+		return *x.Blocking
+	}
+	return false
+}
+
+type IdentifiersWithParams struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	Identifiers *Identifiers `protobuf:"bytes,1,opt,name=identifiers,proto3" json:"identifiers,omitempty"`
+	Blocking    *bool        `protobuf:"varint,2,opt,name=blocking,proto3,oneof" json:"blocking,omitempty"`
+}
+
+func (x *IdentifiersWithParams) Reset() {
+	*x = IdentifiersWithParams{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_proto_dungeonsandtrolls_proto_msgTypes[1]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *IdentifiersWithParams) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*IdentifiersWithParams) ProtoMessage() {}
+
+func (x *IdentifiersWithParams) ProtoReflect() protoreflect.Message {
+	mi := &file_proto_dungeonsandtrolls_proto_msgTypes[1]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use IdentifiersWithParams.ProtoReflect.Descriptor instead.
+func (*IdentifiersWithParams) Descriptor() ([]byte, []int) {
+	return file_proto_dungeonsandtrolls_proto_rawDescGZIP(), []int{1}
+}
+
+func (x *IdentifiersWithParams) GetIdentifiers() *Identifiers {
+	if x != nil {
+		return x.Identifiers
+	}
+	return nil
+}
+
+func (x *IdentifiersWithParams) GetBlocking() bool {
+	if x != nil && x.Blocking != nil {
+		return *x.Blocking
+	}
+	return false
+}
+
+type PositionWithParams struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	Position *Position `protobuf:"bytes,1,opt,name=position,proto3" json:"position,omitempty"`
+	Blocking *bool     `protobuf:"varint,2,opt,name=blocking,proto3,oneof" json:"blocking,omitempty"`
+}
+
+func (x *PositionWithParams) Reset() {
+	*x = PositionWithParams{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_proto_dungeonsandtrolls_proto_msgTypes[2]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *PositionWithParams) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*PositionWithParams) ProtoMessage() {}
+
+func (x *PositionWithParams) ProtoReflect() protoreflect.Message {
+	mi := &file_proto_dungeonsandtrolls_proto_msgTypes[2]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use PositionWithParams.ProtoReflect.Descriptor instead.
+func (*PositionWithParams) Descriptor() ([]byte, []int) {
+	return file_proto_dungeonsandtrolls_proto_rawDescGZIP(), []int{2}
+}
+
+func (x *PositionWithParams) GetPosition() *Position {
+	if x != nil {
+		return x.Position
+	}
+	return nil
+}
+
+func (x *PositionWithParams) GetBlocking() bool {
+	if x != nil && x.Blocking != nil {
+		return *x.Blocking
+	}
+	return false
+}
+
+type RespawnWithParams struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	Respawn  *emptypb.Empty `protobuf:"bytes,1,opt,name=respawn,proto3" json:"respawn,omitempty"`
+	Blocking *bool          `protobuf:"varint,2,opt,name=blocking,proto3,oneof" json:"blocking,omitempty"`
+}
+
+func (x *RespawnWithParams) Reset() {
+	*x = RespawnWithParams{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_proto_dungeonsandtrolls_proto_msgTypes[3]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *RespawnWithParams) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*RespawnWithParams) ProtoMessage() {}
+
+func (x *RespawnWithParams) ProtoReflect() protoreflect.Message {
+	mi := &file_proto_dungeonsandtrolls_proto_msgTypes[3]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use RespawnWithParams.ProtoReflect.Descriptor instead.
+func (*RespawnWithParams) Descriptor() ([]byte, []int) {
+	return file_proto_dungeonsandtrolls_proto_rawDescGZIP(), []int{3}
+}
+
+func (x *RespawnWithParams) GetRespawn() *emptypb.Empty {
+	if x != nil {
+		return x.Respawn
+	}
+	return nil
+}
+
+func (x *RespawnWithParams) GetBlocking() bool {
+	if x != nil && x.Blocking != nil {
+		return *x.Blocking
+	}
+	return false
+}
+
+type SkillUseWithParams struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	SkillUse *SkillUse `protobuf:"bytes,1,opt,name=skill_use,json=skillUse,proto3" json:"skill_use,omitempty"`
+	Blocking *bool     `protobuf:"varint,2,opt,name=blocking,proto3,oneof" json:"blocking,omitempty"`
+}
+
+func (x *SkillUseWithParams) Reset() {
+	*x = SkillUseWithParams{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_proto_dungeonsandtrolls_proto_msgTypes[4]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *SkillUseWithParams) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*SkillUseWithParams) ProtoMessage() {}
+
+func (x *SkillUseWithParams) ProtoReflect() protoreflect.Message {
+	mi := &file_proto_dungeonsandtrolls_proto_msgTypes[4]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use SkillUseWithParams.ProtoReflect.Descriptor instead.
+func (*SkillUseWithParams) Descriptor() ([]byte, []int) {
+	return file_proto_dungeonsandtrolls_proto_rawDescGZIP(), []int{4}
+}
+
+func (x *SkillUseWithParams) GetSkillUse() *SkillUse {
+	if x != nil {
+		return x.SkillUse
+	}
+	return nil
+}
+
+func (x *SkillUseWithParams) GetBlocking() bool {
+	if x != nil && x.Blocking != nil {
+		return *x.Blocking
+	}
+	return false
+}
+
+type MessageWithParams struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	Message  *Message `protobuf:"bytes,1,opt,name=message,proto3" json:"message,omitempty"`
+	Blocking *bool    `protobuf:"varint,2,opt,name=blocking,proto3,oneof" json:"blocking,omitempty"`
+}
+
+func (x *MessageWithParams) Reset() {
+	*x = MessageWithParams{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_proto_dungeonsandtrolls_proto_msgTypes[5]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *MessageWithParams) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*MessageWithParams) ProtoMessage() {}
+
+func (x *MessageWithParams) ProtoReflect() protoreflect.Message {
+	mi := &file_proto_dungeonsandtrolls_proto_msgTypes[5]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use MessageWithParams.ProtoReflect.Descriptor instead.
+func (*MessageWithParams) Descriptor() ([]byte, []int) {
+	return file_proto_dungeonsandtrolls_proto_rawDescGZIP(), []int{5}
+}
+
+func (x *MessageWithParams) GetMessage() *Message {
+	if x != nil {
+		return x.Message
+	}
+	return nil
+}
+
+func (x *MessageWithParams) GetBlocking() bool {
+	if x != nil && x.Blocking != nil {
+		return *x.Blocking
+	}
+	return false
+}
+
+type CommandsBatchWithParams struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	CommandsBatch *CommandsBatch `protobuf:"bytes,1,opt,name=commands_batch,json=commandsBatch,proto3" json:"commands_batch,omitempty"`
+	Blocking      *bool          `protobuf:"varint,2,opt,name=blocking,proto3,oneof" json:"blocking,omitempty"`
+}
+
+func (x *CommandsBatchWithParams) Reset() {
+	*x = CommandsBatchWithParams{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_proto_dungeonsandtrolls_proto_msgTypes[6]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *CommandsBatchWithParams) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*CommandsBatchWithParams) ProtoMessage() {}
+
+func (x *CommandsBatchWithParams) ProtoReflect() protoreflect.Message {
+	mi := &file_proto_dungeonsandtrolls_proto_msgTypes[6]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use CommandsBatchWithParams.ProtoReflect.Descriptor instead.
+func (*CommandsBatchWithParams) Descriptor() ([]byte, []int) {
+	return file_proto_dungeonsandtrolls_proto_rawDescGZIP(), []int{6}
+}
+
+func (x *CommandsBatchWithParams) GetCommandsBatch() *CommandsBatch {
+	if x != nil {
+		return x.CommandsBatch
+	}
+	return nil
+}
+
+func (x *CommandsBatchWithParams) GetBlocking() bool {
+	if x != nil && x.Blocking != nil {
+		return *x.Blocking
+	}
+	return false
+}
+
+type CommandsForMonstersWithParams struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	CommandsForMonsters *CommandsForMonsters `protobuf:"bytes,1,opt,name=commands_for_monsters,json=commandsForMonsters,proto3" json:"commands_for_monsters,omitempty"`
+	Blocking            *bool                `protobuf:"varint,2,opt,name=blocking,proto3,oneof" json:"blocking,omitempty"`
+}
+
+func (x *CommandsForMonstersWithParams) Reset() {
+	*x = CommandsForMonstersWithParams{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_proto_dungeonsandtrolls_proto_msgTypes[7]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *CommandsForMonstersWithParams) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*CommandsForMonstersWithParams) ProtoMessage() {}
+
+func (x *CommandsForMonstersWithParams) ProtoReflect() protoreflect.Message {
+	mi := &file_proto_dungeonsandtrolls_proto_msgTypes[7]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use CommandsForMonstersWithParams.ProtoReflect.Descriptor instead.
+func (*CommandsForMonstersWithParams) Descriptor() ([]byte, []int) {
+	return file_proto_dungeonsandtrolls_proto_rawDescGZIP(), []int{7}
+}
+
+func (x *CommandsForMonstersWithParams) GetCommandsForMonsters() *CommandsForMonsters {
+	if x != nil {
+		return x.CommandsForMonsters
+	}
+	return nil
+}
+
+func (x *CommandsForMonstersWithParams) GetBlocking() bool {
+	if x != nil && x.Blocking != nil {
+		return *x.Blocking
+	}
+	return false
+}
+
+type AttributesWithParams struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	Attributes *Attributes `protobuf:"bytes,1,opt,name=attributes,proto3" json:"attributes,omitempty"`
+	Blocking   *bool       `protobuf:"varint,2,opt,name=blocking,proto3,oneof" json:"blocking,omitempty"`
+}
+
+func (x *AttributesWithParams) Reset() {
+	*x = AttributesWithParams{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_proto_dungeonsandtrolls_proto_msgTypes[8]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *AttributesWithParams) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*AttributesWithParams) ProtoMessage() {}
+
+func (x *AttributesWithParams) ProtoReflect() protoreflect.Message {
+	mi := &file_proto_dungeonsandtrolls_proto_msgTypes[8]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use AttributesWithParams.ProtoReflect.Descriptor instead.
+func (*AttributesWithParams) Descriptor() ([]byte, []int) {
+	return file_proto_dungeonsandtrolls_proto_rawDescGZIP(), []int{8}
+}
+
+func (x *AttributesWithParams) GetAttributes() *Attributes {
+	if x != nil {
+		return x.Attributes
+	}
+	return nil
+}
+
+func (x *AttributesWithParams) GetBlocking() bool {
+	if x != nil && x.Blocking != nil {
+		return *x.Blocking
+	}
+	return false
 }
 
 type Message struct {
@@ -262,7 +757,7 @@ type Message struct {
 func (x *Message) Reset() {
 	*x = Message{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_proto_dungeonsandtrolls_proto_msgTypes[0]
+		mi := &file_proto_dungeonsandtrolls_proto_msgTypes[9]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -275,7 +770,7 @@ func (x *Message) String() string {
 func (*Message) ProtoMessage() {}
 
 func (x *Message) ProtoReflect() protoreflect.Message {
-	mi := &file_proto_dungeonsandtrolls_proto_msgTypes[0]
+	mi := &file_proto_dungeonsandtrolls_proto_msgTypes[9]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -288,7 +783,7 @@ func (x *Message) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use Message.ProtoReflect.Descriptor instead.
 func (*Message) Descriptor() ([]byte, []int) {
-	return file_proto_dungeonsandtrolls_proto_rawDescGZIP(), []int{0}
+	return file_proto_dungeonsandtrolls_proto_rawDescGZIP(), []int{9}
 }
 
 func (x *Message) GetText() string {
@@ -311,7 +806,7 @@ type Decoration struct {
 func (x *Decoration) Reset() {
 	*x = Decoration{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_proto_dungeonsandtrolls_proto_msgTypes[1]
+		mi := &file_proto_dungeonsandtrolls_proto_msgTypes[10]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -324,7 +819,7 @@ func (x *Decoration) String() string {
 func (*Decoration) ProtoMessage() {}
 
 func (x *Decoration) ProtoReflect() protoreflect.Message {
-	mi := &file_proto_dungeonsandtrolls_proto_msgTypes[1]
+	mi := &file_proto_dungeonsandtrolls_proto_msgTypes[10]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -337,7 +832,7 @@ func (x *Decoration) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use Decoration.ProtoReflect.Descriptor instead.
 func (*Decoration) Descriptor() ([]byte, []int) {
-	return file_proto_dungeonsandtrolls_proto_rawDescGZIP(), []int{1}
+	return file_proto_dungeonsandtrolls_proto_rawDescGZIP(), []int{10}
 }
 
 func (x *Decoration) GetName() string {
@@ -373,7 +868,7 @@ type Position struct {
 func (x *Position) Reset() {
 	*x = Position{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_proto_dungeonsandtrolls_proto_msgTypes[2]
+		mi := &file_proto_dungeonsandtrolls_proto_msgTypes[11]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -386,7 +881,7 @@ func (x *Position) String() string {
 func (*Position) ProtoMessage() {}
 
 func (x *Position) ProtoReflect() protoreflect.Message {
-	mi := &file_proto_dungeonsandtrolls_proto_msgTypes[2]
+	mi := &file_proto_dungeonsandtrolls_proto_msgTypes[11]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -399,7 +894,7 @@ func (x *Position) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use Position.ProtoReflect.Descriptor instead.
 func (*Position) Descriptor() ([]byte, []int) {
-	return file_proto_dungeonsandtrolls_proto_rawDescGZIP(), []int{2}
+	return file_proto_dungeonsandtrolls_proto_rawDescGZIP(), []int{11}
 }
 
 func (x *Position) GetPositionX() int32 {
@@ -427,7 +922,7 @@ type Key struct {
 func (x *Key) Reset() {
 	*x = Key{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_proto_dungeonsandtrolls_proto_msgTypes[3]
+		mi := &file_proto_dungeonsandtrolls_proto_msgTypes[12]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -440,7 +935,7 @@ func (x *Key) String() string {
 func (*Key) ProtoMessage() {}
 
 func (x *Key) ProtoReflect() protoreflect.Message {
-	mi := &file_proto_dungeonsandtrolls_proto_msgTypes[3]
+	mi := &file_proto_dungeonsandtrolls_proto_msgTypes[12]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -453,7 +948,7 @@ func (x *Key) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use Key.ProtoReflect.Descriptor instead.
 func (*Key) Descriptor() ([]byte, []int) {
-	return file_proto_dungeonsandtrolls_proto_rawDescGZIP(), []int{3}
+	return file_proto_dungeonsandtrolls_proto_rawDescGZIP(), []int{12}
 }
 
 func (x *Key) GetDoors() []*Position {
@@ -474,7 +969,7 @@ type Waypoint struct {
 func (x *Waypoint) Reset() {
 	*x = Waypoint{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_proto_dungeonsandtrolls_proto_msgTypes[4]
+		mi := &file_proto_dungeonsandtrolls_proto_msgTypes[13]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -487,7 +982,7 @@ func (x *Waypoint) String() string {
 func (*Waypoint) ProtoMessage() {}
 
 func (x *Waypoint) ProtoReflect() protoreflect.Message {
-	mi := &file_proto_dungeonsandtrolls_proto_msgTypes[4]
+	mi := &file_proto_dungeonsandtrolls_proto_msgTypes[13]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -500,7 +995,7 @@ func (x *Waypoint) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use Waypoint.ProtoReflect.Descriptor instead.
 func (*Waypoint) Descriptor() ([]byte, []int) {
-	return file_proto_dungeonsandtrolls_proto_rawDescGZIP(), []int{4}
+	return file_proto_dungeonsandtrolls_proto_rawDescGZIP(), []int{13}
 }
 
 func (x *Waypoint) GetDestinationFloor() int32 {
@@ -515,15 +1010,13 @@ type GameStateParams struct {
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
 
-	Ascii    *bool `protobuf:"varint,1,opt,name=ascii,proto3,oneof" json:"ascii,omitempty"`
-	Events   *bool `protobuf:"varint,2,opt,name=events,proto3,oneof" json:"events,omitempty"`
 	Blocking *bool `protobuf:"varint,3,opt,name=blocking,proto3,oneof" json:"blocking,omitempty"`
 }
 
 func (x *GameStateParams) Reset() {
 	*x = GameStateParams{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_proto_dungeonsandtrolls_proto_msgTypes[5]
+		mi := &file_proto_dungeonsandtrolls_proto_msgTypes[14]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -536,7 +1029,7 @@ func (x *GameStateParams) String() string {
 func (*GameStateParams) ProtoMessage() {}
 
 func (x *GameStateParams) ProtoReflect() protoreflect.Message {
-	mi := &file_proto_dungeonsandtrolls_proto_msgTypes[5]
+	mi := &file_proto_dungeonsandtrolls_proto_msgTypes[14]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -549,21 +1042,7 @@ func (x *GameStateParams) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use GameStateParams.ProtoReflect.Descriptor instead.
 func (*GameStateParams) Descriptor() ([]byte, []int) {
-	return file_proto_dungeonsandtrolls_proto_rawDescGZIP(), []int{5}
-}
-
-func (x *GameStateParams) GetAscii() bool {
-	if x != nil && x.Ascii != nil {
-		return *x.Ascii
-	}
-	return false
-}
-
-func (x *GameStateParams) GetEvents() bool {
-	if x != nil && x.Events != nil {
-		return *x.Events
-	}
-	return false
+	return file_proto_dungeonsandtrolls_proto_rawDescGZIP(), []int{14}
 }
 
 func (x *GameStateParams) GetBlocking() bool {
@@ -589,7 +1068,7 @@ type CommandsBatch struct {
 func (x *CommandsBatch) Reset() {
 	*x = CommandsBatch{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_proto_dungeonsandtrolls_proto_msgTypes[6]
+		mi := &file_proto_dungeonsandtrolls_proto_msgTypes[15]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -602,7 +1081,7 @@ func (x *CommandsBatch) String() string {
 func (*CommandsBatch) ProtoMessage() {}
 
 func (x *CommandsBatch) ProtoReflect() protoreflect.Message {
-	mi := &file_proto_dungeonsandtrolls_proto_msgTypes[6]
+	mi := &file_proto_dungeonsandtrolls_proto_msgTypes[15]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -615,7 +1094,7 @@ func (x *CommandsBatch) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use CommandsBatch.ProtoReflect.Descriptor instead.
 func (*CommandsBatch) Descriptor() ([]byte, []int) {
-	return file_proto_dungeonsandtrolls_proto_rawDescGZIP(), []int{6}
+	return file_proto_dungeonsandtrolls_proto_rawDescGZIP(), []int{15}
 }
 
 func (x *CommandsBatch) GetBuy() *Identifiers {
@@ -671,7 +1150,7 @@ type CommandsForMonsters struct {
 func (x *CommandsForMonsters) Reset() {
 	*x = CommandsForMonsters{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_proto_dungeonsandtrolls_proto_msgTypes[7]
+		mi := &file_proto_dungeonsandtrolls_proto_msgTypes[16]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -684,7 +1163,7 @@ func (x *CommandsForMonsters) String() string {
 func (*CommandsForMonsters) ProtoMessage() {}
 
 func (x *CommandsForMonsters) ProtoReflect() protoreflect.Message {
-	mi := &file_proto_dungeonsandtrolls_proto_msgTypes[7]
+	mi := &file_proto_dungeonsandtrolls_proto_msgTypes[16]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -697,7 +1176,7 @@ func (x *CommandsForMonsters) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use CommandsForMonsters.ProtoReflect.Descriptor instead.
 func (*CommandsForMonsters) Descriptor() ([]byte, []int) {
-	return file_proto_dungeonsandtrolls_proto_rawDescGZIP(), []int{7}
+	return file_proto_dungeonsandtrolls_proto_rawDescGZIP(), []int{16}
 }
 
 func (x *CommandsForMonsters) GetCommands() map[string]*CommandsBatch {
@@ -722,7 +1201,7 @@ type Effect struct {
 func (x *Effect) Reset() {
 	*x = Effect{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_proto_dungeonsandtrolls_proto_msgTypes[8]
+		mi := &file_proto_dungeonsandtrolls_proto_msgTypes[17]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -735,7 +1214,7 @@ func (x *Effect) String() string {
 func (*Effect) ProtoMessage() {}
 
 func (x *Effect) ProtoReflect() protoreflect.Message {
-	mi := &file_proto_dungeonsandtrolls_proto_msgTypes[8]
+	mi := &file_proto_dungeonsandtrolls_proto_msgTypes[17]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -748,7 +1227,7 @@ func (x *Effect) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use Effect.ProtoReflect.Descriptor instead.
 func (*Effect) Descriptor() ([]byte, []int) {
-	return file_proto_dungeonsandtrolls_proto_rawDescGZIP(), []int{8}
+	return file_proto_dungeonsandtrolls_proto_rawDescGZIP(), []int{17}
 }
 
 func (x *Effect) GetDamageAmount() float32 {
@@ -810,7 +1289,7 @@ type Attributes struct {
 func (x *Attributes) Reset() {
 	*x = Attributes{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_proto_dungeonsandtrolls_proto_msgTypes[9]
+		mi := &file_proto_dungeonsandtrolls_proto_msgTypes[18]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -823,7 +1302,7 @@ func (x *Attributes) String() string {
 func (*Attributes) ProtoMessage() {}
 
 func (x *Attributes) ProtoReflect() protoreflect.Message {
-	mi := &file_proto_dungeonsandtrolls_proto_msgTypes[9]
+	mi := &file_proto_dungeonsandtrolls_proto_msgTypes[18]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -836,7 +1315,7 @@ func (x *Attributes) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use Attributes.ProtoReflect.Descriptor instead.
 func (*Attributes) Descriptor() ([]byte, []int) {
-	return file_proto_dungeonsandtrolls_proto_rawDescGZIP(), []int{9}
+	return file_proto_dungeonsandtrolls_proto_rawDescGZIP(), []int{18}
 }
 
 func (x *Attributes) GetStrength() float32 {
@@ -961,7 +1440,7 @@ type SkillAttributes struct {
 func (x *SkillAttributes) Reset() {
 	*x = SkillAttributes{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_proto_dungeonsandtrolls_proto_msgTypes[10]
+		mi := &file_proto_dungeonsandtrolls_proto_msgTypes[19]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -974,7 +1453,7 @@ func (x *SkillAttributes) String() string {
 func (*SkillAttributes) ProtoMessage() {}
 
 func (x *SkillAttributes) ProtoReflect() protoreflect.Message {
-	mi := &file_proto_dungeonsandtrolls_proto_msgTypes[10]
+	mi := &file_proto_dungeonsandtrolls_proto_msgTypes[19]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -987,7 +1466,7 @@ func (x *SkillAttributes) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use SkillAttributes.ProtoReflect.Descriptor instead.
 func (*SkillAttributes) Descriptor() ([]byte, []int) {
-	return file_proto_dungeonsandtrolls_proto_rawDescGZIP(), []int{10}
+	return file_proto_dungeonsandtrolls_proto_rawDescGZIP(), []int{19}
 }
 
 func (x *SkillAttributes) GetStrength() *Attributes {
@@ -1101,7 +1580,7 @@ type Stats struct {
 func (x *Stats) Reset() {
 	*x = Stats{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_proto_dungeonsandtrolls_proto_msgTypes[11]
+		mi := &file_proto_dungeonsandtrolls_proto_msgTypes[20]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -1114,7 +1593,7 @@ func (x *Stats) String() string {
 func (*Stats) ProtoMessage() {}
 
 func (x *Stats) ProtoReflect() protoreflect.Message {
-	mi := &file_proto_dungeonsandtrolls_proto_msgTypes[11]
+	mi := &file_proto_dungeonsandtrolls_proto_msgTypes[20]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1127,7 +1606,7 @@ func (x *Stats) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use Stats.ProtoReflect.Descriptor instead.
 func (*Stats) Descriptor() ([]byte, []int) {
-	return file_proto_dungeonsandtrolls_proto_rawDescGZIP(), []int{11}
+	return file_proto_dungeonsandtrolls_proto_rawDescGZIP(), []int{20}
 }
 
 func (x *Stats) GetLife() float32 {
@@ -1163,7 +1642,7 @@ type Rewards struct {
 func (x *Rewards) Reset() {
 	*x = Rewards{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_proto_dungeonsandtrolls_proto_msgTypes[12]
+		mi := &file_proto_dungeonsandtrolls_proto_msgTypes[21]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -1176,7 +1655,7 @@ func (x *Rewards) String() string {
 func (*Rewards) ProtoMessage() {}
 
 func (x *Rewards) ProtoReflect() protoreflect.Message {
-	mi := &file_proto_dungeonsandtrolls_proto_msgTypes[12]
+	mi := &file_proto_dungeonsandtrolls_proto_msgTypes[21]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1189,7 +1668,7 @@ func (x *Rewards) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use Rewards.ProtoReflect.Descriptor instead.
 func (*Rewards) Descriptor() ([]byte, []int) {
-	return file_proto_dungeonsandtrolls_proto_rawDescGZIP(), []int{12}
+	return file_proto_dungeonsandtrolls_proto_rawDescGZIP(), []int{21}
 }
 
 func (x *Rewards) GetXp() int32 {
@@ -1228,7 +1707,7 @@ type Monster struct {
 func (x *Monster) Reset() {
 	*x = Monster{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_proto_dungeonsandtrolls_proto_msgTypes[13]
+		mi := &file_proto_dungeonsandtrolls_proto_msgTypes[22]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -1241,7 +1720,7 @@ func (x *Monster) String() string {
 func (*Monster) ProtoMessage() {}
 
 func (x *Monster) ProtoReflect() protoreflect.Message {
-	mi := &file_proto_dungeonsandtrolls_proto_msgTypes[13]
+	mi := &file_proto_dungeonsandtrolls_proto_msgTypes[22]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1254,7 +1733,7 @@ func (x *Monster) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use Monster.ProtoReflect.Descriptor instead.
 func (*Monster) Descriptor() ([]byte, []int) {
-	return file_proto_dungeonsandtrolls_proto_rawDescGZIP(), []int{13}
+	return file_proto_dungeonsandtrolls_proto_rawDescGZIP(), []int{22}
 }
 
 func (x *Monster) GetId() string {
@@ -1359,7 +1838,7 @@ type Character struct {
 func (x *Character) Reset() {
 	*x = Character{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_proto_dungeonsandtrolls_proto_msgTypes[14]
+		mi := &file_proto_dungeonsandtrolls_proto_msgTypes[23]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -1372,7 +1851,7 @@ func (x *Character) String() string {
 func (*Character) ProtoMessage() {}
 
 func (x *Character) ProtoReflect() protoreflect.Message {
-	mi := &file_proto_dungeonsandtrolls_proto_msgTypes[14]
+	mi := &file_proto_dungeonsandtrolls_proto_msgTypes[23]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1385,7 +1864,7 @@ func (x *Character) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use Character.ProtoReflect.Descriptor instead.
 func (*Character) Descriptor() ([]byte, []int) {
-	return file_proto_dungeonsandtrolls_proto_rawDescGZIP(), []int{14}
+	return file_proto_dungeonsandtrolls_proto_rawDescGZIP(), []int{23}
 }
 
 func (x *Character) GetId() string {
@@ -1465,7 +1944,7 @@ type Skill struct {
 func (x *Skill) Reset() {
 	*x = Skill{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_proto_dungeonsandtrolls_proto_msgTypes[15]
+		mi := &file_proto_dungeonsandtrolls_proto_msgTypes[24]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -1478,7 +1957,7 @@ func (x *Skill) String() string {
 func (*Skill) ProtoMessage() {}
 
 func (x *Skill) ProtoReflect() protoreflect.Message {
-	mi := &file_proto_dungeonsandtrolls_proto_msgTypes[15]
+	mi := &file_proto_dungeonsandtrolls_proto_msgTypes[24]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1491,7 +1970,7 @@ func (x *Skill) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use Skill.ProtoReflect.Descriptor instead.
 func (*Skill) Descriptor() ([]byte, []int) {
-	return file_proto_dungeonsandtrolls_proto_rawDescGZIP(), []int{15}
+	return file_proto_dungeonsandtrolls_proto_rawDescGZIP(), []int{24}
 }
 
 func (x *Skill) GetId() string {
@@ -1590,7 +2069,7 @@ type Item struct {
 func (x *Item) Reset() {
 	*x = Item{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_proto_dungeonsandtrolls_proto_msgTypes[16]
+		mi := &file_proto_dungeonsandtrolls_proto_msgTypes[25]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -1603,7 +2082,7 @@ func (x *Item) String() string {
 func (*Item) ProtoMessage() {}
 
 func (x *Item) ProtoReflect() protoreflect.Message {
-	mi := &file_proto_dungeonsandtrolls_proto_msgTypes[16]
+	mi := &file_proto_dungeonsandtrolls_proto_msgTypes[25]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1616,7 +2095,7 @@ func (x *Item) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use Item.ProtoReflect.Descriptor instead.
 func (*Item) Descriptor() ([]byte, []int) {
-	return file_proto_dungeonsandtrolls_proto_rawDescGZIP(), []int{16}
+	return file_proto_dungeonsandtrolls_proto_rawDescGZIP(), []int{25}
 }
 
 func (x *Item) GetId() string {
@@ -1695,7 +2174,7 @@ type SimpleItem struct {
 func (x *SimpleItem) Reset() {
 	*x = SimpleItem{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_proto_dungeonsandtrolls_proto_msgTypes[17]
+		mi := &file_proto_dungeonsandtrolls_proto_msgTypes[26]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -1708,7 +2187,7 @@ func (x *SimpleItem) String() string {
 func (*SimpleItem) ProtoMessage() {}
 
 func (x *SimpleItem) ProtoReflect() protoreflect.Message {
-	mi := &file_proto_dungeonsandtrolls_proto_msgTypes[17]
+	mi := &file_proto_dungeonsandtrolls_proto_msgTypes[26]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1721,7 +2200,7 @@ func (x *SimpleItem) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use SimpleItem.ProtoReflect.Descriptor instead.
 func (*SimpleItem) Descriptor() ([]byte, []int) {
-	return file_proto_dungeonsandtrolls_proto_rawDescGZIP(), []int{17}
+	return file_proto_dungeonsandtrolls_proto_rawDescGZIP(), []int{26}
 }
 
 func (x *SimpleItem) GetName() string {
@@ -1764,7 +2243,7 @@ type Droppable struct {
 func (x *Droppable) Reset() {
 	*x = Droppable{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_proto_dungeonsandtrolls_proto_msgTypes[18]
+		mi := &file_proto_dungeonsandtrolls_proto_msgTypes[27]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -1777,7 +2256,7 @@ func (x *Droppable) String() string {
 func (*Droppable) ProtoMessage() {}
 
 func (x *Droppable) ProtoReflect() protoreflect.Message {
-	mi := &file_proto_dungeonsandtrolls_proto_msgTypes[18]
+	mi := &file_proto_dungeonsandtrolls_proto_msgTypes[27]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1790,7 +2269,7 @@ func (x *Droppable) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use Droppable.ProtoReflect.Descriptor instead.
 func (*Droppable) Descriptor() ([]byte, []int) {
-	return file_proto_dungeonsandtrolls_proto_rawDescGZIP(), []int{18}
+	return file_proto_dungeonsandtrolls_proto_rawDescGZIP(), []int{27}
 }
 
 func (m *Droppable) GetData() isDroppable_Data {
@@ -1900,7 +2379,7 @@ type SkillFlags struct {
 func (x *SkillFlags) Reset() {
 	*x = SkillFlags{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_proto_dungeonsandtrolls_proto_msgTypes[19]
+		mi := &file_proto_dungeonsandtrolls_proto_msgTypes[28]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -1913,7 +2392,7 @@ func (x *SkillFlags) String() string {
 func (*SkillFlags) ProtoMessage() {}
 
 func (x *SkillFlags) ProtoReflect() protoreflect.Message {
-	mi := &file_proto_dungeonsandtrolls_proto_msgTypes[19]
+	mi := &file_proto_dungeonsandtrolls_proto_msgTypes[28]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1926,7 +2405,7 @@ func (x *SkillFlags) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use SkillFlags.ProtoReflect.Descriptor instead.
 func (*SkillFlags) Descriptor() ([]byte, []int) {
-	return file_proto_dungeonsandtrolls_proto_rawDescGZIP(), []int{19}
+	return file_proto_dungeonsandtrolls_proto_rawDescGZIP(), []int{28}
 }
 
 func (x *SkillFlags) GetRequiresAlone() bool {
@@ -1998,7 +2477,7 @@ type SkillEffect struct {
 func (x *SkillEffect) Reset() {
 	*x = SkillEffect{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_proto_dungeonsandtrolls_proto_msgTypes[20]
+		mi := &file_proto_dungeonsandtrolls_proto_msgTypes[29]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -2011,7 +2490,7 @@ func (x *SkillEffect) String() string {
 func (*SkillEffect) ProtoMessage() {}
 
 func (x *SkillEffect) ProtoReflect() protoreflect.Message {
-	mi := &file_proto_dungeonsandtrolls_proto_msgTypes[20]
+	mi := &file_proto_dungeonsandtrolls_proto_msgTypes[29]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -2024,7 +2503,7 @@ func (x *SkillEffect) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use SkillEffect.ProtoReflect.Descriptor instead.
 func (*SkillEffect) Descriptor() ([]byte, []int) {
-	return file_proto_dungeonsandtrolls_proto_rawDescGZIP(), []int{20}
+	return file_proto_dungeonsandtrolls_proto_rawDescGZIP(), []int{29}
 }
 
 func (x *SkillEffect) GetAttributes() *SkillAttributes {
@@ -2059,7 +2538,7 @@ type Shortcut struct {
 func (x *Shortcut) Reset() {
 	*x = Shortcut{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_proto_dungeonsandtrolls_proto_msgTypes[21]
+		mi := &file_proto_dungeonsandtrolls_proto_msgTypes[30]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -2072,7 +2551,7 @@ func (x *Shortcut) String() string {
 func (*Shortcut) ProtoMessage() {}
 
 func (x *Shortcut) ProtoReflect() protoreflect.Message {
-	mi := &file_proto_dungeonsandtrolls_proto_msgTypes[21]
+	mi := &file_proto_dungeonsandtrolls_proto_msgTypes[30]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -2085,7 +2564,7 @@ func (x *Shortcut) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use Shortcut.ProtoReflect.Descriptor instead.
 func (*Shortcut) Descriptor() ([]byte, []int) {
-	return file_proto_dungeonsandtrolls_proto_rawDescGZIP(), []int{21}
+	return file_proto_dungeonsandtrolls_proto_rawDescGZIP(), []int{30}
 }
 
 func (x *Shortcut) GetLeadsTo() *Coordinates {
@@ -2117,7 +2596,7 @@ type MapObjects struct {
 func (x *MapObjects) Reset() {
 	*x = MapObjects{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_proto_dungeonsandtrolls_proto_msgTypes[22]
+		mi := &file_proto_dungeonsandtrolls_proto_msgTypes[31]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -2130,7 +2609,7 @@ func (x *MapObjects) String() string {
 func (*MapObjects) ProtoMessage() {}
 
 func (x *MapObjects) ProtoReflect() protoreflect.Message {
-	mi := &file_proto_dungeonsandtrolls_proto_msgTypes[22]
+	mi := &file_proto_dungeonsandtrolls_proto_msgTypes[31]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -2143,7 +2622,7 @@ func (x *MapObjects) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use MapObjects.ProtoReflect.Descriptor instead.
 func (*MapObjects) Descriptor() ([]byte, []int) {
-	return file_proto_dungeonsandtrolls_proto_rawDescGZIP(), []int{22}
+	return file_proto_dungeonsandtrolls_proto_rawDescGZIP(), []int{31}
 }
 
 func (x *MapObjects) GetPosition() *Position {
@@ -2246,7 +2725,7 @@ type Level struct {
 func (x *Level) Reset() {
 	*x = Level{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_proto_dungeonsandtrolls_proto_msgTypes[23]
+		mi := &file_proto_dungeonsandtrolls_proto_msgTypes[32]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -2259,7 +2738,7 @@ func (x *Level) String() string {
 func (*Level) ProtoMessage() {}
 
 func (x *Level) ProtoReflect() protoreflect.Message {
-	mi := &file_proto_dungeonsandtrolls_proto_msgTypes[23]
+	mi := &file_proto_dungeonsandtrolls_proto_msgTypes[32]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -2272,7 +2751,7 @@ func (x *Level) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use Level.ProtoReflect.Descriptor instead.
 func (*Level) Descriptor() ([]byte, []int) {
-	return file_proto_dungeonsandtrolls_proto_rawDescGZIP(), []int{23}
+	return file_proto_dungeonsandtrolls_proto_rawDescGZIP(), []int{32}
 }
 
 func (x *Level) GetLevel() int32 {
@@ -2328,7 +2807,7 @@ type Map struct {
 func (x *Map) Reset() {
 	*x = Map{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_proto_dungeonsandtrolls_proto_msgTypes[24]
+		mi := &file_proto_dungeonsandtrolls_proto_msgTypes[33]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -2341,7 +2820,7 @@ func (x *Map) String() string {
 func (*Map) ProtoMessage() {}
 
 func (x *Map) ProtoReflect() protoreflect.Message {
-	mi := &file_proto_dungeonsandtrolls_proto_msgTypes[24]
+	mi := &file_proto_dungeonsandtrolls_proto_msgTypes[33]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -2354,7 +2833,7 @@ func (x *Map) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use Map.ProtoReflect.Descriptor instead.
 func (*Map) Descriptor() ([]byte, []int) {
-	return file_proto_dungeonsandtrolls_proto_rawDescGZIP(), []int{24}
+	return file_proto_dungeonsandtrolls_proto_rawDescGZIP(), []int{33}
 }
 
 func (x *Map) GetLevels() []*Level {
@@ -2377,7 +2856,7 @@ type Event struct {
 func (x *Event) Reset() {
 	*x = Event{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_proto_dungeonsandtrolls_proto_msgTypes[25]
+		mi := &file_proto_dungeonsandtrolls_proto_msgTypes[34]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -2390,7 +2869,7 @@ func (x *Event) String() string {
 func (*Event) ProtoMessage() {}
 
 func (x *Event) ProtoReflect() protoreflect.Message {
-	mi := &file_proto_dungeonsandtrolls_proto_msgTypes[25]
+	mi := &file_proto_dungeonsandtrolls_proto_msgTypes[34]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -2403,7 +2882,7 @@ func (x *Event) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use Event.ProtoReflect.Descriptor instead.
 func (*Event) Descriptor() ([]byte, []int) {
-	return file_proto_dungeonsandtrolls_proto_rawDescGZIP(), []int{25}
+	return file_proto_dungeonsandtrolls_proto_rawDescGZIP(), []int{34}
 }
 
 func (x *Event) GetMessage() string {
@@ -2437,7 +2916,7 @@ type GameState struct {
 	Character       *Character `protobuf:"bytes,3,opt,name=character,proto3,oneof" json:"character,omitempty"`
 	CurrentPosition *Position  `protobuf:"bytes,4,opt,name=current_position,json=currentPosition,proto3,oneof" json:"current_position,omitempty"`
 	CurrentLevel    *int32     `protobuf:"varint,5,opt,name=current_level,json=currentLevel,proto3,oneof" json:"current_level,omitempty"`
-	Tick            int64      `protobuf:"varint,6,opt,name=tick,proto3" json:"tick,omitempty"`
+	Tick            int32      `protobuf:"varint,6,opt,name=tick,proto3" json:"tick,omitempty"`
 	Events          []*Event   `protobuf:"bytes,7,rep,name=events,proto3" json:"events,omitempty"`
 	Score           float32    `protobuf:"fixed32,8,opt,name=score,proto3" json:"score,omitempty"`
 }
@@ -2445,7 +2924,7 @@ type GameState struct {
 func (x *GameState) Reset() {
 	*x = GameState{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_proto_dungeonsandtrolls_proto_msgTypes[26]
+		mi := &file_proto_dungeonsandtrolls_proto_msgTypes[35]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -2458,7 +2937,7 @@ func (x *GameState) String() string {
 func (*GameState) ProtoMessage() {}
 
 func (x *GameState) ProtoReflect() protoreflect.Message {
-	mi := &file_proto_dungeonsandtrolls_proto_msgTypes[26]
+	mi := &file_proto_dungeonsandtrolls_proto_msgTypes[35]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -2471,7 +2950,7 @@ func (x *GameState) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use GameState.ProtoReflect.Descriptor instead.
 func (*GameState) Descriptor() ([]byte, []int) {
-	return file_proto_dungeonsandtrolls_proto_rawDescGZIP(), []int{26}
+	return file_proto_dungeonsandtrolls_proto_rawDescGZIP(), []int{35}
 }
 
 func (x *GameState) GetMap() *Map {
@@ -2509,7 +2988,7 @@ func (x *GameState) GetCurrentLevel() int32 {
 	return 0
 }
 
-func (x *GameState) GetTick() int64 {
+func (x *GameState) GetTick() int32 {
 	if x != nil {
 		return x.Tick
 	}
@@ -2541,7 +3020,7 @@ type User struct {
 func (x *User) Reset() {
 	*x = User{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_proto_dungeonsandtrolls_proto_msgTypes[27]
+		mi := &file_proto_dungeonsandtrolls_proto_msgTypes[36]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -2554,7 +3033,7 @@ func (x *User) String() string {
 func (*User) ProtoMessage() {}
 
 func (x *User) ProtoReflect() protoreflect.Message {
-	mi := &file_proto_dungeonsandtrolls_proto_msgTypes[27]
+	mi := &file_proto_dungeonsandtrolls_proto_msgTypes[36]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -2567,7 +3046,7 @@ func (x *User) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use User.ProtoReflect.Descriptor instead.
 func (*User) Descriptor() ([]byte, []int) {
-	return file_proto_dungeonsandtrolls_proto_rawDescGZIP(), []int{27}
+	return file_proto_dungeonsandtrolls_proto_rawDescGZIP(), []int{36}
 }
 
 func (x *User) GetUsername() string {
@@ -2588,7 +3067,7 @@ type Identifier struct {
 func (x *Identifier) Reset() {
 	*x = Identifier{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_proto_dungeonsandtrolls_proto_msgTypes[28]
+		mi := &file_proto_dungeonsandtrolls_proto_msgTypes[37]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -2601,7 +3080,7 @@ func (x *Identifier) String() string {
 func (*Identifier) ProtoMessage() {}
 
 func (x *Identifier) ProtoReflect() protoreflect.Message {
-	mi := &file_proto_dungeonsandtrolls_proto_msgTypes[28]
+	mi := &file_proto_dungeonsandtrolls_proto_msgTypes[37]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -2614,7 +3093,7 @@ func (x *Identifier) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use Identifier.ProtoReflect.Descriptor instead.
 func (*Identifier) Descriptor() ([]byte, []int) {
-	return file_proto_dungeonsandtrolls_proto_rawDescGZIP(), []int{28}
+	return file_proto_dungeonsandtrolls_proto_rawDescGZIP(), []int{37}
 }
 
 func (x *Identifier) GetId() string {
@@ -2635,7 +3114,7 @@ type Identifiers struct {
 func (x *Identifiers) Reset() {
 	*x = Identifiers{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_proto_dungeonsandtrolls_proto_msgTypes[29]
+		mi := &file_proto_dungeonsandtrolls_proto_msgTypes[38]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -2648,7 +3127,7 @@ func (x *Identifiers) String() string {
 func (*Identifiers) ProtoMessage() {}
 
 func (x *Identifiers) ProtoReflect() protoreflect.Message {
-	mi := &file_proto_dungeonsandtrolls_proto_msgTypes[29]
+	mi := &file_proto_dungeonsandtrolls_proto_msgTypes[38]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -2661,7 +3140,7 @@ func (x *Identifiers) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use Identifiers.ProtoReflect.Descriptor instead.
 func (*Identifiers) Descriptor() ([]byte, []int) {
-	return file_proto_dungeonsandtrolls_proto_rawDescGZIP(), []int{29}
+	return file_proto_dungeonsandtrolls_proto_rawDescGZIP(), []int{38}
 }
 
 func (x *Identifiers) GetIds() []string {
@@ -2684,7 +3163,7 @@ type Coordinates struct {
 func (x *Coordinates) Reset() {
 	*x = Coordinates{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_proto_dungeonsandtrolls_proto_msgTypes[30]
+		mi := &file_proto_dungeonsandtrolls_proto_msgTypes[39]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -2697,7 +3176,7 @@ func (x *Coordinates) String() string {
 func (*Coordinates) ProtoMessage() {}
 
 func (x *Coordinates) ProtoReflect() protoreflect.Message {
-	mi := &file_proto_dungeonsandtrolls_proto_msgTypes[30]
+	mi := &file_proto_dungeonsandtrolls_proto_msgTypes[39]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -2710,7 +3189,7 @@ func (x *Coordinates) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use Coordinates.ProtoReflect.Descriptor instead.
 func (*Coordinates) Descriptor() ([]byte, []int) {
-	return file_proto_dungeonsandtrolls_proto_rawDescGZIP(), []int{30}
+	return file_proto_dungeonsandtrolls_proto_rawDescGZIP(), []int{39}
 }
 
 func (x *Coordinates) GetLevel() int32 {
@@ -2747,7 +3226,7 @@ type SkillUse struct {
 func (x *SkillUse) Reset() {
 	*x = SkillUse{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_proto_dungeonsandtrolls_proto_msgTypes[31]
+		mi := &file_proto_dungeonsandtrolls_proto_msgTypes[40]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -2760,7 +3239,7 @@ func (x *SkillUse) String() string {
 func (*SkillUse) ProtoMessage() {}
 
 func (x *SkillUse) ProtoReflect() protoreflect.Message {
-	mi := &file_proto_dungeonsandtrolls_proto_msgTypes[31]
+	mi := &file_proto_dungeonsandtrolls_proto_msgTypes[40]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -2773,7 +3252,7 @@ func (x *SkillUse) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use SkillUse.ProtoReflect.Descriptor instead.
 func (*SkillUse) Descriptor() ([]byte, []int) {
-	return file_proto_dungeonsandtrolls_proto_rawDescGZIP(), []int{31}
+	return file_proto_dungeonsandtrolls_proto_rawDescGZIP(), []int{40}
 }
 
 func (x *SkillUse) GetSkillId() string {
@@ -2808,7 +3287,7 @@ type Registration struct {
 func (x *Registration) Reset() {
 	*x = Registration{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_proto_dungeonsandtrolls_proto_msgTypes[32]
+		mi := &file_proto_dungeonsandtrolls_proto_msgTypes[41]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -2821,7 +3300,7 @@ func (x *Registration) String() string {
 func (*Registration) ProtoMessage() {}
 
 func (x *Registration) ProtoReflect() protoreflect.Message {
-	mi := &file_proto_dungeonsandtrolls_proto_msgTypes[32]
+	mi := &file_proto_dungeonsandtrolls_proto_msgTypes[41]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -2834,7 +3313,7 @@ func (x *Registration) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use Registration.ProtoReflect.Descriptor instead.
 func (*Registration) Descriptor() ([]byte, []int) {
-	return file_proto_dungeonsandtrolls_proto_rawDescGZIP(), []int{32}
+	return file_proto_dungeonsandtrolls_proto_rawDescGZIP(), []int{41}
 }
 
 func (x *Registration) GetApiKey() string {
@@ -2853,34 +3332,105 @@ var file_proto_dungeonsandtrolls_proto_rawDesc = []byte{
 	0x6c, 0x73, 0x1a, 0x1b, 0x67, 0x6f, 0x6f, 0x67, 0x6c, 0x65, 0x2f, 0x70, 0x72, 0x6f, 0x74, 0x6f,
 	0x62, 0x75, 0x66, 0x2f, 0x65, 0x6d, 0x70, 0x74, 0x79, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x1a,
 	0x1c, 0x67, 0x6f, 0x6f, 0x67, 0x6c, 0x65, 0x2f, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x62, 0x75, 0x66,
-	0x2f, 0x73, 0x74, 0x72, 0x75, 0x63, 0x74, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x22, 0x1d, 0x0a,
-	0x07, 0x4d, 0x65, 0x73, 0x73, 0x61, 0x67, 0x65, 0x12, 0x12, 0x0a, 0x04, 0x74, 0x65, 0x78, 0x74,
-	0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x04, 0x74, 0x65, 0x78, 0x74, 0x22, 0x48, 0x0a, 0x0a,
-	0x44, 0x65, 0x63, 0x6f, 0x72, 0x61, 0x74, 0x69, 0x6f, 0x6e, 0x12, 0x12, 0x0a, 0x04, 0x6e, 0x61,
-	0x6d, 0x65, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x04, 0x6e, 0x61, 0x6d, 0x65, 0x12, 0x12,
-	0x0a, 0x04, 0x74, 0x79, 0x70, 0x65, 0x18, 0x02, 0x20, 0x01, 0x28, 0x09, 0x52, 0x04, 0x74, 0x79,
-	0x70, 0x65, 0x12, 0x12, 0x0a, 0x04, 0x69, 0x63, 0x6f, 0x6e, 0x18, 0x03, 0x20, 0x01, 0x28, 0x09,
-	0x52, 0x04, 0x69, 0x63, 0x6f, 0x6e, 0x22, 0x46, 0x0a, 0x08, 0x50, 0x6f, 0x73, 0x69, 0x74, 0x69,
-	0x6f, 0x6e, 0x12, 0x1c, 0x0a, 0x09, 0x70, 0x6f, 0x73, 0x69, 0x74, 0x69, 0x6f, 0x6e, 0x58, 0x18,
-	0x01, 0x20, 0x01, 0x28, 0x05, 0x52, 0x09, 0x70, 0x6f, 0x73, 0x69, 0x74, 0x69, 0x6f, 0x6e, 0x58,
-	0x12, 0x1c, 0x0a, 0x09, 0x70, 0x6f, 0x73, 0x69, 0x74, 0x69, 0x6f, 0x6e, 0x59, 0x18, 0x02, 0x20,
-	0x01, 0x28, 0x05, 0x52, 0x09, 0x70, 0x6f, 0x73, 0x69, 0x74, 0x69, 0x6f, 0x6e, 0x59, 0x22, 0x38,
-	0x0a, 0x03, 0x4b, 0x65, 0x79, 0x12, 0x31, 0x0a, 0x05, 0x64, 0x6f, 0x6f, 0x72, 0x73, 0x18, 0x01,
-	0x20, 0x03, 0x28, 0x0b, 0x32, 0x1b, 0x2e, 0x64, 0x75, 0x6e, 0x67, 0x65, 0x6f, 0x6e, 0x73, 0x61,
-	0x6e, 0x64, 0x74, 0x72, 0x6f, 0x6c, 0x6c, 0x73, 0x2e, 0x50, 0x6f, 0x73, 0x69, 0x74, 0x69, 0x6f,
-	0x6e, 0x52, 0x05, 0x64, 0x6f, 0x6f, 0x72, 0x73, 0x22, 0x37, 0x0a, 0x08, 0x57, 0x61, 0x79, 0x70,
-	0x6f, 0x69, 0x6e, 0x74, 0x12, 0x2b, 0x0a, 0x11, 0x64, 0x65, 0x73, 0x74, 0x69, 0x6e, 0x61, 0x74,
-	0x69, 0x6f, 0x6e, 0x5f, 0x66, 0x6c, 0x6f, 0x6f, 0x72, 0x18, 0x01, 0x20, 0x01, 0x28, 0x05, 0x52,
-	0x10, 0x64, 0x65, 0x73, 0x74, 0x69, 0x6e, 0x61, 0x74, 0x69, 0x6f, 0x6e, 0x46, 0x6c, 0x6f, 0x6f,
-	0x72, 0x22, 0x8c, 0x01, 0x0a, 0x0f, 0x47, 0x61, 0x6d, 0x65, 0x53, 0x74, 0x61, 0x74, 0x65, 0x50,
-	0x61, 0x72, 0x61, 0x6d, 0x73, 0x12, 0x19, 0x0a, 0x05, 0x61, 0x73, 0x63, 0x69, 0x69, 0x18, 0x01,
-	0x20, 0x01, 0x28, 0x08, 0x48, 0x00, 0x52, 0x05, 0x61, 0x73, 0x63, 0x69, 0x69, 0x88, 0x01, 0x01,
-	0x12, 0x1b, 0x0a, 0x06, 0x65, 0x76, 0x65, 0x6e, 0x74, 0x73, 0x18, 0x02, 0x20, 0x01, 0x28, 0x08,
-	0x48, 0x01, 0x52, 0x06, 0x65, 0x76, 0x65, 0x6e, 0x74, 0x73, 0x88, 0x01, 0x01, 0x12, 0x1f, 0x0a,
-	0x08, 0x62, 0x6c, 0x6f, 0x63, 0x6b, 0x69, 0x6e, 0x67, 0x18, 0x03, 0x20, 0x01, 0x28, 0x08, 0x48,
-	0x02, 0x52, 0x08, 0x62, 0x6c, 0x6f, 0x63, 0x6b, 0x69, 0x6e, 0x67, 0x88, 0x01, 0x01, 0x42, 0x08,
-	0x0a, 0x06, 0x5f, 0x61, 0x73, 0x63, 0x69, 0x69, 0x42, 0x09, 0x0a, 0x07, 0x5f, 0x65, 0x76, 0x65,
-	0x6e, 0x74, 0x73, 0x42, 0x0b, 0x0a, 0x09, 0x5f, 0x62, 0x6c, 0x6f, 0x63, 0x6b, 0x69, 0x6e, 0x67,
+	0x2f, 0x73, 0x74, 0x72, 0x75, 0x63, 0x74, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x22, 0x83, 0x01,
+	0x0a, 0x14, 0x49, 0x64, 0x65, 0x6e, 0x74, 0x69, 0x66, 0x69, 0x65, 0x72, 0x57, 0x69, 0x74, 0x68,
+	0x50, 0x61, 0x72, 0x61, 0x6d, 0x73, 0x12, 0x3d, 0x0a, 0x0a, 0x69, 0x64, 0x65, 0x6e, 0x74, 0x69,
+	0x66, 0x69, 0x65, 0x72, 0x18, 0x01, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x1d, 0x2e, 0x64, 0x75, 0x6e,
+	0x67, 0x65, 0x6f, 0x6e, 0x73, 0x61, 0x6e, 0x64, 0x74, 0x72, 0x6f, 0x6c, 0x6c, 0x73, 0x2e, 0x49,
+	0x64, 0x65, 0x6e, 0x74, 0x69, 0x66, 0x69, 0x65, 0x72, 0x52, 0x0a, 0x69, 0x64, 0x65, 0x6e, 0x74,
+	0x69, 0x66, 0x69, 0x65, 0x72, 0x12, 0x1f, 0x0a, 0x08, 0x62, 0x6c, 0x6f, 0x63, 0x6b, 0x69, 0x6e,
+	0x67, 0x18, 0x02, 0x20, 0x01, 0x28, 0x08, 0x48, 0x00, 0x52, 0x08, 0x62, 0x6c, 0x6f, 0x63, 0x6b,
+	0x69, 0x6e, 0x67, 0x88, 0x01, 0x01, 0x42, 0x0b, 0x0a, 0x09, 0x5f, 0x62, 0x6c, 0x6f, 0x63, 0x6b,
+	0x69, 0x6e, 0x67, 0x22, 0x87, 0x01, 0x0a, 0x15, 0x49, 0x64, 0x65, 0x6e, 0x74, 0x69, 0x66, 0x69,
+	0x65, 0x72, 0x73, 0x57, 0x69, 0x74, 0x68, 0x50, 0x61, 0x72, 0x61, 0x6d, 0x73, 0x12, 0x40, 0x0a,
+	0x0b, 0x69, 0x64, 0x65, 0x6e, 0x74, 0x69, 0x66, 0x69, 0x65, 0x72, 0x73, 0x18, 0x01, 0x20, 0x01,
+	0x28, 0x0b, 0x32, 0x1e, 0x2e, 0x64, 0x75, 0x6e, 0x67, 0x65, 0x6f, 0x6e, 0x73, 0x61, 0x6e, 0x64,
+	0x74, 0x72, 0x6f, 0x6c, 0x6c, 0x73, 0x2e, 0x49, 0x64, 0x65, 0x6e, 0x74, 0x69, 0x66, 0x69, 0x65,
+	0x72, 0x73, 0x52, 0x0b, 0x69, 0x64, 0x65, 0x6e, 0x74, 0x69, 0x66, 0x69, 0x65, 0x72, 0x73, 0x12,
+	0x1f, 0x0a, 0x08, 0x62, 0x6c, 0x6f, 0x63, 0x6b, 0x69, 0x6e, 0x67, 0x18, 0x02, 0x20, 0x01, 0x28,
+	0x08, 0x48, 0x00, 0x52, 0x08, 0x62, 0x6c, 0x6f, 0x63, 0x6b, 0x69, 0x6e, 0x67, 0x88, 0x01, 0x01,
+	0x42, 0x0b, 0x0a, 0x09, 0x5f, 0x62, 0x6c, 0x6f, 0x63, 0x6b, 0x69, 0x6e, 0x67, 0x22, 0x7b, 0x0a,
+	0x12, 0x50, 0x6f, 0x73, 0x69, 0x74, 0x69, 0x6f, 0x6e, 0x57, 0x69, 0x74, 0x68, 0x50, 0x61, 0x72,
+	0x61, 0x6d, 0x73, 0x12, 0x37, 0x0a, 0x08, 0x70, 0x6f, 0x73, 0x69, 0x74, 0x69, 0x6f, 0x6e, 0x18,
+	0x01, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x1b, 0x2e, 0x64, 0x75, 0x6e, 0x67, 0x65, 0x6f, 0x6e, 0x73,
+	0x61, 0x6e, 0x64, 0x74, 0x72, 0x6f, 0x6c, 0x6c, 0x73, 0x2e, 0x50, 0x6f, 0x73, 0x69, 0x74, 0x69,
+	0x6f, 0x6e, 0x52, 0x08, 0x70, 0x6f, 0x73, 0x69, 0x74, 0x69, 0x6f, 0x6e, 0x12, 0x1f, 0x0a, 0x08,
+	0x62, 0x6c, 0x6f, 0x63, 0x6b, 0x69, 0x6e, 0x67, 0x18, 0x02, 0x20, 0x01, 0x28, 0x08, 0x48, 0x00,
+	0x52, 0x08, 0x62, 0x6c, 0x6f, 0x63, 0x6b, 0x69, 0x6e, 0x67, 0x88, 0x01, 0x01, 0x42, 0x0b, 0x0a,
+	0x09, 0x5f, 0x62, 0x6c, 0x6f, 0x63, 0x6b, 0x69, 0x6e, 0x67, 0x22, 0x73, 0x0a, 0x11, 0x52, 0x65,
+	0x73, 0x70, 0x61, 0x77, 0x6e, 0x57, 0x69, 0x74, 0x68, 0x50, 0x61, 0x72, 0x61, 0x6d, 0x73, 0x12,
+	0x30, 0x0a, 0x07, 0x72, 0x65, 0x73, 0x70, 0x61, 0x77, 0x6e, 0x18, 0x01, 0x20, 0x01, 0x28, 0x0b,
+	0x32, 0x16, 0x2e, 0x67, 0x6f, 0x6f, 0x67, 0x6c, 0x65, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x62,
+	0x75, 0x66, 0x2e, 0x45, 0x6d, 0x70, 0x74, 0x79, 0x52, 0x07, 0x72, 0x65, 0x73, 0x70, 0x61, 0x77,
+	0x6e, 0x12, 0x1f, 0x0a, 0x08, 0x62, 0x6c, 0x6f, 0x63, 0x6b, 0x69, 0x6e, 0x67, 0x18, 0x02, 0x20,
+	0x01, 0x28, 0x08, 0x48, 0x00, 0x52, 0x08, 0x62, 0x6c, 0x6f, 0x63, 0x6b, 0x69, 0x6e, 0x67, 0x88,
+	0x01, 0x01, 0x42, 0x0b, 0x0a, 0x09, 0x5f, 0x62, 0x6c, 0x6f, 0x63, 0x6b, 0x69, 0x6e, 0x67, 0x22,
+	0x7c, 0x0a, 0x12, 0x53, 0x6b, 0x69, 0x6c, 0x6c, 0x55, 0x73, 0x65, 0x57, 0x69, 0x74, 0x68, 0x50,
+	0x61, 0x72, 0x61, 0x6d, 0x73, 0x12, 0x38, 0x0a, 0x09, 0x73, 0x6b, 0x69, 0x6c, 0x6c, 0x5f, 0x75,
+	0x73, 0x65, 0x18, 0x01, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x1b, 0x2e, 0x64, 0x75, 0x6e, 0x67, 0x65,
+	0x6f, 0x6e, 0x73, 0x61, 0x6e, 0x64, 0x74, 0x72, 0x6f, 0x6c, 0x6c, 0x73, 0x2e, 0x53, 0x6b, 0x69,
+	0x6c, 0x6c, 0x55, 0x73, 0x65, 0x52, 0x08, 0x73, 0x6b, 0x69, 0x6c, 0x6c, 0x55, 0x73, 0x65, 0x12,
+	0x1f, 0x0a, 0x08, 0x62, 0x6c, 0x6f, 0x63, 0x6b, 0x69, 0x6e, 0x67, 0x18, 0x02, 0x20, 0x01, 0x28,
+	0x08, 0x48, 0x00, 0x52, 0x08, 0x62, 0x6c, 0x6f, 0x63, 0x6b, 0x69, 0x6e, 0x67, 0x88, 0x01, 0x01,
+	0x42, 0x0b, 0x0a, 0x09, 0x5f, 0x62, 0x6c, 0x6f, 0x63, 0x6b, 0x69, 0x6e, 0x67, 0x22, 0x77, 0x0a,
+	0x11, 0x4d, 0x65, 0x73, 0x73, 0x61, 0x67, 0x65, 0x57, 0x69, 0x74, 0x68, 0x50, 0x61, 0x72, 0x61,
+	0x6d, 0x73, 0x12, 0x34, 0x0a, 0x07, 0x6d, 0x65, 0x73, 0x73, 0x61, 0x67, 0x65, 0x18, 0x01, 0x20,
+	0x01, 0x28, 0x0b, 0x32, 0x1a, 0x2e, 0x64, 0x75, 0x6e, 0x67, 0x65, 0x6f, 0x6e, 0x73, 0x61, 0x6e,
+	0x64, 0x74, 0x72, 0x6f, 0x6c, 0x6c, 0x73, 0x2e, 0x4d, 0x65, 0x73, 0x73, 0x61, 0x67, 0x65, 0x52,
+	0x07, 0x6d, 0x65, 0x73, 0x73, 0x61, 0x67, 0x65, 0x12, 0x1f, 0x0a, 0x08, 0x62, 0x6c, 0x6f, 0x63,
+	0x6b, 0x69, 0x6e, 0x67, 0x18, 0x02, 0x20, 0x01, 0x28, 0x08, 0x48, 0x00, 0x52, 0x08, 0x62, 0x6c,
+	0x6f, 0x63, 0x6b, 0x69, 0x6e, 0x67, 0x88, 0x01, 0x01, 0x42, 0x0b, 0x0a, 0x09, 0x5f, 0x62, 0x6c,
+	0x6f, 0x63, 0x6b, 0x69, 0x6e, 0x67, 0x22, 0x90, 0x01, 0x0a, 0x17, 0x43, 0x6f, 0x6d, 0x6d, 0x61,
+	0x6e, 0x64, 0x73, 0x42, 0x61, 0x74, 0x63, 0x68, 0x57, 0x69, 0x74, 0x68, 0x50, 0x61, 0x72, 0x61,
+	0x6d, 0x73, 0x12, 0x47, 0x0a, 0x0e, 0x63, 0x6f, 0x6d, 0x6d, 0x61, 0x6e, 0x64, 0x73, 0x5f, 0x62,
+	0x61, 0x74, 0x63, 0x68, 0x18, 0x01, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x20, 0x2e, 0x64, 0x75, 0x6e,
+	0x67, 0x65, 0x6f, 0x6e, 0x73, 0x61, 0x6e, 0x64, 0x74, 0x72, 0x6f, 0x6c, 0x6c, 0x73, 0x2e, 0x43,
+	0x6f, 0x6d, 0x6d, 0x61, 0x6e, 0x64, 0x73, 0x42, 0x61, 0x74, 0x63, 0x68, 0x52, 0x0d, 0x63, 0x6f,
+	0x6d, 0x6d, 0x61, 0x6e, 0x64, 0x73, 0x42, 0x61, 0x74, 0x63, 0x68, 0x12, 0x1f, 0x0a, 0x08, 0x62,
+	0x6c, 0x6f, 0x63, 0x6b, 0x69, 0x6e, 0x67, 0x18, 0x02, 0x20, 0x01, 0x28, 0x08, 0x48, 0x00, 0x52,
+	0x08, 0x62, 0x6c, 0x6f, 0x63, 0x6b, 0x69, 0x6e, 0x67, 0x88, 0x01, 0x01, 0x42, 0x0b, 0x0a, 0x09,
+	0x5f, 0x62, 0x6c, 0x6f, 0x63, 0x6b, 0x69, 0x6e, 0x67, 0x22, 0xa9, 0x01, 0x0a, 0x1d, 0x43, 0x6f,
+	0x6d, 0x6d, 0x61, 0x6e, 0x64, 0x73, 0x46, 0x6f, 0x72, 0x4d, 0x6f, 0x6e, 0x73, 0x74, 0x65, 0x72,
+	0x73, 0x57, 0x69, 0x74, 0x68, 0x50, 0x61, 0x72, 0x61, 0x6d, 0x73, 0x12, 0x5a, 0x0a, 0x15, 0x63,
+	0x6f, 0x6d, 0x6d, 0x61, 0x6e, 0x64, 0x73, 0x5f, 0x66, 0x6f, 0x72, 0x5f, 0x6d, 0x6f, 0x6e, 0x73,
+	0x74, 0x65, 0x72, 0x73, 0x18, 0x01, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x26, 0x2e, 0x64, 0x75, 0x6e,
+	0x67, 0x65, 0x6f, 0x6e, 0x73, 0x61, 0x6e, 0x64, 0x74, 0x72, 0x6f, 0x6c, 0x6c, 0x73, 0x2e, 0x43,
+	0x6f, 0x6d, 0x6d, 0x61, 0x6e, 0x64, 0x73, 0x46, 0x6f, 0x72, 0x4d, 0x6f, 0x6e, 0x73, 0x74, 0x65,
+	0x72, 0x73, 0x52, 0x13, 0x63, 0x6f, 0x6d, 0x6d, 0x61, 0x6e, 0x64, 0x73, 0x46, 0x6f, 0x72, 0x4d,
+	0x6f, 0x6e, 0x73, 0x74, 0x65, 0x72, 0x73, 0x12, 0x1f, 0x0a, 0x08, 0x62, 0x6c, 0x6f, 0x63, 0x6b,
+	0x69, 0x6e, 0x67, 0x18, 0x02, 0x20, 0x01, 0x28, 0x08, 0x48, 0x00, 0x52, 0x08, 0x62, 0x6c, 0x6f,
+	0x63, 0x6b, 0x69, 0x6e, 0x67, 0x88, 0x01, 0x01, 0x42, 0x0b, 0x0a, 0x09, 0x5f, 0x62, 0x6c, 0x6f,
+	0x63, 0x6b, 0x69, 0x6e, 0x67, 0x22, 0x83, 0x01, 0x0a, 0x14, 0x41, 0x74, 0x74, 0x72, 0x69, 0x62,
+	0x75, 0x74, 0x65, 0x73, 0x57, 0x69, 0x74, 0x68, 0x50, 0x61, 0x72, 0x61, 0x6d, 0x73, 0x12, 0x3d,
+	0x0a, 0x0a, 0x61, 0x74, 0x74, 0x72, 0x69, 0x62, 0x75, 0x74, 0x65, 0x73, 0x18, 0x01, 0x20, 0x01,
+	0x28, 0x0b, 0x32, 0x1d, 0x2e, 0x64, 0x75, 0x6e, 0x67, 0x65, 0x6f, 0x6e, 0x73, 0x61, 0x6e, 0x64,
+	0x74, 0x72, 0x6f, 0x6c, 0x6c, 0x73, 0x2e, 0x41, 0x74, 0x74, 0x72, 0x69, 0x62, 0x75, 0x74, 0x65,
+	0x73, 0x52, 0x0a, 0x61, 0x74, 0x74, 0x72, 0x69, 0x62, 0x75, 0x74, 0x65, 0x73, 0x12, 0x1f, 0x0a,
+	0x08, 0x62, 0x6c, 0x6f, 0x63, 0x6b, 0x69, 0x6e, 0x67, 0x18, 0x02, 0x20, 0x01, 0x28, 0x08, 0x48,
+	0x00, 0x52, 0x08, 0x62, 0x6c, 0x6f, 0x63, 0x6b, 0x69, 0x6e, 0x67, 0x88, 0x01, 0x01, 0x42, 0x0b,
+	0x0a, 0x09, 0x5f, 0x62, 0x6c, 0x6f, 0x63, 0x6b, 0x69, 0x6e, 0x67, 0x22, 0x1d, 0x0a, 0x07, 0x4d,
+	0x65, 0x73, 0x73, 0x61, 0x67, 0x65, 0x12, 0x12, 0x0a, 0x04, 0x74, 0x65, 0x78, 0x74, 0x18, 0x01,
+	0x20, 0x01, 0x28, 0x09, 0x52, 0x04, 0x74, 0x65, 0x78, 0x74, 0x22, 0x48, 0x0a, 0x0a, 0x44, 0x65,
+	0x63, 0x6f, 0x72, 0x61, 0x74, 0x69, 0x6f, 0x6e, 0x12, 0x12, 0x0a, 0x04, 0x6e, 0x61, 0x6d, 0x65,
+	0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x04, 0x6e, 0x61, 0x6d, 0x65, 0x12, 0x12, 0x0a, 0x04,
+	0x74, 0x79, 0x70, 0x65, 0x18, 0x02, 0x20, 0x01, 0x28, 0x09, 0x52, 0x04, 0x74, 0x79, 0x70, 0x65,
+	0x12, 0x12, 0x0a, 0x04, 0x69, 0x63, 0x6f, 0x6e, 0x18, 0x03, 0x20, 0x01, 0x28, 0x09, 0x52, 0x04,
+	0x69, 0x63, 0x6f, 0x6e, 0x22, 0x46, 0x0a, 0x08, 0x50, 0x6f, 0x73, 0x69, 0x74, 0x69, 0x6f, 0x6e,
+	0x12, 0x1c, 0x0a, 0x09, 0x70, 0x6f, 0x73, 0x69, 0x74, 0x69, 0x6f, 0x6e, 0x58, 0x18, 0x01, 0x20,
+	0x01, 0x28, 0x05, 0x52, 0x09, 0x70, 0x6f, 0x73, 0x69, 0x74, 0x69, 0x6f, 0x6e, 0x58, 0x12, 0x1c,
+	0x0a, 0x09, 0x70, 0x6f, 0x73, 0x69, 0x74, 0x69, 0x6f, 0x6e, 0x59, 0x18, 0x02, 0x20, 0x01, 0x28,
+	0x05, 0x52, 0x09, 0x70, 0x6f, 0x73, 0x69, 0x74, 0x69, 0x6f, 0x6e, 0x59, 0x22, 0x38, 0x0a, 0x03,
+	0x4b, 0x65, 0x79, 0x12, 0x31, 0x0a, 0x05, 0x64, 0x6f, 0x6f, 0x72, 0x73, 0x18, 0x01, 0x20, 0x03,
+	0x28, 0x0b, 0x32, 0x1b, 0x2e, 0x64, 0x75, 0x6e, 0x67, 0x65, 0x6f, 0x6e, 0x73, 0x61, 0x6e, 0x64,
+	0x74, 0x72, 0x6f, 0x6c, 0x6c, 0x73, 0x2e, 0x50, 0x6f, 0x73, 0x69, 0x74, 0x69, 0x6f, 0x6e, 0x52,
+	0x05, 0x64, 0x6f, 0x6f, 0x72, 0x73, 0x22, 0x37, 0x0a, 0x08, 0x57, 0x61, 0x79, 0x70, 0x6f, 0x69,
+	0x6e, 0x74, 0x12, 0x2b, 0x0a, 0x11, 0x64, 0x65, 0x73, 0x74, 0x69, 0x6e, 0x61, 0x74, 0x69, 0x6f,
+	0x6e, 0x5f, 0x66, 0x6c, 0x6f, 0x6f, 0x72, 0x18, 0x01, 0x20, 0x01, 0x28, 0x05, 0x52, 0x10, 0x64,
+	0x65, 0x73, 0x74, 0x69, 0x6e, 0x61, 0x74, 0x69, 0x6f, 0x6e, 0x46, 0x6c, 0x6f, 0x6f, 0x72, 0x22,
+	0x3f, 0x0a, 0x0f, 0x47, 0x61, 0x6d, 0x65, 0x53, 0x74, 0x61, 0x74, 0x65, 0x50, 0x61, 0x72, 0x61,
+	0x6d, 0x73, 0x12, 0x1f, 0x0a, 0x08, 0x62, 0x6c, 0x6f, 0x63, 0x6b, 0x69, 0x6e, 0x67, 0x18, 0x03,
+	0x20, 0x01, 0x28, 0x08, 0x48, 0x00, 0x52, 0x08, 0x62, 0x6c, 0x6f, 0x63, 0x6b, 0x69, 0x6e, 0x67,
+	0x88, 0x01, 0x01, 0x42, 0x0b, 0x0a, 0x09, 0x5f, 0x62, 0x6c, 0x6f, 0x63, 0x6b, 0x69, 0x6e, 0x67,
 	0x22, 0xc2, 0x03, 0x0a, 0x0d, 0x43, 0x6f, 0x6d, 0x6d, 0x61, 0x6e, 0x64, 0x73, 0x42, 0x61, 0x74,
 	0x63, 0x68, 0x12, 0x35, 0x0a, 0x03, 0x62, 0x75, 0x79, 0x18, 0x01, 0x20, 0x01, 0x28, 0x0b, 0x32,
 	0x1e, 0x2e, 0x64, 0x75, 0x6e, 0x67, 0x65, 0x6f, 0x6e, 0x73, 0x61, 0x6e, 0x64, 0x74, 0x72, 0x6f,
@@ -3338,7 +3888,7 @@ var file_proto_dungeonsandtrolls_proto_rawDesc = []byte{
 	0x01, 0x12, 0x28, 0x0a, 0x0d, 0x63, 0x75, 0x72, 0x72, 0x65, 0x6e, 0x74, 0x5f, 0x6c, 0x65, 0x76,
 	0x65, 0x6c, 0x18, 0x05, 0x20, 0x01, 0x28, 0x05, 0x48, 0x02, 0x52, 0x0c, 0x63, 0x75, 0x72, 0x72,
 	0x65, 0x6e, 0x74, 0x4c, 0x65, 0x76, 0x65, 0x6c, 0x88, 0x01, 0x01, 0x12, 0x12, 0x0a, 0x04, 0x74,
-	0x69, 0x63, 0x6b, 0x18, 0x06, 0x20, 0x01, 0x28, 0x03, 0x52, 0x04, 0x74, 0x69, 0x63, 0x6b, 0x12,
+	0x69, 0x63, 0x6b, 0x18, 0x06, 0x20, 0x01, 0x28, 0x05, 0x52, 0x04, 0x74, 0x69, 0x63, 0x6b, 0x12,
 	0x30, 0x0a, 0x06, 0x65, 0x76, 0x65, 0x6e, 0x74, 0x73, 0x18, 0x07, 0x20, 0x03, 0x28, 0x0b, 0x32,
 	0x18, 0x2e, 0x64, 0x75, 0x6e, 0x67, 0x65, 0x6f, 0x6e, 0x73, 0x61, 0x6e, 0x64, 0x74, 0x72, 0x6f,
 	0x6c, 0x6c, 0x73, 0x2e, 0x45, 0x76, 0x65, 0x6e, 0x74, 0x52, 0x06, 0x65, 0x76, 0x65, 0x6e, 0x74,
@@ -3377,7 +3927,7 @@ var file_proto_dungeonsandtrolls_proto_rawDesc = []byte{
 	0x05, 0x73, 0x6c, 0x61, 0x73, 0x68, 0x10, 0x00, 0x12, 0x0a, 0x0a, 0x06, 0x70, 0x69, 0x65, 0x72,
 	0x63, 0x65, 0x10, 0x01, 0x12, 0x08, 0x0a, 0x04, 0x66, 0x69, 0x72, 0x65, 0x10, 0x02, 0x12, 0x0a,
 	0x0a, 0x06, 0x70, 0x6f, 0x69, 0x73, 0x6f, 0x6e, 0x10, 0x03, 0x12, 0x0c, 0x0a, 0x08, 0x65, 0x6c,
-	0x65, 0x63, 0x74, 0x72, 0x69, 0x63, 0x10, 0x04, 0x32, 0x91, 0x06, 0x0a, 0x11, 0x44, 0x75, 0x6e,
+	0x65, 0x63, 0x74, 0x72, 0x69, 0x63, 0x10, 0x04, 0x32, 0xef, 0x06, 0x0a, 0x11, 0x44, 0x75, 0x6e,
 	0x67, 0x65, 0x6f, 0x6e, 0x73, 0x41, 0x6e, 0x64, 0x54, 0x72, 0x6f, 0x6c, 0x6c, 0x73, 0x12, 0x4a,
 	0x0a, 0x04, 0x47, 0x61, 0x6d, 0x65, 0x12, 0x22, 0x2e, 0x64, 0x75, 0x6e, 0x67, 0x65, 0x6f, 0x6e,
 	0x73, 0x61, 0x6e, 0x64, 0x74, 0x72, 0x6f, 0x6c, 0x6c, 0x73, 0x2e, 0x47, 0x61, 0x6d, 0x65, 0x53,
@@ -3388,50 +3938,56 @@ var file_proto_dungeonsandtrolls_proto_rawDesc = []byte{
 	0x73, 0x61, 0x6e, 0x64, 0x74, 0x72, 0x6f, 0x6c, 0x6c, 0x73, 0x2e, 0x55, 0x73, 0x65, 0x72, 0x1a,
 	0x1f, 0x2e, 0x64, 0x75, 0x6e, 0x67, 0x65, 0x6f, 0x6e, 0x73, 0x61, 0x6e, 0x64, 0x74, 0x72, 0x6f,
 	0x6c, 0x6c, 0x73, 0x2e, 0x52, 0x65, 0x67, 0x69, 0x73, 0x74, 0x72, 0x61, 0x74, 0x69, 0x6f, 0x6e,
-	0x22, 0x00, 0x12, 0x3f, 0x0a, 0x03, 0x42, 0x75, 0x79, 0x12, 0x1e, 0x2e, 0x64, 0x75, 0x6e, 0x67,
+	0x22, 0x00, 0x12, 0x49, 0x0a, 0x03, 0x42, 0x75, 0x79, 0x12, 0x28, 0x2e, 0x64, 0x75, 0x6e, 0x67,
 	0x65, 0x6f, 0x6e, 0x73, 0x61, 0x6e, 0x64, 0x74, 0x72, 0x6f, 0x6c, 0x6c, 0x73, 0x2e, 0x49, 0x64,
-	0x65, 0x6e, 0x74, 0x69, 0x66, 0x69, 0x65, 0x72, 0x73, 0x1a, 0x16, 0x2e, 0x67, 0x6f, 0x6f, 0x67,
+	0x65, 0x6e, 0x74, 0x69, 0x66, 0x69, 0x65, 0x72, 0x73, 0x57, 0x69, 0x74, 0x68, 0x50, 0x61, 0x72,
+	0x61, 0x6d, 0x73, 0x1a, 0x16, 0x2e, 0x67, 0x6f, 0x6f, 0x67, 0x6c, 0x65, 0x2e, 0x70, 0x72, 0x6f,
+	0x74, 0x6f, 0x62, 0x75, 0x66, 0x2e, 0x45, 0x6d, 0x70, 0x74, 0x79, 0x22, 0x00, 0x12, 0x4b, 0x0a,
+	0x06, 0x50, 0x69, 0x63, 0x6b, 0x55, 0x70, 0x12, 0x27, 0x2e, 0x64, 0x75, 0x6e, 0x67, 0x65, 0x6f,
+	0x6e, 0x73, 0x61, 0x6e, 0x64, 0x74, 0x72, 0x6f, 0x6c, 0x6c, 0x73, 0x2e, 0x49, 0x64, 0x65, 0x6e,
+	0x74, 0x69, 0x66, 0x69, 0x65, 0x72, 0x57, 0x69, 0x74, 0x68, 0x50, 0x61, 0x72, 0x61, 0x6d, 0x73,
+	0x1a, 0x16, 0x2e, 0x67, 0x6f, 0x6f, 0x67, 0x6c, 0x65, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x62,
+	0x75, 0x66, 0x2e, 0x45, 0x6d, 0x70, 0x74, 0x79, 0x22, 0x00, 0x12, 0x47, 0x0a, 0x04, 0x4d, 0x6f,
+	0x76, 0x65, 0x12, 0x25, 0x2e, 0x64, 0x75, 0x6e, 0x67, 0x65, 0x6f, 0x6e, 0x73, 0x61, 0x6e, 0x64,
+	0x74, 0x72, 0x6f, 0x6c, 0x6c, 0x73, 0x2e, 0x50, 0x6f, 0x73, 0x69, 0x74, 0x69, 0x6f, 0x6e, 0x57,
+	0x69, 0x74, 0x68, 0x50, 0x61, 0x72, 0x61, 0x6d, 0x73, 0x1a, 0x16, 0x2e, 0x67, 0x6f, 0x6f, 0x67,
 	0x6c, 0x65, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x62, 0x75, 0x66, 0x2e, 0x45, 0x6d, 0x70, 0x74,
-	0x79, 0x22, 0x00, 0x12, 0x41, 0x0a, 0x06, 0x50, 0x69, 0x63, 0x6b, 0x55, 0x70, 0x12, 0x1d, 0x2e,
-	0x64, 0x75, 0x6e, 0x67, 0x65, 0x6f, 0x6e, 0x73, 0x61, 0x6e, 0x64, 0x74, 0x72, 0x6f, 0x6c, 0x6c,
-	0x73, 0x2e, 0x49, 0x64, 0x65, 0x6e, 0x74, 0x69, 0x66, 0x69, 0x65, 0x72, 0x1a, 0x16, 0x2e, 0x67,
-	0x6f, 0x6f, 0x67, 0x6c, 0x65, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x62, 0x75, 0x66, 0x2e, 0x45,
-	0x6d, 0x70, 0x74, 0x79, 0x22, 0x00, 0x12, 0x3d, 0x0a, 0x04, 0x4d, 0x6f, 0x76, 0x65, 0x12, 0x1b,
+	0x79, 0x22, 0x00, 0x12, 0x49, 0x0a, 0x07, 0x52, 0x65, 0x73, 0x70, 0x61, 0x77, 0x6e, 0x12, 0x24,
 	0x2e, 0x64, 0x75, 0x6e, 0x67, 0x65, 0x6f, 0x6e, 0x73, 0x61, 0x6e, 0x64, 0x74, 0x72, 0x6f, 0x6c,
-	0x6c, 0x73, 0x2e, 0x50, 0x6f, 0x73, 0x69, 0x74, 0x69, 0x6f, 0x6e, 0x1a, 0x16, 0x2e, 0x67, 0x6f,
-	0x6f, 0x67, 0x6c, 0x65, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x62, 0x75, 0x66, 0x2e, 0x45, 0x6d,
-	0x70, 0x74, 0x79, 0x22, 0x00, 0x12, 0x3b, 0x0a, 0x07, 0x52, 0x65, 0x73, 0x70, 0x61, 0x77, 0x6e,
-	0x12, 0x16, 0x2e, 0x67, 0x6f, 0x6f, 0x67, 0x6c, 0x65, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x62,
-	0x75, 0x66, 0x2e, 0x45, 0x6d, 0x70, 0x74, 0x79, 0x1a, 0x16, 0x2e, 0x67, 0x6f, 0x6f, 0x67, 0x6c,
-	0x65, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x62, 0x75, 0x66, 0x2e, 0x45, 0x6d, 0x70, 0x74, 0x79,
-	0x22, 0x00, 0x12, 0x3e, 0x0a, 0x05, 0x53, 0x6b, 0x69, 0x6c, 0x6c, 0x12, 0x1b, 0x2e, 0x64, 0x75,
-	0x6e, 0x67, 0x65, 0x6f, 0x6e, 0x73, 0x61, 0x6e, 0x64, 0x74, 0x72, 0x6f, 0x6c, 0x6c, 0x73, 0x2e,
-	0x53, 0x6b, 0x69, 0x6c, 0x6c, 0x55, 0x73, 0x65, 0x1a, 0x16, 0x2e, 0x67, 0x6f, 0x6f, 0x67, 0x6c,
-	0x65, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x62, 0x75, 0x66, 0x2e, 0x45, 0x6d, 0x70, 0x74, 0x79,
-	0x22, 0x00, 0x12, 0x3c, 0x0a, 0x04, 0x59, 0x65, 0x6c, 0x6c, 0x12, 0x1a, 0x2e, 0x64, 0x75, 0x6e,
-	0x67, 0x65, 0x6f, 0x6e, 0x73, 0x61, 0x6e, 0x64, 0x74, 0x72, 0x6f, 0x6c, 0x6c, 0x73, 0x2e, 0x4d,
-	0x65, 0x73, 0x73, 0x61, 0x67, 0x65, 0x1a, 0x16, 0x2e, 0x67, 0x6f, 0x6f, 0x67, 0x6c, 0x65, 0x2e,
-	0x70, 0x72, 0x6f, 0x74, 0x6f, 0x62, 0x75, 0x66, 0x2e, 0x45, 0x6d, 0x70, 0x74, 0x79, 0x22, 0x00,
-	0x12, 0x46, 0x0a, 0x08, 0x43, 0x6f, 0x6d, 0x6d, 0x61, 0x6e, 0x64, 0x73, 0x12, 0x20, 0x2e, 0x64,
-	0x75, 0x6e, 0x67, 0x65, 0x6f, 0x6e, 0x73, 0x61, 0x6e, 0x64, 0x74, 0x72, 0x6f, 0x6c, 0x6c, 0x73,
-	0x2e, 0x43, 0x6f, 0x6d, 0x6d, 0x61, 0x6e, 0x64, 0x73, 0x42, 0x61, 0x74, 0x63, 0x68, 0x1a, 0x16,
+	0x6c, 0x73, 0x2e, 0x52, 0x65, 0x73, 0x70, 0x61, 0x77, 0x6e, 0x57, 0x69, 0x74, 0x68, 0x50, 0x61,
+	0x72, 0x61, 0x6d, 0x73, 0x1a, 0x16, 0x2e, 0x67, 0x6f, 0x6f, 0x67, 0x6c, 0x65, 0x2e, 0x70, 0x72,
+	0x6f, 0x74, 0x6f, 0x62, 0x75, 0x66, 0x2e, 0x45, 0x6d, 0x70, 0x74, 0x79, 0x22, 0x00, 0x12, 0x48,
+	0x0a, 0x05, 0x53, 0x6b, 0x69, 0x6c, 0x6c, 0x12, 0x25, 0x2e, 0x64, 0x75, 0x6e, 0x67, 0x65, 0x6f,
+	0x6e, 0x73, 0x61, 0x6e, 0x64, 0x74, 0x72, 0x6f, 0x6c, 0x6c, 0x73, 0x2e, 0x53, 0x6b, 0x69, 0x6c,
+	0x6c, 0x55, 0x73, 0x65, 0x57, 0x69, 0x74, 0x68, 0x50, 0x61, 0x72, 0x61, 0x6d, 0x73, 0x1a, 0x16,
 	0x2e, 0x67, 0x6f, 0x6f, 0x67, 0x6c, 0x65, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x62, 0x75, 0x66,
-	0x2e, 0x45, 0x6d, 0x70, 0x74, 0x79, 0x22, 0x00, 0x12, 0x54, 0x0a, 0x10, 0x4d, 0x6f, 0x6e, 0x73,
-	0x74, 0x65, 0x72, 0x73, 0x43, 0x6f, 0x6d, 0x6d, 0x61, 0x6e, 0x64, 0x73, 0x12, 0x26, 0x2e, 0x64,
+	0x2e, 0x45, 0x6d, 0x70, 0x74, 0x79, 0x22, 0x00, 0x12, 0x46, 0x0a, 0x04, 0x59, 0x65, 0x6c, 0x6c,
+	0x12, 0x24, 0x2e, 0x64, 0x75, 0x6e, 0x67, 0x65, 0x6f, 0x6e, 0x73, 0x61, 0x6e, 0x64, 0x74, 0x72,
+	0x6f, 0x6c, 0x6c, 0x73, 0x2e, 0x4d, 0x65, 0x73, 0x73, 0x61, 0x67, 0x65, 0x57, 0x69, 0x74, 0x68,
+	0x50, 0x61, 0x72, 0x61, 0x6d, 0x73, 0x1a, 0x16, 0x2e, 0x67, 0x6f, 0x6f, 0x67, 0x6c, 0x65, 0x2e,
+	0x70, 0x72, 0x6f, 0x74, 0x6f, 0x62, 0x75, 0x66, 0x2e, 0x45, 0x6d, 0x70, 0x74, 0x79, 0x22, 0x00,
+	0x12, 0x50, 0x0a, 0x08, 0x43, 0x6f, 0x6d, 0x6d, 0x61, 0x6e, 0x64, 0x73, 0x12, 0x2a, 0x2e, 0x64,
 	0x75, 0x6e, 0x67, 0x65, 0x6f, 0x6e, 0x73, 0x61, 0x6e, 0x64, 0x74, 0x72, 0x6f, 0x6c, 0x6c, 0x73,
-	0x2e, 0x43, 0x6f, 0x6d, 0x6d, 0x61, 0x6e, 0x64, 0x73, 0x46, 0x6f, 0x72, 0x4d, 0x6f, 0x6e, 0x73,
-	0x74, 0x65, 0x72, 0x73, 0x1a, 0x16, 0x2e, 0x67, 0x6f, 0x6f, 0x67, 0x6c, 0x65, 0x2e, 0x70, 0x72,
-	0x6f, 0x74, 0x6f, 0x62, 0x75, 0x66, 0x2e, 0x45, 0x6d, 0x70, 0x74, 0x79, 0x22, 0x00, 0x12, 0x4c,
-	0x0a, 0x11, 0x41, 0x73, 0x73, 0x69, 0x67, 0x6e, 0x53, 0x6b, 0x69, 0x6c, 0x6c, 0x50, 0x6f, 0x69,
-	0x6e, 0x74, 0x73, 0x12, 0x1d, 0x2e, 0x64, 0x75, 0x6e, 0x67, 0x65, 0x6f, 0x6e, 0x73, 0x61, 0x6e,
-	0x64, 0x74, 0x72, 0x6f, 0x6c, 0x6c, 0x73, 0x2e, 0x41, 0x74, 0x74, 0x72, 0x69, 0x62, 0x75, 0x74,
-	0x65, 0x73, 0x1a, 0x16, 0x2e, 0x67, 0x6f, 0x6f, 0x67, 0x6c, 0x65, 0x2e, 0x70, 0x72, 0x6f, 0x74,
-	0x6f, 0x62, 0x75, 0x66, 0x2e, 0x45, 0x6d, 0x70, 0x74, 0x79, 0x22, 0x00, 0x42, 0x48, 0x5a, 0x46,
-	0x67, 0x69, 0x74, 0x68, 0x75, 0x62, 0x2e, 0x63, 0x6f, 0x6d, 0x2f, 0x67, 0x64, 0x67, 0x2d, 0x67,
-	0x61, 0x72, 0x61, 0x67, 0x65, 0x2f, 0x64, 0x75, 0x6e, 0x67, 0x65, 0x6f, 0x6e, 0x73, 0x2d, 0x61,
-	0x6e, 0x64, 0x2d, 0x74, 0x72, 0x6f, 0x6c, 0x6c, 0x73, 0x2f, 0x73, 0x65, 0x72, 0x76, 0x65, 0x72,
-	0x2f, 0x64, 0x75, 0x6e, 0x67, 0x65, 0x6f, 0x6e, 0x73, 0x61, 0x6e, 0x64, 0x74, 0x72, 0x6f, 0x6c,
-	0x6c, 0x73, 0x2f, 0x61, 0x70, 0x69, 0x62, 0x06, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x33,
+	0x2e, 0x43, 0x6f, 0x6d, 0x6d, 0x61, 0x6e, 0x64, 0x73, 0x42, 0x61, 0x74, 0x63, 0x68, 0x57, 0x69,
+	0x74, 0x68, 0x50, 0x61, 0x72, 0x61, 0x6d, 0x73, 0x1a, 0x16, 0x2e, 0x67, 0x6f, 0x6f, 0x67, 0x6c,
+	0x65, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x62, 0x75, 0x66, 0x2e, 0x45, 0x6d, 0x70, 0x74, 0x79,
+	0x22, 0x00, 0x12, 0x5e, 0x0a, 0x10, 0x4d, 0x6f, 0x6e, 0x73, 0x74, 0x65, 0x72, 0x73, 0x43, 0x6f,
+	0x6d, 0x6d, 0x61, 0x6e, 0x64, 0x73, 0x12, 0x30, 0x2e, 0x64, 0x75, 0x6e, 0x67, 0x65, 0x6f, 0x6e,
+	0x73, 0x61, 0x6e, 0x64, 0x74, 0x72, 0x6f, 0x6c, 0x6c, 0x73, 0x2e, 0x43, 0x6f, 0x6d, 0x6d, 0x61,
+	0x6e, 0x64, 0x73, 0x46, 0x6f, 0x72, 0x4d, 0x6f, 0x6e, 0x73, 0x74, 0x65, 0x72, 0x73, 0x57, 0x69,
+	0x74, 0x68, 0x50, 0x61, 0x72, 0x61, 0x6d, 0x73, 0x1a, 0x16, 0x2e, 0x67, 0x6f, 0x6f, 0x67, 0x6c,
+	0x65, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x62, 0x75, 0x66, 0x2e, 0x45, 0x6d, 0x70, 0x74, 0x79,
+	0x22, 0x00, 0x12, 0x56, 0x0a, 0x11, 0x41, 0x73, 0x73, 0x69, 0x67, 0x6e, 0x53, 0x6b, 0x69, 0x6c,
+	0x6c, 0x50, 0x6f, 0x69, 0x6e, 0x74, 0x73, 0x12, 0x27, 0x2e, 0x64, 0x75, 0x6e, 0x67, 0x65, 0x6f,
+	0x6e, 0x73, 0x61, 0x6e, 0x64, 0x74, 0x72, 0x6f, 0x6c, 0x6c, 0x73, 0x2e, 0x41, 0x74, 0x74, 0x72,
+	0x69, 0x62, 0x75, 0x74, 0x65, 0x73, 0x57, 0x69, 0x74, 0x68, 0x50, 0x61, 0x72, 0x61, 0x6d, 0x73,
+	0x1a, 0x16, 0x2e, 0x67, 0x6f, 0x6f, 0x67, 0x6c, 0x65, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x62,
+	0x75, 0x66, 0x2e, 0x45, 0x6d, 0x70, 0x74, 0x79, 0x22, 0x00, 0x42, 0x48, 0x5a, 0x46, 0x67, 0x69,
+	0x74, 0x68, 0x75, 0x62, 0x2e, 0x63, 0x6f, 0x6d, 0x2f, 0x67, 0x64, 0x67, 0x2d, 0x67, 0x61, 0x72,
+	0x61, 0x67, 0x65, 0x2f, 0x64, 0x75, 0x6e, 0x67, 0x65, 0x6f, 0x6e, 0x73, 0x2d, 0x61, 0x6e, 0x64,
+	0x2d, 0x74, 0x72, 0x6f, 0x6c, 0x6c, 0x73, 0x2f, 0x73, 0x65, 0x72, 0x76, 0x65, 0x72, 0x2f, 0x64,
+	0x75, 0x6e, 0x67, 0x65, 0x6f, 0x6e, 0x73, 0x61, 0x6e, 0x64, 0x74, 0x72, 0x6f, 0x6c, 0x6c, 0x73,
+	0x2f, 0x61, 0x70, 0x69, 0x62, 0x06, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x33,
 }
 
 var (
@@ -3447,152 +4003,170 @@ func file_proto_dungeonsandtrolls_proto_rawDescGZIP() []byte {
 }
 
 var file_proto_dungeonsandtrolls_proto_enumTypes = make([]protoimpl.EnumInfo, 4)
-var file_proto_dungeonsandtrolls_proto_msgTypes = make([]protoimpl.MessageInfo, 34)
+var file_proto_dungeonsandtrolls_proto_msgTypes = make([]protoimpl.MessageInfo, 43)
 var file_proto_dungeonsandtrolls_proto_goTypes = []interface{}{
-	(DamageType)(0),             // 0: dungeonsandtrolls.DamageType
-	(Skill_Target)(0),           // 1: dungeonsandtrolls.Skill.Target
-	(Item_Type)(0),              // 2: dungeonsandtrolls.Item.Type
-	(Event_Type)(0),             // 3: dungeonsandtrolls.Event.Type
-	(*Message)(nil),             // 4: dungeonsandtrolls.Message
-	(*Decoration)(nil),          // 5: dungeonsandtrolls.Decoration
-	(*Position)(nil),            // 6: dungeonsandtrolls.Position
-	(*Key)(nil),                 // 7: dungeonsandtrolls.Key
-	(*Waypoint)(nil),            // 8: dungeonsandtrolls.Waypoint
-	(*GameStateParams)(nil),     // 9: dungeonsandtrolls.GameStateParams
-	(*CommandsBatch)(nil),       // 10: dungeonsandtrolls.CommandsBatch
-	(*CommandsForMonsters)(nil), // 11: dungeonsandtrolls.CommandsForMonsters
-	(*Effect)(nil),              // 12: dungeonsandtrolls.Effect
-	(*Attributes)(nil),          // 13: dungeonsandtrolls.Attributes
-	(*SkillAttributes)(nil),     // 14: dungeonsandtrolls.SkillAttributes
-	(*Stats)(nil),               // 15: dungeonsandtrolls.Stats
-	(*Rewards)(nil),             // 16: dungeonsandtrolls.Rewards
-	(*Monster)(nil),             // 17: dungeonsandtrolls.Monster
-	(*Character)(nil),           // 18: dungeonsandtrolls.Character
-	(*Skill)(nil),               // 19: dungeonsandtrolls.Skill
-	(*Item)(nil),                // 20: dungeonsandtrolls.Item
-	(*SimpleItem)(nil),          // 21: dungeonsandtrolls.SimpleItem
-	(*Droppable)(nil),           // 22: dungeonsandtrolls.Droppable
-	(*SkillFlags)(nil),          // 23: dungeonsandtrolls.SkillFlags
-	(*SkillEffect)(nil),         // 24: dungeonsandtrolls.SkillEffect
-	(*Shortcut)(nil),            // 25: dungeonsandtrolls.Shortcut
-	(*MapObjects)(nil),          // 26: dungeonsandtrolls.MapObjects
-	(*Level)(nil),               // 27: dungeonsandtrolls.Level
-	(*Map)(nil),                 // 28: dungeonsandtrolls.Map
-	(*Event)(nil),               // 29: dungeonsandtrolls.Event
-	(*GameState)(nil),           // 30: dungeonsandtrolls.GameState
-	(*User)(nil),                // 31: dungeonsandtrolls.User
-	(*Identifier)(nil),          // 32: dungeonsandtrolls.Identifier
-	(*Identifiers)(nil),         // 33: dungeonsandtrolls.Identifiers
-	(*Coordinates)(nil),         // 34: dungeonsandtrolls.Coordinates
-	(*SkillUse)(nil),            // 35: dungeonsandtrolls.SkillUse
-	(*Registration)(nil),        // 36: dungeonsandtrolls.Registration
-	nil,                         // 37: dungeonsandtrolls.CommandsForMonsters.CommandsEntry
-	(*structpb.ListValue)(nil),  // 38: google.protobuf.ListValue
-	(*emptypb.Empty)(nil),       // 39: google.protobuf.Empty
+	(DamageType)(0),                       // 0: dungeonsandtrolls.DamageType
+	(Skill_Target)(0),                     // 1: dungeonsandtrolls.Skill.Target
+	(Item_Type)(0),                        // 2: dungeonsandtrolls.Item.Type
+	(Event_Type)(0),                       // 3: dungeonsandtrolls.Event.Type
+	(*IdentifierWithParams)(nil),          // 4: dungeonsandtrolls.IdentifierWithParams
+	(*IdentifiersWithParams)(nil),         // 5: dungeonsandtrolls.IdentifiersWithParams
+	(*PositionWithParams)(nil),            // 6: dungeonsandtrolls.PositionWithParams
+	(*RespawnWithParams)(nil),             // 7: dungeonsandtrolls.RespawnWithParams
+	(*SkillUseWithParams)(nil),            // 8: dungeonsandtrolls.SkillUseWithParams
+	(*MessageWithParams)(nil),             // 9: dungeonsandtrolls.MessageWithParams
+	(*CommandsBatchWithParams)(nil),       // 10: dungeonsandtrolls.CommandsBatchWithParams
+	(*CommandsForMonstersWithParams)(nil), // 11: dungeonsandtrolls.CommandsForMonstersWithParams
+	(*AttributesWithParams)(nil),          // 12: dungeonsandtrolls.AttributesWithParams
+	(*Message)(nil),                       // 13: dungeonsandtrolls.Message
+	(*Decoration)(nil),                    // 14: dungeonsandtrolls.Decoration
+	(*Position)(nil),                      // 15: dungeonsandtrolls.Position
+	(*Key)(nil),                           // 16: dungeonsandtrolls.Key
+	(*Waypoint)(nil),                      // 17: dungeonsandtrolls.Waypoint
+	(*GameStateParams)(nil),               // 18: dungeonsandtrolls.GameStateParams
+	(*CommandsBatch)(nil),                 // 19: dungeonsandtrolls.CommandsBatch
+	(*CommandsForMonsters)(nil),           // 20: dungeonsandtrolls.CommandsForMonsters
+	(*Effect)(nil),                        // 21: dungeonsandtrolls.Effect
+	(*Attributes)(nil),                    // 22: dungeonsandtrolls.Attributes
+	(*SkillAttributes)(nil),               // 23: dungeonsandtrolls.SkillAttributes
+	(*Stats)(nil),                         // 24: dungeonsandtrolls.Stats
+	(*Rewards)(nil),                       // 25: dungeonsandtrolls.Rewards
+	(*Monster)(nil),                       // 26: dungeonsandtrolls.Monster
+	(*Character)(nil),                     // 27: dungeonsandtrolls.Character
+	(*Skill)(nil),                         // 28: dungeonsandtrolls.Skill
+	(*Item)(nil),                          // 29: dungeonsandtrolls.Item
+	(*SimpleItem)(nil),                    // 30: dungeonsandtrolls.SimpleItem
+	(*Droppable)(nil),                     // 31: dungeonsandtrolls.Droppable
+	(*SkillFlags)(nil),                    // 32: dungeonsandtrolls.SkillFlags
+	(*SkillEffect)(nil),                   // 33: dungeonsandtrolls.SkillEffect
+	(*Shortcut)(nil),                      // 34: dungeonsandtrolls.Shortcut
+	(*MapObjects)(nil),                    // 35: dungeonsandtrolls.MapObjects
+	(*Level)(nil),                         // 36: dungeonsandtrolls.Level
+	(*Map)(nil),                           // 37: dungeonsandtrolls.Map
+	(*Event)(nil),                         // 38: dungeonsandtrolls.Event
+	(*GameState)(nil),                     // 39: dungeonsandtrolls.GameState
+	(*User)(nil),                          // 40: dungeonsandtrolls.User
+	(*Identifier)(nil),                    // 41: dungeonsandtrolls.Identifier
+	(*Identifiers)(nil),                   // 42: dungeonsandtrolls.Identifiers
+	(*Coordinates)(nil),                   // 43: dungeonsandtrolls.Coordinates
+	(*SkillUse)(nil),                      // 44: dungeonsandtrolls.SkillUse
+	(*Registration)(nil),                  // 45: dungeonsandtrolls.Registration
+	nil,                                   // 46: dungeonsandtrolls.CommandsForMonsters.CommandsEntry
+	(*emptypb.Empty)(nil),                 // 47: google.protobuf.Empty
+	(*structpb.ListValue)(nil),            // 48: google.protobuf.ListValue
 }
 var file_proto_dungeonsandtrolls_proto_depIdxs = []int32{
-	6,  // 0: dungeonsandtrolls.Key.doors:type_name -> dungeonsandtrolls.Position
-	33, // 1: dungeonsandtrolls.CommandsBatch.buy:type_name -> dungeonsandtrolls.Identifiers
-	32, // 2: dungeonsandtrolls.CommandsBatch.pick_up:type_name -> dungeonsandtrolls.Identifier
-	6,  // 3: dungeonsandtrolls.CommandsBatch.move:type_name -> dungeonsandtrolls.Position
-	35, // 4: dungeonsandtrolls.CommandsBatch.skill:type_name -> dungeonsandtrolls.SkillUse
-	4,  // 5: dungeonsandtrolls.CommandsBatch.yell:type_name -> dungeonsandtrolls.Message
-	13, // 6: dungeonsandtrolls.CommandsBatch.assign_skill_points:type_name -> dungeonsandtrolls.Attributes
-	37, // 7: dungeonsandtrolls.CommandsForMonsters.commands:type_name -> dungeonsandtrolls.CommandsForMonsters.CommandsEntry
-	0,  // 8: dungeonsandtrolls.Effect.damage_type:type_name -> dungeonsandtrolls.DamageType
-	13, // 9: dungeonsandtrolls.Effect.effects:type_name -> dungeonsandtrolls.Attributes
-	13, // 10: dungeonsandtrolls.SkillAttributes.strength:type_name -> dungeonsandtrolls.Attributes
-	13, // 11: dungeonsandtrolls.SkillAttributes.dexterity:type_name -> dungeonsandtrolls.Attributes
-	13, // 12: dungeonsandtrolls.SkillAttributes.intelligence:type_name -> dungeonsandtrolls.Attributes
-	13, // 13: dungeonsandtrolls.SkillAttributes.willpower:type_name -> dungeonsandtrolls.Attributes
-	13, // 14: dungeonsandtrolls.SkillAttributes.constitution:type_name -> dungeonsandtrolls.Attributes
-	13, // 15: dungeonsandtrolls.SkillAttributes.slash_resist:type_name -> dungeonsandtrolls.Attributes
-	13, // 16: dungeonsandtrolls.SkillAttributes.pierce_resist:type_name -> dungeonsandtrolls.Attributes
-	13, // 17: dungeonsandtrolls.SkillAttributes.fire_resist:type_name -> dungeonsandtrolls.Attributes
-	13, // 18: dungeonsandtrolls.SkillAttributes.poison_resist:type_name -> dungeonsandtrolls.Attributes
-	13, // 19: dungeonsandtrolls.SkillAttributes.electric_resist:type_name -> dungeonsandtrolls.Attributes
-	13, // 20: dungeonsandtrolls.SkillAttributes.life:type_name -> dungeonsandtrolls.Attributes
-	13, // 21: dungeonsandtrolls.SkillAttributes.stamina:type_name -> dungeonsandtrolls.Attributes
-	13, // 22: dungeonsandtrolls.SkillAttributes.mana:type_name -> dungeonsandtrolls.Attributes
-	13, // 23: dungeonsandtrolls.SkillAttributes.constant:type_name -> dungeonsandtrolls.Attributes
-	21, // 24: dungeonsandtrolls.Monster.items:type_name -> dungeonsandtrolls.SimpleItem
-	12, // 25: dungeonsandtrolls.Monster.effects:type_name -> dungeonsandtrolls.Effect
-	13, // 26: dungeonsandtrolls.Monster.attributes:type_name -> dungeonsandtrolls.Attributes
-	20, // 27: dungeonsandtrolls.Monster.equipped_items:type_name -> dungeonsandtrolls.Item
-	22, // 28: dungeonsandtrolls.Monster.on_death:type_name -> dungeonsandtrolls.Droppable
-	13, // 29: dungeonsandtrolls.Character.attributes:type_name -> dungeonsandtrolls.Attributes
-	20, // 30: dungeonsandtrolls.Character.equip:type_name -> dungeonsandtrolls.Item
-	12, // 31: dungeonsandtrolls.Character.effects:type_name -> dungeonsandtrolls.Effect
-	1,  // 32: dungeonsandtrolls.Skill.target:type_name -> dungeonsandtrolls.Skill.Target
-	13, // 33: dungeonsandtrolls.Skill.cost:type_name -> dungeonsandtrolls.Attributes
-	13, // 34: dungeonsandtrolls.Skill.range:type_name -> dungeonsandtrolls.Attributes
-	13, // 35: dungeonsandtrolls.Skill.radius:type_name -> dungeonsandtrolls.Attributes
-	13, // 36: dungeonsandtrolls.Skill.duration:type_name -> dungeonsandtrolls.Attributes
-	13, // 37: dungeonsandtrolls.Skill.damage_amount:type_name -> dungeonsandtrolls.Attributes
-	0,  // 38: dungeonsandtrolls.Skill.damage_type:type_name -> dungeonsandtrolls.DamageType
-	24, // 39: dungeonsandtrolls.Skill.caster_effects:type_name -> dungeonsandtrolls.SkillEffect
-	24, // 40: dungeonsandtrolls.Skill.target_effects:type_name -> dungeonsandtrolls.SkillEffect
-	2,  // 41: dungeonsandtrolls.Item.slot:type_name -> dungeonsandtrolls.Item.Type
-	13, // 42: dungeonsandtrolls.Item.requirements:type_name -> dungeonsandtrolls.Attributes
-	13, // 43: dungeonsandtrolls.Item.attributes:type_name -> dungeonsandtrolls.Attributes
-	19, // 44: dungeonsandtrolls.Item.skills:type_name -> dungeonsandtrolls.Skill
-	2,  // 45: dungeonsandtrolls.SimpleItem.slot:type_name -> dungeonsandtrolls.Item.Type
-	19, // 46: dungeonsandtrolls.Droppable.skill:type_name -> dungeonsandtrolls.Skill
-	20, // 47: dungeonsandtrolls.Droppable.item:type_name -> dungeonsandtrolls.Item
-	17, // 48: dungeonsandtrolls.Droppable.monster:type_name -> dungeonsandtrolls.Monster
-	5,  // 49: dungeonsandtrolls.Droppable.decoration:type_name -> dungeonsandtrolls.Decoration
-	8,  // 50: dungeonsandtrolls.Droppable.waypoint:type_name -> dungeonsandtrolls.Waypoint
-	7,  // 51: dungeonsandtrolls.Droppable.key:type_name -> dungeonsandtrolls.Key
-	14, // 52: dungeonsandtrolls.SkillEffect.attributes:type_name -> dungeonsandtrolls.SkillAttributes
-	23, // 53: dungeonsandtrolls.SkillEffect.flags:type_name -> dungeonsandtrolls.SkillFlags
-	22, // 54: dungeonsandtrolls.SkillEffect.summons:type_name -> dungeonsandtrolls.Droppable
-	34, // 55: dungeonsandtrolls.Shortcut.leads_to:type_name -> dungeonsandtrolls.Coordinates
-	6,  // 56: dungeonsandtrolls.MapObjects.position:type_name -> dungeonsandtrolls.Position
-	17, // 57: dungeonsandtrolls.MapObjects.monsters:type_name -> dungeonsandtrolls.Monster
-	18, // 58: dungeonsandtrolls.MapObjects.players:type_name -> dungeonsandtrolls.Character
-	8,  // 59: dungeonsandtrolls.MapObjects.portal:type_name -> dungeonsandtrolls.Waypoint
-	5,  // 60: dungeonsandtrolls.MapObjects.decorations:type_name -> dungeonsandtrolls.Decoration
-	12, // 61: dungeonsandtrolls.MapObjects.effects:type_name -> dungeonsandtrolls.Effect
-	20, // 62: dungeonsandtrolls.MapObjects.items:type_name -> dungeonsandtrolls.Item
-	38, // 63: dungeonsandtrolls.Level.free:type_name -> google.protobuf.ListValue
-	26, // 64: dungeonsandtrolls.Level.objects:type_name -> dungeonsandtrolls.MapObjects
-	27, // 65: dungeonsandtrolls.Map.levels:type_name -> dungeonsandtrolls.Level
-	3,  // 66: dungeonsandtrolls.Event.type:type_name -> dungeonsandtrolls.Event.Type
-	34, // 67: dungeonsandtrolls.Event.coordinates:type_name -> dungeonsandtrolls.Coordinates
-	28, // 68: dungeonsandtrolls.GameState.map:type_name -> dungeonsandtrolls.Map
-	20, // 69: dungeonsandtrolls.GameState.shop_items:type_name -> dungeonsandtrolls.Item
-	18, // 70: dungeonsandtrolls.GameState.character:type_name -> dungeonsandtrolls.Character
-	6,  // 71: dungeonsandtrolls.GameState.current_position:type_name -> dungeonsandtrolls.Position
-	29, // 72: dungeonsandtrolls.GameState.events:type_name -> dungeonsandtrolls.Event
-	6,  // 73: dungeonsandtrolls.SkillUse.position:type_name -> dungeonsandtrolls.Position
-	10, // 74: dungeonsandtrolls.CommandsForMonsters.CommandsEntry.value:type_name -> dungeonsandtrolls.CommandsBatch
-	9,  // 75: dungeonsandtrolls.DungeonsAndTrolls.Game:input_type -> dungeonsandtrolls.GameStateParams
-	31, // 76: dungeonsandtrolls.DungeonsAndTrolls.Register:input_type -> dungeonsandtrolls.User
-	33, // 77: dungeonsandtrolls.DungeonsAndTrolls.Buy:input_type -> dungeonsandtrolls.Identifiers
-	32, // 78: dungeonsandtrolls.DungeonsAndTrolls.PickUp:input_type -> dungeonsandtrolls.Identifier
-	6,  // 79: dungeonsandtrolls.DungeonsAndTrolls.Move:input_type -> dungeonsandtrolls.Position
-	39, // 80: dungeonsandtrolls.DungeonsAndTrolls.Respawn:input_type -> google.protobuf.Empty
-	35, // 81: dungeonsandtrolls.DungeonsAndTrolls.Skill:input_type -> dungeonsandtrolls.SkillUse
-	4,  // 82: dungeonsandtrolls.DungeonsAndTrolls.Yell:input_type -> dungeonsandtrolls.Message
-	10, // 83: dungeonsandtrolls.DungeonsAndTrolls.Commands:input_type -> dungeonsandtrolls.CommandsBatch
-	11, // 84: dungeonsandtrolls.DungeonsAndTrolls.MonstersCommands:input_type -> dungeonsandtrolls.CommandsForMonsters
-	13, // 85: dungeonsandtrolls.DungeonsAndTrolls.AssignSkillPoints:input_type -> dungeonsandtrolls.Attributes
-	30, // 86: dungeonsandtrolls.DungeonsAndTrolls.Game:output_type -> dungeonsandtrolls.GameState
-	36, // 87: dungeonsandtrolls.DungeonsAndTrolls.Register:output_type -> dungeonsandtrolls.Registration
-	39, // 88: dungeonsandtrolls.DungeonsAndTrolls.Buy:output_type -> google.protobuf.Empty
-	39, // 89: dungeonsandtrolls.DungeonsAndTrolls.PickUp:output_type -> google.protobuf.Empty
-	39, // 90: dungeonsandtrolls.DungeonsAndTrolls.Move:output_type -> google.protobuf.Empty
-	39, // 91: dungeonsandtrolls.DungeonsAndTrolls.Respawn:output_type -> google.protobuf.Empty
-	39, // 92: dungeonsandtrolls.DungeonsAndTrolls.Skill:output_type -> google.protobuf.Empty
-	39, // 93: dungeonsandtrolls.DungeonsAndTrolls.Yell:output_type -> google.protobuf.Empty
-	39, // 94: dungeonsandtrolls.DungeonsAndTrolls.Commands:output_type -> google.protobuf.Empty
-	39, // 95: dungeonsandtrolls.DungeonsAndTrolls.MonstersCommands:output_type -> google.protobuf.Empty
-	39, // 96: dungeonsandtrolls.DungeonsAndTrolls.AssignSkillPoints:output_type -> google.protobuf.Empty
-	86, // [86:97] is the sub-list for method output_type
-	75, // [75:86] is the sub-list for method input_type
-	75, // [75:75] is the sub-list for extension type_name
-	75, // [75:75] is the sub-list for extension extendee
-	0,  // [0:75] is the sub-list for field type_name
+	41, // 0: dungeonsandtrolls.IdentifierWithParams.identifier:type_name -> dungeonsandtrolls.Identifier
+	42, // 1: dungeonsandtrolls.IdentifiersWithParams.identifiers:type_name -> dungeonsandtrolls.Identifiers
+	15, // 2: dungeonsandtrolls.PositionWithParams.position:type_name -> dungeonsandtrolls.Position
+	47, // 3: dungeonsandtrolls.RespawnWithParams.respawn:type_name -> google.protobuf.Empty
+	44, // 4: dungeonsandtrolls.SkillUseWithParams.skill_use:type_name -> dungeonsandtrolls.SkillUse
+	13, // 5: dungeonsandtrolls.MessageWithParams.message:type_name -> dungeonsandtrolls.Message
+	19, // 6: dungeonsandtrolls.CommandsBatchWithParams.commands_batch:type_name -> dungeonsandtrolls.CommandsBatch
+	20, // 7: dungeonsandtrolls.CommandsForMonstersWithParams.commands_for_monsters:type_name -> dungeonsandtrolls.CommandsForMonsters
+	22, // 8: dungeonsandtrolls.AttributesWithParams.attributes:type_name -> dungeonsandtrolls.Attributes
+	15, // 9: dungeonsandtrolls.Key.doors:type_name -> dungeonsandtrolls.Position
+	42, // 10: dungeonsandtrolls.CommandsBatch.buy:type_name -> dungeonsandtrolls.Identifiers
+	41, // 11: dungeonsandtrolls.CommandsBatch.pick_up:type_name -> dungeonsandtrolls.Identifier
+	15, // 12: dungeonsandtrolls.CommandsBatch.move:type_name -> dungeonsandtrolls.Position
+	44, // 13: dungeonsandtrolls.CommandsBatch.skill:type_name -> dungeonsandtrolls.SkillUse
+	13, // 14: dungeonsandtrolls.CommandsBatch.yell:type_name -> dungeonsandtrolls.Message
+	22, // 15: dungeonsandtrolls.CommandsBatch.assign_skill_points:type_name -> dungeonsandtrolls.Attributes
+	46, // 16: dungeonsandtrolls.CommandsForMonsters.commands:type_name -> dungeonsandtrolls.CommandsForMonsters.CommandsEntry
+	0,  // 17: dungeonsandtrolls.Effect.damage_type:type_name -> dungeonsandtrolls.DamageType
+	22, // 18: dungeonsandtrolls.Effect.effects:type_name -> dungeonsandtrolls.Attributes
+	22, // 19: dungeonsandtrolls.SkillAttributes.strength:type_name -> dungeonsandtrolls.Attributes
+	22, // 20: dungeonsandtrolls.SkillAttributes.dexterity:type_name -> dungeonsandtrolls.Attributes
+	22, // 21: dungeonsandtrolls.SkillAttributes.intelligence:type_name -> dungeonsandtrolls.Attributes
+	22, // 22: dungeonsandtrolls.SkillAttributes.willpower:type_name -> dungeonsandtrolls.Attributes
+	22, // 23: dungeonsandtrolls.SkillAttributes.constitution:type_name -> dungeonsandtrolls.Attributes
+	22, // 24: dungeonsandtrolls.SkillAttributes.slash_resist:type_name -> dungeonsandtrolls.Attributes
+	22, // 25: dungeonsandtrolls.SkillAttributes.pierce_resist:type_name -> dungeonsandtrolls.Attributes
+	22, // 26: dungeonsandtrolls.SkillAttributes.fire_resist:type_name -> dungeonsandtrolls.Attributes
+	22, // 27: dungeonsandtrolls.SkillAttributes.poison_resist:type_name -> dungeonsandtrolls.Attributes
+	22, // 28: dungeonsandtrolls.SkillAttributes.electric_resist:type_name -> dungeonsandtrolls.Attributes
+	22, // 29: dungeonsandtrolls.SkillAttributes.life:type_name -> dungeonsandtrolls.Attributes
+	22, // 30: dungeonsandtrolls.SkillAttributes.stamina:type_name -> dungeonsandtrolls.Attributes
+	22, // 31: dungeonsandtrolls.SkillAttributes.mana:type_name -> dungeonsandtrolls.Attributes
+	22, // 32: dungeonsandtrolls.SkillAttributes.constant:type_name -> dungeonsandtrolls.Attributes
+	30, // 33: dungeonsandtrolls.Monster.items:type_name -> dungeonsandtrolls.SimpleItem
+	21, // 34: dungeonsandtrolls.Monster.effects:type_name -> dungeonsandtrolls.Effect
+	22, // 35: dungeonsandtrolls.Monster.attributes:type_name -> dungeonsandtrolls.Attributes
+	29, // 36: dungeonsandtrolls.Monster.equipped_items:type_name -> dungeonsandtrolls.Item
+	31, // 37: dungeonsandtrolls.Monster.on_death:type_name -> dungeonsandtrolls.Droppable
+	22, // 38: dungeonsandtrolls.Character.attributes:type_name -> dungeonsandtrolls.Attributes
+	29, // 39: dungeonsandtrolls.Character.equip:type_name -> dungeonsandtrolls.Item
+	21, // 40: dungeonsandtrolls.Character.effects:type_name -> dungeonsandtrolls.Effect
+	1,  // 41: dungeonsandtrolls.Skill.target:type_name -> dungeonsandtrolls.Skill.Target
+	22, // 42: dungeonsandtrolls.Skill.cost:type_name -> dungeonsandtrolls.Attributes
+	22, // 43: dungeonsandtrolls.Skill.range:type_name -> dungeonsandtrolls.Attributes
+	22, // 44: dungeonsandtrolls.Skill.radius:type_name -> dungeonsandtrolls.Attributes
+	22, // 45: dungeonsandtrolls.Skill.duration:type_name -> dungeonsandtrolls.Attributes
+	22, // 46: dungeonsandtrolls.Skill.damage_amount:type_name -> dungeonsandtrolls.Attributes
+	0,  // 47: dungeonsandtrolls.Skill.damage_type:type_name -> dungeonsandtrolls.DamageType
+	33, // 48: dungeonsandtrolls.Skill.caster_effects:type_name -> dungeonsandtrolls.SkillEffect
+	33, // 49: dungeonsandtrolls.Skill.target_effects:type_name -> dungeonsandtrolls.SkillEffect
+	2,  // 50: dungeonsandtrolls.Item.slot:type_name -> dungeonsandtrolls.Item.Type
+	22, // 51: dungeonsandtrolls.Item.requirements:type_name -> dungeonsandtrolls.Attributes
+	22, // 52: dungeonsandtrolls.Item.attributes:type_name -> dungeonsandtrolls.Attributes
+	28, // 53: dungeonsandtrolls.Item.skills:type_name -> dungeonsandtrolls.Skill
+	2,  // 54: dungeonsandtrolls.SimpleItem.slot:type_name -> dungeonsandtrolls.Item.Type
+	28, // 55: dungeonsandtrolls.Droppable.skill:type_name -> dungeonsandtrolls.Skill
+	29, // 56: dungeonsandtrolls.Droppable.item:type_name -> dungeonsandtrolls.Item
+	26, // 57: dungeonsandtrolls.Droppable.monster:type_name -> dungeonsandtrolls.Monster
+	14, // 58: dungeonsandtrolls.Droppable.decoration:type_name -> dungeonsandtrolls.Decoration
+	17, // 59: dungeonsandtrolls.Droppable.waypoint:type_name -> dungeonsandtrolls.Waypoint
+	16, // 60: dungeonsandtrolls.Droppable.key:type_name -> dungeonsandtrolls.Key
+	23, // 61: dungeonsandtrolls.SkillEffect.attributes:type_name -> dungeonsandtrolls.SkillAttributes
+	32, // 62: dungeonsandtrolls.SkillEffect.flags:type_name -> dungeonsandtrolls.SkillFlags
+	31, // 63: dungeonsandtrolls.SkillEffect.summons:type_name -> dungeonsandtrolls.Droppable
+	43, // 64: dungeonsandtrolls.Shortcut.leads_to:type_name -> dungeonsandtrolls.Coordinates
+	15, // 65: dungeonsandtrolls.MapObjects.position:type_name -> dungeonsandtrolls.Position
+	26, // 66: dungeonsandtrolls.MapObjects.monsters:type_name -> dungeonsandtrolls.Monster
+	27, // 67: dungeonsandtrolls.MapObjects.players:type_name -> dungeonsandtrolls.Character
+	17, // 68: dungeonsandtrolls.MapObjects.portal:type_name -> dungeonsandtrolls.Waypoint
+	14, // 69: dungeonsandtrolls.MapObjects.decorations:type_name -> dungeonsandtrolls.Decoration
+	21, // 70: dungeonsandtrolls.MapObjects.effects:type_name -> dungeonsandtrolls.Effect
+	29, // 71: dungeonsandtrolls.MapObjects.items:type_name -> dungeonsandtrolls.Item
+	48, // 72: dungeonsandtrolls.Level.free:type_name -> google.protobuf.ListValue
+	35, // 73: dungeonsandtrolls.Level.objects:type_name -> dungeonsandtrolls.MapObjects
+	36, // 74: dungeonsandtrolls.Map.levels:type_name -> dungeonsandtrolls.Level
+	3,  // 75: dungeonsandtrolls.Event.type:type_name -> dungeonsandtrolls.Event.Type
+	43, // 76: dungeonsandtrolls.Event.coordinates:type_name -> dungeonsandtrolls.Coordinates
+	37, // 77: dungeonsandtrolls.GameState.map:type_name -> dungeonsandtrolls.Map
+	29, // 78: dungeonsandtrolls.GameState.shop_items:type_name -> dungeonsandtrolls.Item
+	27, // 79: dungeonsandtrolls.GameState.character:type_name -> dungeonsandtrolls.Character
+	15, // 80: dungeonsandtrolls.GameState.current_position:type_name -> dungeonsandtrolls.Position
+	38, // 81: dungeonsandtrolls.GameState.events:type_name -> dungeonsandtrolls.Event
+	15, // 82: dungeonsandtrolls.SkillUse.position:type_name -> dungeonsandtrolls.Position
+	19, // 83: dungeonsandtrolls.CommandsForMonsters.CommandsEntry.value:type_name -> dungeonsandtrolls.CommandsBatch
+	18, // 84: dungeonsandtrolls.DungeonsAndTrolls.Game:input_type -> dungeonsandtrolls.GameStateParams
+	40, // 85: dungeonsandtrolls.DungeonsAndTrolls.Register:input_type -> dungeonsandtrolls.User
+	5,  // 86: dungeonsandtrolls.DungeonsAndTrolls.Buy:input_type -> dungeonsandtrolls.IdentifiersWithParams
+	4,  // 87: dungeonsandtrolls.DungeonsAndTrolls.PickUp:input_type -> dungeonsandtrolls.IdentifierWithParams
+	6,  // 88: dungeonsandtrolls.DungeonsAndTrolls.Move:input_type -> dungeonsandtrolls.PositionWithParams
+	7,  // 89: dungeonsandtrolls.DungeonsAndTrolls.Respawn:input_type -> dungeonsandtrolls.RespawnWithParams
+	8,  // 90: dungeonsandtrolls.DungeonsAndTrolls.Skill:input_type -> dungeonsandtrolls.SkillUseWithParams
+	9,  // 91: dungeonsandtrolls.DungeonsAndTrolls.Yell:input_type -> dungeonsandtrolls.MessageWithParams
+	10, // 92: dungeonsandtrolls.DungeonsAndTrolls.Commands:input_type -> dungeonsandtrolls.CommandsBatchWithParams
+	11, // 93: dungeonsandtrolls.DungeonsAndTrolls.MonstersCommands:input_type -> dungeonsandtrolls.CommandsForMonstersWithParams
+	12, // 94: dungeonsandtrolls.DungeonsAndTrolls.AssignSkillPoints:input_type -> dungeonsandtrolls.AttributesWithParams
+	39, // 95: dungeonsandtrolls.DungeonsAndTrolls.Game:output_type -> dungeonsandtrolls.GameState
+	45, // 96: dungeonsandtrolls.DungeonsAndTrolls.Register:output_type -> dungeonsandtrolls.Registration
+	47, // 97: dungeonsandtrolls.DungeonsAndTrolls.Buy:output_type -> google.protobuf.Empty
+	47, // 98: dungeonsandtrolls.DungeonsAndTrolls.PickUp:output_type -> google.protobuf.Empty
+	47, // 99: dungeonsandtrolls.DungeonsAndTrolls.Move:output_type -> google.protobuf.Empty
+	47, // 100: dungeonsandtrolls.DungeonsAndTrolls.Respawn:output_type -> google.protobuf.Empty
+	47, // 101: dungeonsandtrolls.DungeonsAndTrolls.Skill:output_type -> google.protobuf.Empty
+	47, // 102: dungeonsandtrolls.DungeonsAndTrolls.Yell:output_type -> google.protobuf.Empty
+	47, // 103: dungeonsandtrolls.DungeonsAndTrolls.Commands:output_type -> google.protobuf.Empty
+	47, // 104: dungeonsandtrolls.DungeonsAndTrolls.MonstersCommands:output_type -> google.protobuf.Empty
+	47, // 105: dungeonsandtrolls.DungeonsAndTrolls.AssignSkillPoints:output_type -> google.protobuf.Empty
+	95, // [95:106] is the sub-list for method output_type
+	84, // [84:95] is the sub-list for method input_type
+	84, // [84:84] is the sub-list for extension type_name
+	84, // [84:84] is the sub-list for extension extendee
+	0,  // [0:84] is the sub-list for field type_name
 }
 
 func init() { file_proto_dungeonsandtrolls_proto_init() }
@@ -3602,7 +4176,7 @@ func file_proto_dungeonsandtrolls_proto_init() {
 	}
 	if !protoimpl.UnsafeEnabled {
 		file_proto_dungeonsandtrolls_proto_msgTypes[0].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*Message); i {
+			switch v := v.(*IdentifierWithParams); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -3614,7 +4188,7 @@ func file_proto_dungeonsandtrolls_proto_init() {
 			}
 		}
 		file_proto_dungeonsandtrolls_proto_msgTypes[1].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*Decoration); i {
+			switch v := v.(*IdentifiersWithParams); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -3626,7 +4200,7 @@ func file_proto_dungeonsandtrolls_proto_init() {
 			}
 		}
 		file_proto_dungeonsandtrolls_proto_msgTypes[2].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*Position); i {
+			switch v := v.(*PositionWithParams); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -3638,7 +4212,7 @@ func file_proto_dungeonsandtrolls_proto_init() {
 			}
 		}
 		file_proto_dungeonsandtrolls_proto_msgTypes[3].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*Key); i {
+			switch v := v.(*RespawnWithParams); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -3650,7 +4224,7 @@ func file_proto_dungeonsandtrolls_proto_init() {
 			}
 		}
 		file_proto_dungeonsandtrolls_proto_msgTypes[4].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*Waypoint); i {
+			switch v := v.(*SkillUseWithParams); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -3662,7 +4236,7 @@ func file_proto_dungeonsandtrolls_proto_init() {
 			}
 		}
 		file_proto_dungeonsandtrolls_proto_msgTypes[5].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*GameStateParams); i {
+			switch v := v.(*MessageWithParams); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -3674,7 +4248,7 @@ func file_proto_dungeonsandtrolls_proto_init() {
 			}
 		}
 		file_proto_dungeonsandtrolls_proto_msgTypes[6].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*CommandsBatch); i {
+			switch v := v.(*CommandsBatchWithParams); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -3686,7 +4260,7 @@ func file_proto_dungeonsandtrolls_proto_init() {
 			}
 		}
 		file_proto_dungeonsandtrolls_proto_msgTypes[7].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*CommandsForMonsters); i {
+			switch v := v.(*CommandsForMonstersWithParams); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -3698,7 +4272,7 @@ func file_proto_dungeonsandtrolls_proto_init() {
 			}
 		}
 		file_proto_dungeonsandtrolls_proto_msgTypes[8].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*Effect); i {
+			switch v := v.(*AttributesWithParams); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -3710,7 +4284,7 @@ func file_proto_dungeonsandtrolls_proto_init() {
 			}
 		}
 		file_proto_dungeonsandtrolls_proto_msgTypes[9].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*Attributes); i {
+			switch v := v.(*Message); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -3722,7 +4296,7 @@ func file_proto_dungeonsandtrolls_proto_init() {
 			}
 		}
 		file_proto_dungeonsandtrolls_proto_msgTypes[10].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*SkillAttributes); i {
+			switch v := v.(*Decoration); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -3734,7 +4308,7 @@ func file_proto_dungeonsandtrolls_proto_init() {
 			}
 		}
 		file_proto_dungeonsandtrolls_proto_msgTypes[11].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*Stats); i {
+			switch v := v.(*Position); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -3746,7 +4320,7 @@ func file_proto_dungeonsandtrolls_proto_init() {
 			}
 		}
 		file_proto_dungeonsandtrolls_proto_msgTypes[12].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*Rewards); i {
+			switch v := v.(*Key); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -3758,7 +4332,7 @@ func file_proto_dungeonsandtrolls_proto_init() {
 			}
 		}
 		file_proto_dungeonsandtrolls_proto_msgTypes[13].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*Monster); i {
+			switch v := v.(*Waypoint); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -3770,7 +4344,7 @@ func file_proto_dungeonsandtrolls_proto_init() {
 			}
 		}
 		file_proto_dungeonsandtrolls_proto_msgTypes[14].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*Character); i {
+			switch v := v.(*GameStateParams); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -3782,7 +4356,7 @@ func file_proto_dungeonsandtrolls_proto_init() {
 			}
 		}
 		file_proto_dungeonsandtrolls_proto_msgTypes[15].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*Skill); i {
+			switch v := v.(*CommandsBatch); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -3794,7 +4368,7 @@ func file_proto_dungeonsandtrolls_proto_init() {
 			}
 		}
 		file_proto_dungeonsandtrolls_proto_msgTypes[16].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*Item); i {
+			switch v := v.(*CommandsForMonsters); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -3806,7 +4380,7 @@ func file_proto_dungeonsandtrolls_proto_init() {
 			}
 		}
 		file_proto_dungeonsandtrolls_proto_msgTypes[17].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*SimpleItem); i {
+			switch v := v.(*Effect); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -3818,7 +4392,7 @@ func file_proto_dungeonsandtrolls_proto_init() {
 			}
 		}
 		file_proto_dungeonsandtrolls_proto_msgTypes[18].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*Droppable); i {
+			switch v := v.(*Attributes); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -3830,7 +4404,7 @@ func file_proto_dungeonsandtrolls_proto_init() {
 			}
 		}
 		file_proto_dungeonsandtrolls_proto_msgTypes[19].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*SkillFlags); i {
+			switch v := v.(*SkillAttributes); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -3842,7 +4416,7 @@ func file_proto_dungeonsandtrolls_proto_init() {
 			}
 		}
 		file_proto_dungeonsandtrolls_proto_msgTypes[20].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*SkillEffect); i {
+			switch v := v.(*Stats); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -3854,7 +4428,7 @@ func file_proto_dungeonsandtrolls_proto_init() {
 			}
 		}
 		file_proto_dungeonsandtrolls_proto_msgTypes[21].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*Shortcut); i {
+			switch v := v.(*Rewards); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -3866,7 +4440,7 @@ func file_proto_dungeonsandtrolls_proto_init() {
 			}
 		}
 		file_proto_dungeonsandtrolls_proto_msgTypes[22].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*MapObjects); i {
+			switch v := v.(*Monster); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -3878,7 +4452,7 @@ func file_proto_dungeonsandtrolls_proto_init() {
 			}
 		}
 		file_proto_dungeonsandtrolls_proto_msgTypes[23].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*Level); i {
+			switch v := v.(*Character); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -3890,7 +4464,7 @@ func file_proto_dungeonsandtrolls_proto_init() {
 			}
 		}
 		file_proto_dungeonsandtrolls_proto_msgTypes[24].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*Map); i {
+			switch v := v.(*Skill); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -3902,7 +4476,7 @@ func file_proto_dungeonsandtrolls_proto_init() {
 			}
 		}
 		file_proto_dungeonsandtrolls_proto_msgTypes[25].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*Event); i {
+			switch v := v.(*Item); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -3914,7 +4488,7 @@ func file_proto_dungeonsandtrolls_proto_init() {
 			}
 		}
 		file_proto_dungeonsandtrolls_proto_msgTypes[26].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*GameState); i {
+			switch v := v.(*SimpleItem); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -3926,7 +4500,7 @@ func file_proto_dungeonsandtrolls_proto_init() {
 			}
 		}
 		file_proto_dungeonsandtrolls_proto_msgTypes[27].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*User); i {
+			switch v := v.(*Droppable); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -3938,7 +4512,7 @@ func file_proto_dungeonsandtrolls_proto_init() {
 			}
 		}
 		file_proto_dungeonsandtrolls_proto_msgTypes[28].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*Identifier); i {
+			switch v := v.(*SkillFlags); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -3950,7 +4524,7 @@ func file_proto_dungeonsandtrolls_proto_init() {
 			}
 		}
 		file_proto_dungeonsandtrolls_proto_msgTypes[29].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*Identifiers); i {
+			switch v := v.(*SkillEffect); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -3962,7 +4536,7 @@ func file_proto_dungeonsandtrolls_proto_init() {
 			}
 		}
 		file_proto_dungeonsandtrolls_proto_msgTypes[30].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*Coordinates); i {
+			switch v := v.(*Shortcut); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -3974,7 +4548,7 @@ func file_proto_dungeonsandtrolls_proto_init() {
 			}
 		}
 		file_proto_dungeonsandtrolls_proto_msgTypes[31].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*SkillUse); i {
+			switch v := v.(*MapObjects); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -3986,6 +4560,114 @@ func file_proto_dungeonsandtrolls_proto_init() {
 			}
 		}
 		file_proto_dungeonsandtrolls_proto_msgTypes[32].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*Level); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_proto_dungeonsandtrolls_proto_msgTypes[33].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*Map); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_proto_dungeonsandtrolls_proto_msgTypes[34].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*Event); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_proto_dungeonsandtrolls_proto_msgTypes[35].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*GameState); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_proto_dungeonsandtrolls_proto_msgTypes[36].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*User); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_proto_dungeonsandtrolls_proto_msgTypes[37].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*Identifier); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_proto_dungeonsandtrolls_proto_msgTypes[38].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*Identifiers); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_proto_dungeonsandtrolls_proto_msgTypes[39].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*Coordinates); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_proto_dungeonsandtrolls_proto_msgTypes[40].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*SkillUse); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_proto_dungeonsandtrolls_proto_msgTypes[41].Exporter = func(v interface{}, i int) interface{} {
 			switch v := v.(*Registration); i {
 			case 0:
 				return &v.state
@@ -3998,15 +4680,24 @@ func file_proto_dungeonsandtrolls_proto_init() {
 			}
 		}
 	}
+	file_proto_dungeonsandtrolls_proto_msgTypes[0].OneofWrappers = []interface{}{}
+	file_proto_dungeonsandtrolls_proto_msgTypes[1].OneofWrappers = []interface{}{}
+	file_proto_dungeonsandtrolls_proto_msgTypes[2].OneofWrappers = []interface{}{}
+	file_proto_dungeonsandtrolls_proto_msgTypes[3].OneofWrappers = []interface{}{}
+	file_proto_dungeonsandtrolls_proto_msgTypes[4].OneofWrappers = []interface{}{}
 	file_proto_dungeonsandtrolls_proto_msgTypes[5].OneofWrappers = []interface{}{}
 	file_proto_dungeonsandtrolls_proto_msgTypes[6].OneofWrappers = []interface{}{}
+	file_proto_dungeonsandtrolls_proto_msgTypes[7].OneofWrappers = []interface{}{}
 	file_proto_dungeonsandtrolls_proto_msgTypes[8].OneofWrappers = []interface{}{}
-	file_proto_dungeonsandtrolls_proto_msgTypes[9].OneofWrappers = []interface{}{}
-	file_proto_dungeonsandtrolls_proto_msgTypes[10].OneofWrappers = []interface{}{}
-	file_proto_dungeonsandtrolls_proto_msgTypes[12].OneofWrappers = []interface{}{}
-	file_proto_dungeonsandtrolls_proto_msgTypes[13].OneofWrappers = []interface{}{}
-	file_proto_dungeonsandtrolls_proto_msgTypes[16].OneofWrappers = []interface{}{}
-	file_proto_dungeonsandtrolls_proto_msgTypes[18].OneofWrappers = []interface{}{
+	file_proto_dungeonsandtrolls_proto_msgTypes[14].OneofWrappers = []interface{}{}
+	file_proto_dungeonsandtrolls_proto_msgTypes[15].OneofWrappers = []interface{}{}
+	file_proto_dungeonsandtrolls_proto_msgTypes[17].OneofWrappers = []interface{}{}
+	file_proto_dungeonsandtrolls_proto_msgTypes[18].OneofWrappers = []interface{}{}
+	file_proto_dungeonsandtrolls_proto_msgTypes[19].OneofWrappers = []interface{}{}
+	file_proto_dungeonsandtrolls_proto_msgTypes[21].OneofWrappers = []interface{}{}
+	file_proto_dungeonsandtrolls_proto_msgTypes[22].OneofWrappers = []interface{}{}
+	file_proto_dungeonsandtrolls_proto_msgTypes[25].OneofWrappers = []interface{}{}
+	file_proto_dungeonsandtrolls_proto_msgTypes[27].OneofWrappers = []interface{}{
 		(*Droppable_Skill)(nil),
 		(*Droppable_Item)(nil),
 		(*Droppable_Monster)(nil),
@@ -4014,19 +4705,19 @@ func file_proto_dungeonsandtrolls_proto_init() {
 		(*Droppable_Waypoint)(nil),
 		(*Droppable_Key)(nil),
 	}
-	file_proto_dungeonsandtrolls_proto_msgTypes[21].OneofWrappers = []interface{}{}
-	file_proto_dungeonsandtrolls_proto_msgTypes[22].OneofWrappers = []interface{}{}
-	file_proto_dungeonsandtrolls_proto_msgTypes[25].OneofWrappers = []interface{}{}
-	file_proto_dungeonsandtrolls_proto_msgTypes[26].OneofWrappers = []interface{}{}
+	file_proto_dungeonsandtrolls_proto_msgTypes[30].OneofWrappers = []interface{}{}
 	file_proto_dungeonsandtrolls_proto_msgTypes[31].OneofWrappers = []interface{}{}
-	file_proto_dungeonsandtrolls_proto_msgTypes[32].OneofWrappers = []interface{}{}
+	file_proto_dungeonsandtrolls_proto_msgTypes[34].OneofWrappers = []interface{}{}
+	file_proto_dungeonsandtrolls_proto_msgTypes[35].OneofWrappers = []interface{}{}
+	file_proto_dungeonsandtrolls_proto_msgTypes[40].OneofWrappers = []interface{}{}
+	file_proto_dungeonsandtrolls_proto_msgTypes[41].OneofWrappers = []interface{}{}
 	type x struct{}
 	out := protoimpl.TypeBuilder{
 		File: protoimpl.DescBuilder{
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: file_proto_dungeonsandtrolls_proto_rawDesc,
 			NumEnums:      4,
-			NumMessages:   34,
+			NumMessages:   43,
 			NumExtensions: 0,
 			NumServices:   1,
 		},

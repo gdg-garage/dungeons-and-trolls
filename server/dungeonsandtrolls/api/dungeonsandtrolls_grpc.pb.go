@@ -25,15 +25,15 @@ const _ = grpc.SupportPackageIsVersion7
 type DungeonsAndTrollsClient interface {
 	Game(ctx context.Context, in *GameStateParams, opts ...grpc.CallOption) (*GameState, error)
 	Register(ctx context.Context, in *User, opts ...grpc.CallOption) (*Registration, error)
-	Buy(ctx context.Context, in *Identifiers, opts ...grpc.CallOption) (*emptypb.Empty, error)
-	PickUp(ctx context.Context, in *Identifier, opts ...grpc.CallOption) (*emptypb.Empty, error)
-	Move(ctx context.Context, in *Position, opts ...grpc.CallOption) (*emptypb.Empty, error)
-	Respawn(ctx context.Context, in *emptypb.Empty, opts ...grpc.CallOption) (*emptypb.Empty, error)
-	Skill(ctx context.Context, in *SkillUse, opts ...grpc.CallOption) (*emptypb.Empty, error)
-	Yell(ctx context.Context, in *Message, opts ...grpc.CallOption) (*emptypb.Empty, error)
-	Commands(ctx context.Context, in *CommandsBatch, opts ...grpc.CallOption) (*emptypb.Empty, error)
-	MonstersCommands(ctx context.Context, in *CommandsForMonsters, opts ...grpc.CallOption) (*emptypb.Empty, error)
-	AssignSkillPoints(ctx context.Context, in *Attributes, opts ...grpc.CallOption) (*emptypb.Empty, error)
+	Buy(ctx context.Context, in *IdentifiersWithParams, opts ...grpc.CallOption) (*emptypb.Empty, error)
+	PickUp(ctx context.Context, in *IdentifierWithParams, opts ...grpc.CallOption) (*emptypb.Empty, error)
+	Move(ctx context.Context, in *PositionWithParams, opts ...grpc.CallOption) (*emptypb.Empty, error)
+	Respawn(ctx context.Context, in *RespawnWithParams, opts ...grpc.CallOption) (*emptypb.Empty, error)
+	Skill(ctx context.Context, in *SkillUseWithParams, opts ...grpc.CallOption) (*emptypb.Empty, error)
+	Yell(ctx context.Context, in *MessageWithParams, opts ...grpc.CallOption) (*emptypb.Empty, error)
+	Commands(ctx context.Context, in *CommandsBatchWithParams, opts ...grpc.CallOption) (*emptypb.Empty, error)
+	MonstersCommands(ctx context.Context, in *CommandsForMonstersWithParams, opts ...grpc.CallOption) (*emptypb.Empty, error)
+	AssignSkillPoints(ctx context.Context, in *AttributesWithParams, opts ...grpc.CallOption) (*emptypb.Empty, error)
 }
 
 type dungeonsAndTrollsClient struct {
@@ -62,7 +62,7 @@ func (c *dungeonsAndTrollsClient) Register(ctx context.Context, in *User, opts .
 	return out, nil
 }
 
-func (c *dungeonsAndTrollsClient) Buy(ctx context.Context, in *Identifiers, opts ...grpc.CallOption) (*emptypb.Empty, error) {
+func (c *dungeonsAndTrollsClient) Buy(ctx context.Context, in *IdentifiersWithParams, opts ...grpc.CallOption) (*emptypb.Empty, error) {
 	out := new(emptypb.Empty)
 	err := c.cc.Invoke(ctx, "/dungeonsandtrolls.DungeonsAndTrolls/Buy", in, out, opts...)
 	if err != nil {
@@ -71,7 +71,7 @@ func (c *dungeonsAndTrollsClient) Buy(ctx context.Context, in *Identifiers, opts
 	return out, nil
 }
 
-func (c *dungeonsAndTrollsClient) PickUp(ctx context.Context, in *Identifier, opts ...grpc.CallOption) (*emptypb.Empty, error) {
+func (c *dungeonsAndTrollsClient) PickUp(ctx context.Context, in *IdentifierWithParams, opts ...grpc.CallOption) (*emptypb.Empty, error) {
 	out := new(emptypb.Empty)
 	err := c.cc.Invoke(ctx, "/dungeonsandtrolls.DungeonsAndTrolls/PickUp", in, out, opts...)
 	if err != nil {
@@ -80,7 +80,7 @@ func (c *dungeonsAndTrollsClient) PickUp(ctx context.Context, in *Identifier, op
 	return out, nil
 }
 
-func (c *dungeonsAndTrollsClient) Move(ctx context.Context, in *Position, opts ...grpc.CallOption) (*emptypb.Empty, error) {
+func (c *dungeonsAndTrollsClient) Move(ctx context.Context, in *PositionWithParams, opts ...grpc.CallOption) (*emptypb.Empty, error) {
 	out := new(emptypb.Empty)
 	err := c.cc.Invoke(ctx, "/dungeonsandtrolls.DungeonsAndTrolls/Move", in, out, opts...)
 	if err != nil {
@@ -89,7 +89,7 @@ func (c *dungeonsAndTrollsClient) Move(ctx context.Context, in *Position, opts .
 	return out, nil
 }
 
-func (c *dungeonsAndTrollsClient) Respawn(ctx context.Context, in *emptypb.Empty, opts ...grpc.CallOption) (*emptypb.Empty, error) {
+func (c *dungeonsAndTrollsClient) Respawn(ctx context.Context, in *RespawnWithParams, opts ...grpc.CallOption) (*emptypb.Empty, error) {
 	out := new(emptypb.Empty)
 	err := c.cc.Invoke(ctx, "/dungeonsandtrolls.DungeonsAndTrolls/Respawn", in, out, opts...)
 	if err != nil {
@@ -98,7 +98,7 @@ func (c *dungeonsAndTrollsClient) Respawn(ctx context.Context, in *emptypb.Empty
 	return out, nil
 }
 
-func (c *dungeonsAndTrollsClient) Skill(ctx context.Context, in *SkillUse, opts ...grpc.CallOption) (*emptypb.Empty, error) {
+func (c *dungeonsAndTrollsClient) Skill(ctx context.Context, in *SkillUseWithParams, opts ...grpc.CallOption) (*emptypb.Empty, error) {
 	out := new(emptypb.Empty)
 	err := c.cc.Invoke(ctx, "/dungeonsandtrolls.DungeonsAndTrolls/Skill", in, out, opts...)
 	if err != nil {
@@ -107,7 +107,7 @@ func (c *dungeonsAndTrollsClient) Skill(ctx context.Context, in *SkillUse, opts 
 	return out, nil
 }
 
-func (c *dungeonsAndTrollsClient) Yell(ctx context.Context, in *Message, opts ...grpc.CallOption) (*emptypb.Empty, error) {
+func (c *dungeonsAndTrollsClient) Yell(ctx context.Context, in *MessageWithParams, opts ...grpc.CallOption) (*emptypb.Empty, error) {
 	out := new(emptypb.Empty)
 	err := c.cc.Invoke(ctx, "/dungeonsandtrolls.DungeonsAndTrolls/Yell", in, out, opts...)
 	if err != nil {
@@ -116,7 +116,7 @@ func (c *dungeonsAndTrollsClient) Yell(ctx context.Context, in *Message, opts ..
 	return out, nil
 }
 
-func (c *dungeonsAndTrollsClient) Commands(ctx context.Context, in *CommandsBatch, opts ...grpc.CallOption) (*emptypb.Empty, error) {
+func (c *dungeonsAndTrollsClient) Commands(ctx context.Context, in *CommandsBatchWithParams, opts ...grpc.CallOption) (*emptypb.Empty, error) {
 	out := new(emptypb.Empty)
 	err := c.cc.Invoke(ctx, "/dungeonsandtrolls.DungeonsAndTrolls/Commands", in, out, opts...)
 	if err != nil {
@@ -125,7 +125,7 @@ func (c *dungeonsAndTrollsClient) Commands(ctx context.Context, in *CommandsBatc
 	return out, nil
 }
 
-func (c *dungeonsAndTrollsClient) MonstersCommands(ctx context.Context, in *CommandsForMonsters, opts ...grpc.CallOption) (*emptypb.Empty, error) {
+func (c *dungeonsAndTrollsClient) MonstersCommands(ctx context.Context, in *CommandsForMonstersWithParams, opts ...grpc.CallOption) (*emptypb.Empty, error) {
 	out := new(emptypb.Empty)
 	err := c.cc.Invoke(ctx, "/dungeonsandtrolls.DungeonsAndTrolls/MonstersCommands", in, out, opts...)
 	if err != nil {
@@ -134,7 +134,7 @@ func (c *dungeonsAndTrollsClient) MonstersCommands(ctx context.Context, in *Comm
 	return out, nil
 }
 
-func (c *dungeonsAndTrollsClient) AssignSkillPoints(ctx context.Context, in *Attributes, opts ...grpc.CallOption) (*emptypb.Empty, error) {
+func (c *dungeonsAndTrollsClient) AssignSkillPoints(ctx context.Context, in *AttributesWithParams, opts ...grpc.CallOption) (*emptypb.Empty, error) {
 	out := new(emptypb.Empty)
 	err := c.cc.Invoke(ctx, "/dungeonsandtrolls.DungeonsAndTrolls/AssignSkillPoints", in, out, opts...)
 	if err != nil {
@@ -149,15 +149,15 @@ func (c *dungeonsAndTrollsClient) AssignSkillPoints(ctx context.Context, in *Att
 type DungeonsAndTrollsServer interface {
 	Game(context.Context, *GameStateParams) (*GameState, error)
 	Register(context.Context, *User) (*Registration, error)
-	Buy(context.Context, *Identifiers) (*emptypb.Empty, error)
-	PickUp(context.Context, *Identifier) (*emptypb.Empty, error)
-	Move(context.Context, *Position) (*emptypb.Empty, error)
-	Respawn(context.Context, *emptypb.Empty) (*emptypb.Empty, error)
-	Skill(context.Context, *SkillUse) (*emptypb.Empty, error)
-	Yell(context.Context, *Message) (*emptypb.Empty, error)
-	Commands(context.Context, *CommandsBatch) (*emptypb.Empty, error)
-	MonstersCommands(context.Context, *CommandsForMonsters) (*emptypb.Empty, error)
-	AssignSkillPoints(context.Context, *Attributes) (*emptypb.Empty, error)
+	Buy(context.Context, *IdentifiersWithParams) (*emptypb.Empty, error)
+	PickUp(context.Context, *IdentifierWithParams) (*emptypb.Empty, error)
+	Move(context.Context, *PositionWithParams) (*emptypb.Empty, error)
+	Respawn(context.Context, *RespawnWithParams) (*emptypb.Empty, error)
+	Skill(context.Context, *SkillUseWithParams) (*emptypb.Empty, error)
+	Yell(context.Context, *MessageWithParams) (*emptypb.Empty, error)
+	Commands(context.Context, *CommandsBatchWithParams) (*emptypb.Empty, error)
+	MonstersCommands(context.Context, *CommandsForMonstersWithParams) (*emptypb.Empty, error)
+	AssignSkillPoints(context.Context, *AttributesWithParams) (*emptypb.Empty, error)
 	mustEmbedUnimplementedDungeonsAndTrollsServer()
 }
 
@@ -171,31 +171,31 @@ func (UnimplementedDungeonsAndTrollsServer) Game(context.Context, *GameStatePara
 func (UnimplementedDungeonsAndTrollsServer) Register(context.Context, *User) (*Registration, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method Register not implemented")
 }
-func (UnimplementedDungeonsAndTrollsServer) Buy(context.Context, *Identifiers) (*emptypb.Empty, error) {
+func (UnimplementedDungeonsAndTrollsServer) Buy(context.Context, *IdentifiersWithParams) (*emptypb.Empty, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method Buy not implemented")
 }
-func (UnimplementedDungeonsAndTrollsServer) PickUp(context.Context, *Identifier) (*emptypb.Empty, error) {
+func (UnimplementedDungeonsAndTrollsServer) PickUp(context.Context, *IdentifierWithParams) (*emptypb.Empty, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method PickUp not implemented")
 }
-func (UnimplementedDungeonsAndTrollsServer) Move(context.Context, *Position) (*emptypb.Empty, error) {
+func (UnimplementedDungeonsAndTrollsServer) Move(context.Context, *PositionWithParams) (*emptypb.Empty, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method Move not implemented")
 }
-func (UnimplementedDungeonsAndTrollsServer) Respawn(context.Context, *emptypb.Empty) (*emptypb.Empty, error) {
+func (UnimplementedDungeonsAndTrollsServer) Respawn(context.Context, *RespawnWithParams) (*emptypb.Empty, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method Respawn not implemented")
 }
-func (UnimplementedDungeonsAndTrollsServer) Skill(context.Context, *SkillUse) (*emptypb.Empty, error) {
+func (UnimplementedDungeonsAndTrollsServer) Skill(context.Context, *SkillUseWithParams) (*emptypb.Empty, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method Skill not implemented")
 }
-func (UnimplementedDungeonsAndTrollsServer) Yell(context.Context, *Message) (*emptypb.Empty, error) {
+func (UnimplementedDungeonsAndTrollsServer) Yell(context.Context, *MessageWithParams) (*emptypb.Empty, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method Yell not implemented")
 }
-func (UnimplementedDungeonsAndTrollsServer) Commands(context.Context, *CommandsBatch) (*emptypb.Empty, error) {
+func (UnimplementedDungeonsAndTrollsServer) Commands(context.Context, *CommandsBatchWithParams) (*emptypb.Empty, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method Commands not implemented")
 }
-func (UnimplementedDungeonsAndTrollsServer) MonstersCommands(context.Context, *CommandsForMonsters) (*emptypb.Empty, error) {
+func (UnimplementedDungeonsAndTrollsServer) MonstersCommands(context.Context, *CommandsForMonstersWithParams) (*emptypb.Empty, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method MonstersCommands not implemented")
 }
-func (UnimplementedDungeonsAndTrollsServer) AssignSkillPoints(context.Context, *Attributes) (*emptypb.Empty, error) {
+func (UnimplementedDungeonsAndTrollsServer) AssignSkillPoints(context.Context, *AttributesWithParams) (*emptypb.Empty, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method AssignSkillPoints not implemented")
 }
 func (UnimplementedDungeonsAndTrollsServer) mustEmbedUnimplementedDungeonsAndTrollsServer() {}
@@ -248,7 +248,7 @@ func _DungeonsAndTrolls_Register_Handler(srv interface{}, ctx context.Context, d
 }
 
 func _DungeonsAndTrolls_Buy_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(Identifiers)
+	in := new(IdentifiersWithParams)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
@@ -260,13 +260,13 @@ func _DungeonsAndTrolls_Buy_Handler(srv interface{}, ctx context.Context, dec fu
 		FullMethod: "/dungeonsandtrolls.DungeonsAndTrolls/Buy",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(DungeonsAndTrollsServer).Buy(ctx, req.(*Identifiers))
+		return srv.(DungeonsAndTrollsServer).Buy(ctx, req.(*IdentifiersWithParams))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
 func _DungeonsAndTrolls_PickUp_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(Identifier)
+	in := new(IdentifierWithParams)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
@@ -278,13 +278,13 @@ func _DungeonsAndTrolls_PickUp_Handler(srv interface{}, ctx context.Context, dec
 		FullMethod: "/dungeonsandtrolls.DungeonsAndTrolls/PickUp",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(DungeonsAndTrollsServer).PickUp(ctx, req.(*Identifier))
+		return srv.(DungeonsAndTrollsServer).PickUp(ctx, req.(*IdentifierWithParams))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
 func _DungeonsAndTrolls_Move_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(Position)
+	in := new(PositionWithParams)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
@@ -296,13 +296,13 @@ func _DungeonsAndTrolls_Move_Handler(srv interface{}, ctx context.Context, dec f
 		FullMethod: "/dungeonsandtrolls.DungeonsAndTrolls/Move",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(DungeonsAndTrollsServer).Move(ctx, req.(*Position))
+		return srv.(DungeonsAndTrollsServer).Move(ctx, req.(*PositionWithParams))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
 func _DungeonsAndTrolls_Respawn_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(emptypb.Empty)
+	in := new(RespawnWithParams)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
@@ -314,13 +314,13 @@ func _DungeonsAndTrolls_Respawn_Handler(srv interface{}, ctx context.Context, de
 		FullMethod: "/dungeonsandtrolls.DungeonsAndTrolls/Respawn",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(DungeonsAndTrollsServer).Respawn(ctx, req.(*emptypb.Empty))
+		return srv.(DungeonsAndTrollsServer).Respawn(ctx, req.(*RespawnWithParams))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
 func _DungeonsAndTrolls_Skill_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(SkillUse)
+	in := new(SkillUseWithParams)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
@@ -332,13 +332,13 @@ func _DungeonsAndTrolls_Skill_Handler(srv interface{}, ctx context.Context, dec 
 		FullMethod: "/dungeonsandtrolls.DungeonsAndTrolls/Skill",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(DungeonsAndTrollsServer).Skill(ctx, req.(*SkillUse))
+		return srv.(DungeonsAndTrollsServer).Skill(ctx, req.(*SkillUseWithParams))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
 func _DungeonsAndTrolls_Yell_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(Message)
+	in := new(MessageWithParams)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
@@ -350,13 +350,13 @@ func _DungeonsAndTrolls_Yell_Handler(srv interface{}, ctx context.Context, dec f
 		FullMethod: "/dungeonsandtrolls.DungeonsAndTrolls/Yell",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(DungeonsAndTrollsServer).Yell(ctx, req.(*Message))
+		return srv.(DungeonsAndTrollsServer).Yell(ctx, req.(*MessageWithParams))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
 func _DungeonsAndTrolls_Commands_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(CommandsBatch)
+	in := new(CommandsBatchWithParams)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
@@ -368,13 +368,13 @@ func _DungeonsAndTrolls_Commands_Handler(srv interface{}, ctx context.Context, d
 		FullMethod: "/dungeonsandtrolls.DungeonsAndTrolls/Commands",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(DungeonsAndTrollsServer).Commands(ctx, req.(*CommandsBatch))
+		return srv.(DungeonsAndTrollsServer).Commands(ctx, req.(*CommandsBatchWithParams))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
 func _DungeonsAndTrolls_MonstersCommands_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(CommandsForMonsters)
+	in := new(CommandsForMonstersWithParams)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
@@ -386,13 +386,13 @@ func _DungeonsAndTrolls_MonstersCommands_Handler(srv interface{}, ctx context.Co
 		FullMethod: "/dungeonsandtrolls.DungeonsAndTrolls/MonstersCommands",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(DungeonsAndTrollsServer).MonstersCommands(ctx, req.(*CommandsForMonsters))
+		return srv.(DungeonsAndTrollsServer).MonstersCommands(ctx, req.(*CommandsForMonstersWithParams))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
 func _DungeonsAndTrolls_AssignSkillPoints_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(Attributes)
+	in := new(AttributesWithParams)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
@@ -404,7 +404,7 @@ func _DungeonsAndTrolls_AssignSkillPoints_Handler(srv interface{}, ctx context.C
 		FullMethod: "/dungeonsandtrolls.DungeonsAndTrolls/AssignSkillPoints",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(DungeonsAndTrollsServer).AssignSkillPoints(ctx, req.(*Attributes))
+		return srv.(DungeonsAndTrollsServer).AssignSkillPoints(ctx, req.(*AttributesWithParams))
 	}
 	return interceptor(ctx, in, info, handler)
 }
