@@ -194,7 +194,7 @@ func (g *Game) Respawn(player *gameobject.Player, markDeath bool) {
 		o, err := g.GetObjectsOnPosition(player.Position)
 		if err != nil {
 			log.Warn().Err(err).Msg("")
-		} else {
+		} else if o != nil {
 			RemovePlayerFromTile(o, player)
 		}
 	}
