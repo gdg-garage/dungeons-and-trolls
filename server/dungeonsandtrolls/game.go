@@ -575,11 +575,6 @@ func (g *Game) addMonsterToNewPosition(o *api.MapObjects, m *api.Monster, c *api
 // MoveCharacter The coordinates must include level.
 func (g *Game) MoveCharacter(p gameobject.Positioner, c *api.Coordinates) error {
 	equipEvent := api.Event_MOVE
-	g.LogEvent(&api.Event{
-		Type: &equipEvent,
-		Message: fmt.Sprintf("Character %s (%s) moved from (%d, %d) to (%d, %d)",
-			p.GetId(), p.GetName(), p.GetPosition().PositionX, p.GetPosition().PositionY, c.PositionX, c.PositionY),
-		Coordinates: p.GetPosition()})
 	if p.GetPosition() != nil {
 		switch pt := p.(type) {
 		case *gameobject.Player:
@@ -588,6 +583,11 @@ func (g *Game) MoveCharacter(p gameobject.Positioner, c *api.Coordinates) error 
 		case *gameobject.Monster:
 			g.removeMonsterFromPosition(pt)
 		}
+		g.LogEvent(&api.Event{
+			Type: &equipEvent,
+			Message: fmt.Sprintf("Character %s (%s) moved from (%d, %d) to (%d, %d)",
+				p.GetId(), p.GetName(), p.GetPosition().PositionX, p.GetPosition().PositionY, c.PositionX, c.PositionY),
+			Coordinates: p.GetPosition()})
 	}
 	lc, err := g.mapCache.CachedLevel(c.Level)
 	if err != nil {
