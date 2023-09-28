@@ -8,6 +8,10 @@ import (
 
 // ValidateBuy validates identifiers, funds, and requirements
 func ValidateBuy(game *Game, p *gameobject.Player, identifiers *api.Identifiers) error {
+	if p.Stun.IsStunned {
+		return fmt.Errorf("you are stunned")
+	}
+
 	// this has to be a copy
 	playerMoney := p.Character.Money * 1
 	requirements := &api.Attributes{}
@@ -127,7 +131,6 @@ func payForSkill(p gameobject.Skiller, s *api.Skill) error {
 		return nil
 	}
 	return gameobject.SubtractAllAttributes(p.GetAttributes(), s.Cost, false)
-
 }
 
 func ExecuteSkill(game *Game, player gameobject.Skiller, su *api.SkillUse) error {

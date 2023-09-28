@@ -7,7 +7,10 @@ import (
 	"github.com/gdg-garage/dungeons-and-trolls/server/dungeonsandtrolls/gameobject"
 )
 
-func validateAndSetMove(game *dungeonsandtrolls.Game, c *api.Position, p gameobject.Positioner) error {
+func validateAndSetMove(game *dungeonsandtrolls.Game, c *api.Position, p gameobject.Alive) error {
+	if p.IsStunned() {
+		return fmt.Errorf("you are stunned")
+	}
 	// TODO check if visible
 	// check that path exists
 	lc, err := game.GetCachedLevel(p.GetPosition().Level)

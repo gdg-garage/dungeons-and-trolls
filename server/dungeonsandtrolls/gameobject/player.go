@@ -19,6 +19,7 @@ type Player struct {
 	MaxStats       *api.Attributes             `json:"-"`
 	Skills         map[string]*api.Skill       `json:"-"`
 	IsAdmin        bool                        `json:"admin"`
+	Stun           Stun                        `json:"-"`
 }
 
 func CreatePlayer(name string) *Player {
@@ -140,6 +141,10 @@ func (p *Player) GetSkill(id string) (*api.Skill, bool) {
 
 func (p *Player) GetAttributes() *api.Attributes {
 	return p.Character.Attributes
+}
+
+func (p *Player) IsStunned() bool {
+	return p.Stun.IsStunned
 }
 
 func (p *Player) generateSkills() {

@@ -376,6 +376,8 @@ func (g *Game) processCommands() {
 		}
 	}
 
+	// TODO passive skills
+
 	// TODO ground effects - pass to players and monsters
 
 	for _, i := range g.idToObject {

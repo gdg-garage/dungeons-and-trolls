@@ -15,8 +15,13 @@ type Positioner interface {
 	SetMovingTo(m *paths.Path)
 }
 
-type Skiller interface {
+type Alive interface {
 	Positioner
+	IsStunned() bool
+}
+
+type Skiller interface {
+	Alive
 	GetSkill(id string) (*api.Skill, bool)
 	GetAttributes() *api.Attributes
 }

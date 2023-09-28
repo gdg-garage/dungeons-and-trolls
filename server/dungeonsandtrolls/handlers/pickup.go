@@ -9,6 +9,10 @@ import (
 )
 
 func validatePickUp(game *dungeonsandtrolls.Game, i *api.Identifier, p *gameobject.Player) error {
+	if p.Stun.IsStunned {
+		return fmt.Errorf("you are stunned")
+	}
+
 	// TODO maybe buyValidation could be used if the price is 0?
 	// check item (exists and is item)
 	o, err := game.GetObjectsOnPosition(p.Position)

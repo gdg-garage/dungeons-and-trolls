@@ -10,6 +10,10 @@ import (
 func validateAssignAttributes(p *gameobject.Player, a *api.Attributes) error {
 	// TODO should this be int?
 
+	if p.Stun.IsStunned {
+		return fmt.Errorf("you are stunned")
+	}
+
 	if a.Strength != nil && *a.Strength < 0 {
 		return fmt.Errorf("strength is <0")
 	}

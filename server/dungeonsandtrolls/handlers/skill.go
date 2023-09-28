@@ -20,7 +20,16 @@ func checkDistance(playerPosition *api.Coordinates, playerAttributes *api.Attrib
 	return nil
 }
 
+func tilesInRange(game *dungeonsandtrolls.Game, startingPosition *api.Coordinates, rng int32) []*api.MapObjects {
+	// TODO implement
+	return []*api.MapObjects{}
+}
+
 func validateSkill(game *dungeonsandtrolls.Game, skillUse *api.SkillUse, p gameobject.Skiller) error {
+	if p.IsStunned() {
+		return fmt.Errorf("you are stunned")
+	}
+
 	s, ok := p.GetSkill(skillUse.SkillId)
 	if !ok {
 		return fmt.Errorf("skill %s not found for Character %s", skillUse.SkillId, p.GetId())
@@ -36,6 +45,20 @@ func validateSkill(game *dungeonsandtrolls.Game, skillUse *api.SkillUse, p gameo
 		return fmt.Errorf("skill target should be none")
 	}
 	// TODO check none skills - no position and no target
+
+	if s.Flags != nil {
+		if s.Flags.RequiresLineOfSight {
+			// TODO check that target is in los
+		}
+		if s.Flags.RequiresAlone {
+			for _, mo := range tilesInRange(game, p.GetPosition(), 5) {
+				if len(mo.Monsters) > 0 || len(mo.Players) > 0 {
+					return fmt.Errorf("you are not alone")
+				}
+			}
+		}
+	}
+
 	if skillUse.TargetId != nil {
 		t, err := game.GetObjectById(*skillUse.TargetId)
 		if err != nil {

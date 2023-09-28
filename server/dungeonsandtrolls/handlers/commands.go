@@ -11,6 +11,11 @@ func Commands(game *dungeonsandtrolls.Game, c *api.CommandsBatch, token string) 
 	if err != nil {
 		return err
 	}
+
+	if p.Stun.IsStunned {
+		return fmt.Errorf("you are stunned")
+	}
+
 	if p.IsAdmin {
 		return fmt.Errorf("admin players are are not allowed to call non-monster commands")
 	}

@@ -13,6 +13,7 @@ type Monster struct {
 	MaxStats *api.Attributes       `json:"-"`
 	Monster  *api.Monster          `json:"-"`
 	Skills   map[string]*api.Skill `json:"-"`
+	Stun     Stun                  `json:"-"`
 }
 
 func CreateMonster(mon *api.Monster, p *api.Coordinates) *Monster {
@@ -65,6 +66,10 @@ func (m *Monster) GetSkill(id string) (*api.Skill, bool) {
 
 func (m *Monster) GetAttributes() *api.Attributes {
 	return m.Monster.Attributes
+}
+
+func (m *Monster) IsStunned() bool {
+	return m.Stun.IsStunned
 }
 
 func (m *Monster) generateSkills() {
