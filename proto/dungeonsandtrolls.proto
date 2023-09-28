@@ -257,6 +257,7 @@ message Skill {
   DamageType damage_type = 9;
   SkillEffect caster_effects = 10;
   SkillEffect target_effects = 11;
+  SkillGenericFlags flags = 12;
 }
 
 message Item {
@@ -297,20 +298,22 @@ message Droppable {
   }
 }
 
-message SkillFlags {
+message SkillGenericFlags {
   bool requires_alone = 1; // requires that the caster is alone (no other creature (player or monster) are visible in 5 range), furthermore the skill is canceled if you take any damage while using it
-  bool requires_line_of_sight = 2;  // requires the target position be visible from the caster position
-  bool allow_target_self = 3; // allows skills that target a character to target oneself
-  bool movement = 4; // moves the caster to the target position, or the target to the caster position
-  bool knockback = 5; // moves the caster/target one tile away from the other
-  bool stun = 6; // prevents the caster/target from performing any actions for one tick, and grants immunity to stun for the following tick
-  bool ground_effect = 7; // creates ground effect at caster/target position, which applies the effects of the skill
-  bool passive = 8; // the effects of the skill are automatically applied every tick, assuming the cost can be paid; multiple passive skills are allowed
+  bool requires_line_of_sight = 2; // requires the target position be visible from the caster position
+  bool passive = 3; // the effects of the skill are automatically applied every tick, assuming the cost can be paid; multiple passive skills are allowed
+}
+
+message SkillSpecificFlags {
+  bool movement = 1; // moves the caster to the target position, or the target to the caster position
+  bool knockback = 2; // moves the caster/target one tile away from the other
+  bool stun = 3; // prevents the caster/target from performing any actions for one tick, and grants immunity to stun for the following tick
+  bool ground_effect = 4; // creates ground effect at caster/target position, which applies the effects of the skill
 }
 
 message SkillEffect {
 	SkillAttributes attributes = 1;
-  SkillFlags flags = 2;
+  SkillSpecificFlags flags = 2;
 	repeated Droppable summons = 3;
 };
 

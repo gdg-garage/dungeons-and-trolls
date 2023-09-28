@@ -128,16 +128,19 @@ func nonNilISkill(s *api.Skill) {
 		s.DamageAmount = &api.Attributes{}
 	}
 	if s.CasterEffects == nil {
-		s.CasterEffects = &api.SkillEffect{Attributes: &api.SkillAttributes{}, Flags: &api.SkillFlags{}}
+		s.CasterEffects = &api.SkillEffect{Attributes: &api.SkillAttributes{}, Flags: &api.SkillSpecificFlags{}}
 	}
 	if s.TargetEffects == nil {
-		s.TargetEffects = &api.SkillEffect{Attributes: &api.SkillAttributes{}, Flags: &api.SkillFlags{}}
+		s.TargetEffects = &api.SkillEffect{Attributes: &api.SkillAttributes{}, Flags: &api.SkillSpecificFlags{}}
 	}
 	if s.CasterEffects.Flags == nil {
-		s.TargetEffects.Flags = &api.SkillFlags{}
+		s.TargetEffects.Flags = &api.SkillSpecificFlags{}
 	}
 	if s.TargetEffects.Flags == nil {
-		s.TargetEffects.Flags = &api.SkillFlags{}
+		s.TargetEffects.Flags = &api.SkillSpecificFlags{}
+	}
+	if s.Flags == nil {
+		s.Flags = &api.SkillGenericFlags{}
 	}
 }
 

@@ -1194,6 +1194,9 @@
         },
         "targetEffects": {
           "$ref": "#/definitions/dungeonsandtrollsSkillEffect"
+        },
+        "flags": {
+          "$ref": "#/definitions/dungeonsandtrollsSkillGenericFlags"
         }
       }
     },
@@ -1265,7 +1268,7 @@
           "$ref": "#/definitions/dungeonsandtrollsSkillAttributes"
         },
         "flags": {
-          "$ref": "#/definitions/dungeonsandtrollsSkillFlags"
+          "$ref": "#/definitions/dungeonsandtrollsSkillSpecificFlags"
         },
         "summons": {
           "type": "array",
@@ -1275,7 +1278,7 @@
         }
       }
     },
-    "dungeonsandtrollsSkillFlags": {
+    "dungeonsandtrollsSkillGenericFlags": {
       "type": "object",
       "properties": {
         "requiresAlone": {
@@ -1286,10 +1289,15 @@
           "type": "boolean",
           "title": "requires the target position be visible from the caster position"
         },
-        "allowTargetSelf": {
+        "passive": {
           "type": "boolean",
-          "title": "allows skills that target a character to target oneself"
-        },
+          "title": "the effects of the skill are automatically applied every tick, assuming the cost can be paid; multiple passive skills are allowed"
+        }
+      }
+    },
+    "dungeonsandtrollsSkillSpecificFlags": {
+      "type": "object",
+      "properties": {
         "movement": {
           "type": "boolean",
           "title": "moves the caster to the target position, or the target to the caster position"
@@ -1305,10 +1313,6 @@
         "groundEffect": {
           "type": "boolean",
           "title": "creates ground effect at caster/target position, which applies the effects of the skill"
-        },
-        "passive": {
-          "type": "boolean",
-          "title": "the effects of the skill are automatically applied every tick, assuming the cost can be paid; multiple passive skills are allowed"
         }
       }
     },
