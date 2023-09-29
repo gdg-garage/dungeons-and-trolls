@@ -94,6 +94,9 @@ func nonNilMonster(m *api.Monster) {
 	for _, i := range m.EquippedItems {
 		nonNilItem(i)
 	}
+	if m.Attributes == nil {
+		m.Attributes = &api.Attributes{}
+	}
 	for _, d := range m.OnDeath {
 		nonNil(d)
 	}
