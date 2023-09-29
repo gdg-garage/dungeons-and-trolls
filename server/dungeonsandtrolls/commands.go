@@ -168,6 +168,10 @@ func ExecuteSkill(game *Game, player gameobject.Skiller, su *api.SkillUse) error
 		switch pt := player.(type) {
 		case *gameobject.Player:
 			casterId := player.GetId()
+			if s.CasterEffects.Flags.Stun {
+				// TODO log stun?
+				pt.Stun.IsStunned = true
+			}
 			pt.Character.Effects = append(pt.Character.Effects, &api.Effect{
 				Effects:   e,
 				Duration:  int32(duration),
@@ -175,6 +179,10 @@ func ExecuteSkill(game *Game, player gameobject.Skiller, su *api.SkillUse) error
 			})
 		case *gameobject.Monster:
 			casterId := player.GetId()
+			if s.CasterEffects.Flags.Stun {
+				// TODO log stun?
+				pt.Stun.IsStunned = true
+			}
 			pt.Monster.Effects = append(pt.Monster.Effects, &api.Effect{
 				Effects:   e,
 				Duration:  int32(duration),
@@ -206,6 +214,10 @@ func ExecuteSkill(game *Game, player gameobject.Skiller, su *api.SkillUse) error
 			switch c := character.(type) {
 			case *gameobject.Monster:
 				casterId := player.GetId()
+				if s.TargetEffects.Flags.Stun {
+					// TODO log stun?
+					c.Stun.IsStunned = true
+				}
 				c.Monster.Effects = append(c.Monster.Effects, &api.Effect{
 					Effects:      e,
 					DamageAmount: float32(d),
@@ -215,6 +227,10 @@ func ExecuteSkill(game *Game, player gameobject.Skiller, su *api.SkillUse) error
 				})
 			case *gameobject.Player:
 				casterId := player.GetId()
+				if s.TargetEffects.Flags.Stun {
+					// TODO log stun?
+					c.Stun.IsStunned = true
+				}
 				c.Character.Effects = append(c.Character.Effects, &api.Effect{
 					Effects:      e,
 					DamageAmount: float32(d),
