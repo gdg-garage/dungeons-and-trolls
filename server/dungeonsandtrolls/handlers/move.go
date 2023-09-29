@@ -5,6 +5,7 @@ import (
 	"github.com/gdg-garage/dungeons-and-trolls/server/dungeonsandtrolls"
 	"github.com/gdg-garage/dungeons-and-trolls/server/dungeonsandtrolls/api"
 	"github.com/gdg-garage/dungeons-and-trolls/server/dungeonsandtrolls/gameobject"
+	"github.com/rs/zerolog/log"
 )
 
 func validateAndSetMove(game *dungeonsandtrolls.Game, c *api.Position, p gameobject.Alive) error {
@@ -19,6 +20,10 @@ func validateAndSetMove(game *dungeonsandtrolls.Game, c *api.Position, p gameobj
 	}
 	if c.PositionX >= lc.Width || c.PositionY >= lc.Height {
 		return fmt.Errorf("position (%d, %d) is out of the level map", c.PositionX, c.PositionY)
+	}
+	if p.GetPosition() == nil {
+		log.Warn().Msgf("trying to move %s which is on nil pos", p.GetId())
+		return fmt.Errorf("tried to move with %s which is on nil pos", p.GetId())
 	}
 	path := lc.Grid.GetPathFromCells(
 		lc.Grid.Get(int(p.GetPosition().PositionX), int(p.GetPosition().PositionY)),
