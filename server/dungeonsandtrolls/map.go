@@ -136,6 +136,12 @@ func nonNilISkill(s *api.Skill) {
 	if s.TargetEffects == nil {
 		s.TargetEffects = &api.SkillEffect{Attributes: &api.SkillAttributes{}, Flags: &api.SkillSpecificFlags{}}
 	}
+	if s.CasterEffects.Attributes == nil {
+		s.CasterEffects.Attributes = &api.SkillAttributes{}
+	}
+	if s.TargetEffects.Attributes == nil {
+		s.TargetEffects.Attributes = &api.SkillAttributes{}
+	}
 	if s.CasterEffects.Flags == nil {
 		s.TargetEffects.Flags = &api.SkillSpecificFlags{}
 	}
@@ -184,7 +190,7 @@ func parseTile(maybeTile interface{}, l *api.Level) error {
 	case "door":
 		o.IsDoor = true
 		o.IsFree = false
-	case "decoration", "monster", "chest":
+	case "decoration", "monster", "chest", "waypoint":
 		// We do not care, the specifics are defined in the data field.
 	default:
 		log.Warn().Msgf("unknown terrain type %s", t)
