@@ -383,6 +383,13 @@ func (g *Game) processCommands() {
 	for _, i := range g.idToObject {
 		switch c := i.(type) {
 		case *gameobject.Monster:
+			if c.Stun.IsStunned {
+				c.Stun.IsStunned = false
+				c.Stun.IsImmune = true
+			}
+			if c.Stun.IsImmune {
+				c.Stun.IsImmune = false
+			}
 			e, err := EvaluateEffects(g, c.Monster.Effects, c.Monster.Attributes, c)
 			if err != nil {
 				g.LogEvent(&api.Event{
@@ -394,6 +401,13 @@ func (g *Game) processCommands() {
 				c.Monster.Effects = e
 			}
 		case *gameobject.Player:
+			if c.Stun.IsStunned {
+				c.Stun.IsStunned = false
+				c.Stun.IsImmune = true
+			}
+			if c.Stun.IsImmune {
+				c.Stun.IsImmune = false
+			}
 			e, err := EvaluateEffects(g, c.Character.Effects, c.Character.Attributes, c)
 			if err != nil {
 				g.LogEvent(&api.Event{
