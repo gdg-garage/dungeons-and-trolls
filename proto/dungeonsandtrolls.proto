@@ -145,12 +145,19 @@ message CommandsForMonsters {
 }
 
 enum DamageType {
-  none = 0;
-  slash = 1;
-  pierce = 2;
-  fire = 3;
-  poison = 4;
-  electric = 5;
+  // TODO enable none
+//  none = 0;
+//  slash = 1;
+//  pierce = 2;
+//  fire = 3;
+//  poison = 4;
+//  electric = 5;
+
+    slash = 0;
+    pierce = 1;
+    fire = 2;
+    poison = 3;
+    electric = 4;
 }
 
 message Effect {

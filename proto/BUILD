@@ -13,16 +13,6 @@ proto_library(
     ],
 )
 
-proto_library(
-    name = "dungeonsandtrolls_annotated_proto",
-    srcs = [
-        "dungeonsandtrolls_annotated.proto",
-    ],
-    deps = [
-        "@go_googleapis//google/api:annotations_proto",
-    ],
-)
-
 filegroup(
   name = 'service',
   srcs = ["service.yml"],
