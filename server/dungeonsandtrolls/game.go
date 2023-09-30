@@ -233,6 +233,17 @@ func (g *Game) LogEvent(event *api.Event) {
 	log.Info().Msgf(event.String())
 }
 
+func (g *Game) GetMapObjectsOrCreateDefault(c *api.Coordinates) *api.MapObjects {
+	lc, err := g.mapCache.CachedLevel(c.Level)
+	if err != nil {
+		log.Warn().Err(err).Msg("")
+	}
+	return lc.CacheObjectsOnPosition(c, &api.MapObjects{
+		Position: gameobject.CoordinatesToPosition(c),
+		IsFree:   true,
+	})
+}
+
 func (g *Game) processCommands() {
 	errorEvent := api.Event_ERROR
 	deathEvent := api.Event_DEATH
@@ -457,14 +468,7 @@ func (g *Game) processCommands() {
 					}
 					RemoveMonsterFromTile(o, c)
 				}
-				lc, err := g.mapCache.CachedLevel(c.GetPosition().Level)
-				if err != nil {
-					log.Warn().Err(err).Msg("")
-				}
-				po := lc.CacheObjectsOnPosition(c.GetPosition(), &api.MapObjects{
-					Position: gameobject.CoordinatesToPosition(c.GetPosition()),
-					IsFree:   true,
-				})
+				po := g.GetMapObjectsOrCreateDefault(c.GetPosition())
 				for _, d := range c.Monster.OnDeath {
 					switch o := d.Data.(type) {
 					case *api.Droppable_Skill:
@@ -482,6 +486,10 @@ func (g *Game) processCommands() {
 						po.Portal = o.Waypoint
 					case *api.Droppable_Key:
 						for _, door := range o.Key.Doors {
+							lc, err := g.mapCache.CachedLevel(c.GetPosition().Level)
+							if err != nil {
+								log.Warn().Err(err).Msg("")
+							}
 							// find door and remove it
 							dp := lc.CacheObjectsOnPosition(gameobject.PositionToCoordinates(door, c.GetPosition().Level), nil)
 							if dp != nil {

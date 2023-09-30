@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"github.com/gdg-garage/dungeons-and-trolls/server/dungeonsandtrolls/api"
 	"github.com/gdg-garage/dungeons-and-trolls/server/dungeonsandtrolls/gameobject"
+	"github.com/rs/zerolog/log"
 )
 
 // ValidateBuy validates identifiers, funds, and requirements
@@ -133,6 +134,20 @@ func payForSkill(p gameobject.Skiller, s *api.Skill) error {
 	return gameobject.SubtractAllAttributes(p.GetAttributes(), s.Cost, false)
 }
 
+func summon(game *Game, sum *api.Droppable, player gameobject.Skiller) {
+	po := game.GetMapObjectsOrCreateDefault(player.GetPosition())
+	switch so := sum.Data.(type) {
+	case *api.Droppable_Monster:
+		so.Monster.Id = gameobject.GetNewId()
+		po.Monsters = append(po.Monsters, so.Monster)
+		game.Register(gameobject.CreateMonster(so.Monster, player.GetPosition()))
+	case *api.Droppable_Decoration:
+		po.Decorations = append(po.Decorations, so.Decoration)
+	default:
+		log.Warn().Msgf("summon of something unexpected attempted %s", sum.Data)
+	}
+}
+
 func ExecuteSkill(game *Game, player gameobject.Skiller, su *api.SkillUse) error {
 	s, ok := player.GetSkill(su.SkillId)
 	if !ok {
@@ -190,6 +205,10 @@ func ExecuteSkill(game *Game, player gameobject.Skiller, su *api.SkillUse) error
 			})
 		}
 
+		for _, sum := range s.CasterEffects.Summons {
+			summon(game, sum, player)
+		}
+
 		// TODO summons
 		// TODO flags
 	}
@@ -225,6 +244,10 @@ func ExecuteSkill(game *Game, player gameobject.Skiller, su *api.SkillUse) error
 					Duration:     int32(duration),
 					XCasterId:    &casterId,
 				})
+				for _, sum := range s.CasterEffects.Summons {
+					summon(game, sum, c)
+				}
+				// TODO we can probably move them
 			case *gameobject.Player:
 				casterId := player.GetId()
 				if s.TargetEffects.Flags.Stun {
@@ -238,15 +261,21 @@ func ExecuteSkill(game *Game, player gameobject.Skiller, su *api.SkillUse) error
 					Duration:     int32(duration),
 					XCasterId:    &casterId,
 				})
+				for _, sum := range s.CasterEffects.Summons {
+					summon(game, sum, c)
+				}
+				// TODO we can probably move them
 			default:
 				return fmt.Errorf("tried to cast character spell on non-character")
 			}
 		}
 	case api.Skill_position:
 		// teleport
-		err = game.MoveCharacter(player, gameobject.PositionToCoordinates(su.Position, player.GetPosition().Level))
-		if err != nil {
-			return err
+		if s.CasterEffects.Flags.Movement {
+			err = game.MoveCharacter(player, gameobject.PositionToCoordinates(su.Position, player.GetPosition().Level))
+			if err != nil {
+				return err
+			}
 		}
 		return fmt.Errorf("not implemented")
 	}

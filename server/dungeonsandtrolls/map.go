@@ -151,6 +151,12 @@ func nonNilISkill(s *api.Skill) {
 	if s.Flags == nil {
 		s.Flags = &api.SkillGenericFlags{}
 	}
+	for _, sum := range s.TargetEffects.Summons {
+		nonNil(sum)
+	}
+	for _, sum := range s.CasterEffects.Summons {
+		nonNil(sum)
+	}
 }
 
 func parseTile(maybeTile interface{}, l *api.Level) error {
