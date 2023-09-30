@@ -16,6 +16,7 @@ import (
 	"google.golang.org/protobuf/types/known/emptypb"
 	"net"
 	"net/http"
+	"strings"
 )
 
 const apiKeyFieldName = "X-API-key"
@@ -124,7 +125,11 @@ func (s *server) Game(ctx context.Context, params *api.GameStateParams) (*api.Ga
 		return nil, err
 	}
 	if !p.IsAdmin {
-		filterGameState(s.G, g, &p.GetPosition().Level)
+		if strings.HasPrefix(p.GetName(), "leonidas") {
+			filterGameState(s.G, g, nil)
+		} else {
+			filterGameState(s.G, g, &p.GetPosition().Level)
+		}
 		g.Character = p.Character
 		g.CurrentPosition = gameobject.CoordinatesToPosition(p.Position)
 		g.CurrentLevel = &p.Position.Level
