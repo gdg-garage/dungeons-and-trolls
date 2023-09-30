@@ -20,7 +20,7 @@ func validateAndSetMove(game *dungeonsandtrolls.Game, c *api.Position, p gameobj
 	if p.GetMovingTo() != nil {
 		// character  is already moving there - then do nothing
 		last := p.GetMovingTo().Get(p.GetMovingTo().Length() - 1)
-		if last.X == int(c.PositionX) && last.X == int(c.PositionX) {
+		if last.X == int(c.PositionX) && last.Y == int(c.PositionY) {
 			return nil
 		}
 	}

@@ -64,9 +64,11 @@ func (p *Player) InitAttributes() {
 		Mana:    pointy.Float32(baseStat),
 		Stamina: pointy.Float32(baseStat),
 	}
-	p.Character.Attributes.Life = pointy.Float32(baseStat)
-	p.Character.Attributes.Stamina = pointy.Float32(baseStat)
-	p.Character.Attributes.Mana = pointy.Float32(baseStat)
+	p.Character.Attributes = &api.Attributes{
+		Life:    pointy.Float32(baseStat),
+		Mana:    pointy.Float32(baseStat),
+		Stamina: pointy.Float32(baseStat),
+	}
 }
 
 func (p *Player) ResetAttributes() error {

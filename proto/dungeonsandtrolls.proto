@@ -11,6 +11,8 @@ import "google/protobuf/struct.proto";
 service DungeonsAndTrolls {
   // Sends all info about the game.
   rpc Game(GameStateParams) returns (GameState) {}
+  // Sends all info about the game.
+  rpc GameLevel(GameStateParamsLevel) returns (GameState) {}
   // Register provided User to the Game and create a character.
   rpc Register(User) returns (Registration) {}
   // Buy Items identified by the provided ID for the Character bound to the
@@ -125,6 +127,14 @@ message GameStateParams {
   optional bool blocking = 1;
   // default true
   optional bool items = 2;
+}
+
+message GameStateParamsLevel {
+  // default false
+  optional bool blocking = 1;
+  // default true
+  optional bool items = 2;
+  int32 level = 3;
 }
 
 message CommandsBatch {

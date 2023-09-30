@@ -5,6 +5,8 @@ http:
   rules:
     - selector: dungeonsandtrolls.DungeonsAndTrolls.Game
       get: "/v1/game"
+    - selector: dungeonsandtrolls.DungeonsAndTrolls.GameLevel
+      get: "/v1/game/{level}"
     - selector: dungeonsandtrolls.DungeonsAndTrolls.Register
       post: /v1/register
       body: "*"

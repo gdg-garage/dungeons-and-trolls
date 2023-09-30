@@ -63,7 +63,7 @@ func filterGameState(game *dungeonsandtrolls.Game, g *api.GameState, level *int3
 	g.Map.Levels = keptLevels
 	if level != nil && *level != 0 {
 		// Show shop only on 0th floor
-		game.Game.ShopItems = []*api.Item{}
+		g.ShopItems = []*api.Item{}
 	} else {
 		hideUnidentifiedItems(game, g)
 	}
@@ -92,7 +92,7 @@ func isBlocking(blocking *bool) bool {
 	return *blocking
 }
 
-func (s *server) Game(ctx context.Context, params *api.GameStateParams) (*api.GameState, error) {
+func (s *server) gameState(ctx context.Context, params *api.GameStateParams, level *int32) (*api.GameState, error) {
 	token, err := getToken(ctx)
 
 	s.G.GameLock.RLock()
@@ -109,9 +109,13 @@ func (s *server) Game(ctx context.Context, params *api.GameStateParams) (*api.Ga
 		return nil, fmt.Errorf("cloning GameState failed")
 	}
 
+	if params.Items != nil && !*params.Items {
+		g.ShopItems = []*api.Item{}
+	}
+
 	// token not found
 	if err != nil || len(token) == 0 {
-		filterGameState(s.G, g, nil)
+		filterGameState(s.G, g, level)
 		return g, nil
 	}
 	// token is present
@@ -121,8 +125,10 @@ func (s *server) Game(ctx context.Context, params *api.GameStateParams) (*api.Ga
 	}
 	if !p.IsAdmin {
 		if strings.HasPrefix(p.GetName(), "leonidas") {
-			filterGameState(s.G, g, nil)
-		} else {
+			filterGameState(s.G, g, level)
+		} else if level != nil {
+			filterGameState(s.G, g, level)
+		} else if level == nil {
 			filterGameState(s.G, g, &p.GetPosition().Level)
 		}
 		g.Character = p.Character
@@ -134,6 +140,17 @@ func (s *server) Game(ctx context.Context, params *api.GameStateParams) (*api.Ga
 	}
 
 	return g, nil
+}
+
+func (s *server) Game(ctx context.Context, params *api.GameStateParams) (*api.GameState, error) {
+	return s.gameState(ctx, params, nil)
+}
+
+func (s *server) GameLevel(ctx context.Context, params *api.GameStateParamsLevel) (*api.GameState, error) {
+	return s.gameState(ctx, &api.GameStateParams{
+		Blocking: params.Blocking,
+		Items:    params.Items,
+	}, &params.Level)
 }
 
 func (s *server) Register(ctx context.Context, user *api.User) (*api.Registration, error) {
