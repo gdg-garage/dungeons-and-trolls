@@ -39,11 +39,6 @@ type server struct {
 }
 
 func filterGameState(game *dungeonsandtrolls.Game, g *api.GameState, level *int32) {
-	if level != nil {
-		log.Info().Msgf("level %d", *level)
-	} else {
-		log.Info().Msgf("level nil")
-	}
 	// filter monsters for non-monster players
 	var keptLevels []*api.Level
 	for _, l := range g.Map.Levels {
