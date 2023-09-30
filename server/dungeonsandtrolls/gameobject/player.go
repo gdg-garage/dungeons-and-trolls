@@ -1,7 +1,9 @@
 package gameobject
 
 import (
+	"fmt"
 	"github.com/gdg-garage/dungeons-and-trolls/server/dungeonsandtrolls/api"
+	"github.com/rs/zerolog/log"
 	"github.com/solarlune/paths"
 	"go.openly.dev/pointy"
 	"google.golang.org/protobuf/proto"
@@ -10,16 +12,17 @@ import (
 const baseStat float32 = 100
 
 type Player struct {
-	Position       *api.Coordinates            `json:"position"`
-	MovingTo       *paths.Path                 `json:"-"`
-	Equipped       map[api.Item_Type]*api.Item `json:"-"`
-	Character      *api.Character              `json:"character"`
-	BaseAttributes *api.Attributes             `json:"-"`
-	ItemAttributes *api.Attributes             `json:"-"`
-	MaxStats       *api.Attributes             `json:"-"`
-	Skills         map[string]*api.Skill       `json:"-"`
-	IsAdmin        bool                        `json:"admin"`
-	Stun           Stun                        `json:"-"`
+	Position        *api.Coordinates            `json:"position"`
+	MovingTo        *paths.Path                 `json:"-"`
+	Equipped        map[api.Item_Type]*api.Item `json:"-"`
+	Character       *api.Character              `json:"character"`
+	BaseAttributes  *api.Attributes             `json:"-"`
+	ItemAttributes  *api.Attributes             `json:"-"`
+	MaxStats        *api.Attributes             `json:"-"`
+	Skills          map[string]*api.Skill       `json:"-"`
+	IsAdmin         bool                        `json:"admin"`
+	Stun            Stun                        `json:"-"`
+	LastDamageTaken int32                       `json:"-"`
 }
 
 func CreatePlayer(name string) *Player {
@@ -83,8 +86,10 @@ func (p *Player) updateAttributesUsingEffects() {
 }
 
 func (p *Player) UpdateAttributes() error {
+	log.Info().Msgf("%s (%s) current attributes %+v", p.GetId(), p.GetName(), p.GetAttributes())
 	currentAttributes := proto.Clone(p.Character.Attributes).(*api.Attributes)
 	err := p.ResetAttributes()
+	log.Info().Msgf("%s (%s) base attributes %+v", p.GetId(), p.GetName(), p.GetAttributes())
 	if err != nil {
 		return err
 	}
@@ -94,19 +99,36 @@ func (p *Player) UpdateAttributes() error {
 			return err
 		}
 	}
-	err = MergeAllAttributes(p.Character.Attributes, p.ItemAttributes, false)
+	log.Info().Msgf("%s (%s) item attributes %+v", p.GetId(), p.GetName(), p.ItemAttributes)
+	err = MergeAllAttributes(p.GetAttributes(), p.ItemAttributes, false)
+	log.Info().Msgf("%s (%s) max attributes %+v", p.GetId(), p.GetName(), p.MaxStats)
 	if err != nil {
 		return err
+	}
+	lastMax, ok := proto.Clone(p.MaxStats).(*api.Attributes)
+	if !ok {
+		return fmt.Errorf("cloning max stats failed")
 	}
 	err = MaxAllAttributes(p.MaxStats, p.ItemAttributes, true)
 	if err != nil {
 		return err
 	}
-	// TODO This operation is not "healing" using newly added base attributes (life, stamina, mana) just setting the max values.
+	log.Info().Msgf("%s (%s) new max attributes %+v", p.GetId(), p.GetName(), p.MaxStats)
+	added, ok := proto.Clone(p.MaxStats).(*api.Attributes)
+	if !ok {
+		return fmt.Errorf("cloning max stats failed")
+	}
+	p.Character.MaxAttributes = p.MaxStats
+	SubtractAllAttributes(added, lastMax, true)
 	p.Character.Attributes.Life = currentAttributes.Life
 	p.Character.Attributes.Mana = currentAttributes.Mana
 	p.Character.Attributes.Stamina = currentAttributes.Stamina
+	*p.Character.Attributes.Life += *added.Life
+	*p.Character.Attributes.Mana += *added.Mana
+	*p.Character.Attributes.Stamina += *added.Stamina
+	log.Info().Msgf("%s (%s) final attributes without effects %+v", p.GetId(), p.GetName(), p.GetAttributes())
 	p.updateAttributesUsingEffects()
+	log.Info().Msgf("%s (%s) final attributes with effects %+v", p.GetId(), p.GetName(), p.GetAttributes())
 	return nil
 }
 

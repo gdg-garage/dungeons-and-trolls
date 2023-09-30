@@ -12,6 +12,14 @@ func validateAndSetMove(game *dungeonsandtrolls.Game, c *api.Position, p gameobj
 	if p.IsStunned() {
 		return fmt.Errorf("you are stunned")
 	}
+	// check that the destination is still the same
+	if p.GetMovingTo() != nil {
+		// character  is already moving there - then do nothing
+		last := p.GetMovingTo().Get(p.GetMovingTo().Length() - 1)
+		if last.X == int(c.PositionX) && last.X == int(c.PositionX) {
+			return nil
+		}
+	}
 	// TODO check if visible
 	// check that path exists
 	lc, err := game.GetCachedLevel(p.GetPosition().Level)

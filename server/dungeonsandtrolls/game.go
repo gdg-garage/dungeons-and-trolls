@@ -714,6 +714,7 @@ func HideNonPublicMonsterFields(g *Game, m *api.Monster) {
 	m.Algorithm = nil
 	m.OnDeath = []*api.Droppable{}
 	m.Attributes = nil
+	m.MaxAttributes = nil
 }
 
 func RemovePlayerFromTile(o *api.MapObjects, p *gameobject.Player) {

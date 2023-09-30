@@ -39,6 +39,9 @@ func validateMonsterCommands(game *dungeonsandtrolls.Game, mc *api.CommandsForMo
 				return err
 			}
 		}
+		if c.Skill != nil && c.Move != nil {
+			return fmt.Errorf("cannot use skill and move at the same time")
+		}
 		if c.Skill != nil {
 			err = validateSkill(game, c.Skill, m)
 			if err != nil {

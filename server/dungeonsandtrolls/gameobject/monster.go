@@ -8,12 +8,13 @@ import (
 )
 
 type Monster struct {
-	Position *api.Coordinates      `json:"position"`
-	MovingTo *paths.Path           `json:"-"`
-	MaxStats *api.Attributes       `json:"-"`
-	Monster  *api.Monster          `json:"-"`
-	Skills   map[string]*api.Skill `json:"-"`
-	Stun     Stun                  `json:"-"`
+	Position        *api.Coordinates      `json:"position"`
+	MovingTo        *paths.Path           `json:"-"`
+	MaxStats        *api.Attributes       `json:"-"`
+	Monster         *api.Monster          `json:"-"`
+	Skills          map[string]*api.Skill `json:"-"`
+	Stun            Stun                  `json:"-"`
+	LastDamageTaken int32                 `json:"-"`
 }
 
 func CreateMonster(mon *api.Monster, p *api.Coordinates) *Monster {
@@ -31,6 +32,7 @@ func CreateMonster(mon *api.Monster, p *api.Coordinates) *Monster {
 		Monster:  mon,
 		MaxStats: maxAttributes,
 	}
+	m.Monster.MaxAttributes = maxAttributes
 	m.generateSkills()
 	return m
 }

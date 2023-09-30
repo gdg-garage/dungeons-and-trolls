@@ -292,9 +292,12 @@ func (lc *LevelCache) CacheObjectsOnPosition(p *api.Coordinates, mo *api.MapObje
 	// Does not exist yet
 	if mo != nil {
 		lc.Objects[p.PositionX][p.PositionY] = mo
+		c := lc.Grid.Get(int(p.PositionX), int(p.PositionY))
 		if !mo.IsFree {
-			c := lc.Grid.Get(int(p.PositionX), int(p.PositionY))
 			c.Walkable = false
+		}
+		if mo.Portal != nil || mo.IsStairs {
+			c.Cost = 5
 		}
 	} else {
 		if _, ok := lc.Objects[p.PositionX][p.PositionY]; !ok {

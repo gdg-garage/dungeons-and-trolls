@@ -22,6 +22,7 @@ func checkDistance(playerPosition *api.Coordinates, playerAttributes *api.Attrib
 
 func tilesInRange(game *dungeonsandtrolls.Game, startingPosition *api.Coordinates, rng int32) []*api.MapObjects {
 	// TODO implement
+	// <=
 	return []*api.MapObjects{}
 }
 
