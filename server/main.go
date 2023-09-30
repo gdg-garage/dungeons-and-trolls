@@ -38,8 +38,13 @@ type server struct {
 }
 
 func filterGameState(game *dungeonsandtrolls.Game, g *api.GameState, level *int32) {
-	// TODO send only necessary level
+	if level != nil {
+		log.Info().Msgf("level %d", *level)
+	} else {
+		log.Info().Msgf("level nil")
+	}
 	// filter monsters for non-monster players
+	var keptLevels []*api.Level
 	for _, l := range g.Map.Levels {
 		if level != nil && l.Level != *level {
 			continue
@@ -57,7 +62,9 @@ func filterGameState(game *dungeonsandtrolls.Game, g *api.GameState, level *int3
 				gameobject.FilterEffect(e)
 			}
 		}
+		keptLevels = append(keptLevels, l)
 	}
+	g.Map.Levels = keptLevels
 	if level != nil && *level != 0 {
 		// Show shop only on 0th floor
 		game.Game.ShopItems = []*api.Item{}
@@ -121,9 +128,10 @@ func (s *server) Game(ctx context.Context, params *api.GameStateParams) (*api.Ga
 		g.Character = p.Character
 		g.CurrentPosition = gameobject.CoordinatesToPosition(p.Position)
 		g.CurrentLevel = &p.Position.Level
+	} else {
+		// Monster admin
+		filterMonsterGameState(s.G, g)
 	}
-	// Monster admin
-	filterMonsterGameState(s.G, g)
 
 	return g, nil
 }
