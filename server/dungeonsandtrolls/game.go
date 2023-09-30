@@ -708,7 +708,7 @@ func HideNonPublicMonsterFields(g *Game, m *api.Monster) {
 	if !ok {
 		log.Warn().Msg("not a monster")
 	} else {
-		m.LifePercentage = float32(math.Round(float64(*m.Attributes.Life) / float64(*mo.MaxStats.Life) * 100))
+		m.LifePercentage = float32(math.Round(float64(*m.Attributes.Life) / float64(*mo.Monster.MaxAttributes.Life) * 100))
 	}
 
 	// Hide the rest
