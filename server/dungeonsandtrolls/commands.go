@@ -297,7 +297,7 @@ func ExecuteAssignSkillPoints(player *gameobject.Player, a *api.Attributes) erro
 	return nil
 }
 
-func EvaluateEffects(g *Game, effects []*api.Effect, a *api.Attributes, receiver gameobject.Positioner) ([]*api.Effect, error) {
+func EvaluateEffects(g *Game, effects []*api.Effect, a *api.Attributes, receiver gameobject.Alive) ([]*api.Effect, error) {
 	// TODO first buffs then damage
 	var keptEffects []*api.Effect
 	for _, e := range effects {
@@ -315,6 +315,10 @@ func EvaluateEffects(g *Game, effects []*api.Effect, a *api.Attributes, receiver
 			if err == nil {
 				attackerName = attacker.GetName()
 			}
+		}
+
+		if damage > 0 {
+			receiver.DamageTaken()
 		}
 
 		damageEvent := api.Event_DAMAGE

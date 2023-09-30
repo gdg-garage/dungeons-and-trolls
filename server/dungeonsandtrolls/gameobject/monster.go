@@ -4,17 +4,17 @@ import (
 	"github.com/gdg-garage/dungeons-and-trolls/server/dungeonsandtrolls/api"
 	"github.com/rs/zerolog/log"
 	"github.com/solarlune/paths"
+	"go.openly.dev/pointy"
 	"google.golang.org/protobuf/proto"
 )
 
 type Monster struct {
-	Position        *api.Coordinates      `json:"position"`
-	MovingTo        *paths.Path           `json:"-"`
-	MaxStats        *api.Attributes       `json:"-"`
-	Monster         *api.Monster          `json:"-"`
-	Skills          map[string]*api.Skill `json:"-"`
-	Stun            Stun                  `json:"-"`
-	LastDamageTaken int32                 `json:"-"`
+	Position *api.Coordinates      `json:"position"`
+	MovingTo *paths.Path           `json:"-"`
+	MaxStats *api.Attributes       `json:"-"`
+	Monster  *api.Monster          `json:"-"`
+	Skills   map[string]*api.Skill `json:"-"`
+	Stun     Stun                  `json:"-"`
 }
 
 func CreateMonster(mon *api.Monster, p *api.Coordinates) *Monster {
@@ -33,6 +33,7 @@ func CreateMonster(mon *api.Monster, p *api.Coordinates) *Monster {
 		MaxStats: maxAttributes,
 	}
 	m.Monster.MaxAttributes = maxAttributes
+	m.Monster.LastDamageTaken = pointy.Int32(10)
 	m.generateSkills()
 	return m
 }
@@ -72,6 +73,14 @@ func (m *Monster) GetAttributes() *api.Attributes {
 
 func (m *Monster) IsStunned() bool {
 	return m.Stun.IsStunned
+}
+
+func (m *Monster) GetLastDamageTaken() int32 {
+	return *m.Monster.LastDamageTaken
+}
+
+func (m *Monster) DamageTaken() {
+	m.Monster.LastDamageTaken = pointy.Int32(-1)
 }
 
 func (m *Monster) generateSkills() {

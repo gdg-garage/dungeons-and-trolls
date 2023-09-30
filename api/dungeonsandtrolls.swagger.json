@@ -2,7 +2,7 @@
   "swagger": "2.0",
   "info": {
     "title": "Dungeons and Trolls",
-    "version": "1.3.1"
+    "version": "1.3.2"
   },
   "tags": [
     {
@@ -666,8 +666,12 @@
           }
         },
         "maxAttributes": {
-          "$ref": "#/definitions/dungeonsandtrollsAttributes",
-          "title": "TODO add max attributes\n TODo propagate positions"
+          "$ref": "#/definitions/dungeonsandtrollsAttributes"
+        },
+        "lastDamageTaken": {
+          "type": "integer",
+          "format": "int32",
+          "title": "TODo propagate positions"
         }
       }
     },
@@ -1133,6 +1137,11 @@
         "maxAttributes": {
           "$ref": "#/definitions/dungeonsandtrollsAttributes",
           "x-nullable": true
+        },
+        "lastDamageTaken": {
+          "type": "integer",
+          "format": "int32",
+          "x-nullable": true
         }
       }
     },
@@ -1294,9 +1303,9 @@
     "dungeonsandtrollsSkillGenericFlags": {
       "type": "object",
       "properties": {
-        "requiresAlone": {
+        "requiresOutOfCombat": {
           "type": "boolean",
-          "title": "requires that the caster is alone (no other creature (player or monster) are visible in 5 range), furthermore the skill is canceled if you take any damage while using it"
+          "title": "requires that the caster has not taken any damage in last 2 ticks"
         },
         "requiresLineOfSight": {
           "type": "boolean",

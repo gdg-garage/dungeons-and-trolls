@@ -9,6 +9,10 @@ import (
 )
 
 func validateAndSetMove(game *dungeonsandtrolls.Game, c *api.Position, p gameobject.Alive) error {
+	pc := game.GetCommands(p.GetId())
+	if pc.Skill != nil {
+		return fmt.Errorf("cannot move and use skill at the same time")
+	}
 	if p.IsStunned() {
 		return fmt.Errorf("you are stunned")
 	}

@@ -205,7 +205,8 @@ func (g *Game) Respawn(player *gameobject.Player, markDeath bool) {
 		}
 	}
 	g.SpawnPlayer(player, gameobject.ZeroLevel)
-	player.ResetAttributes()
+	player.InitAttributes()
+	player.UpdateAttributes()
 	player.Character.Money = g.GetMoney()
 	player.Character.SkillPoints = float32(g.MaxLevelReached)
 	player.Character.Equip = []*api.Item{}
@@ -217,7 +218,6 @@ func (g *Game) Respawn(player *gameobject.Player, markDeath bool) {
 func (g *Game) AddPlayer(player *gameobject.Player, registration *api.Registration) {
 	g.Players[player.Character.Name] = player
 	g.ApiKeyToPlayer[*registration.ApiKey] = player
-	player.InitAttributes()
 	g.Respawn(player, false)
 }
 
@@ -295,6 +295,7 @@ func (g *Game) processCommands() {
 
 		//TODO skill on newly bought (picked up) items?
 		if c.Skill != nil {
+			skiller.SetMovingTo(nil)
 			err = ExecuteSkill(g, skiller, c.Skill)
 			if err != nil {
 				g.LogEvent(&api.Event{
@@ -416,6 +417,7 @@ func (g *Game) processCommands() {
 		switch c := i.(type) {
 		case *gameobject.Monster:
 			e, err := EvaluateEffects(g, c.Monster.Effects, c.Monster.Attributes, c)
+			*c.Monster.LastDamageTaken += 1
 			if err != nil {
 				g.LogEvent(&api.Event{
 					Type:        &errorEvent,
@@ -427,6 +429,7 @@ func (g *Game) processCommands() {
 			}
 		case *gameobject.Player:
 			e, err := EvaluateEffects(g, c.Character.Effects, c.Character.Attributes, c)
+			c.Character.LastDamageTaken += 1
 			if err != nil {
 				g.LogEvent(&api.Event{
 					Type:        &errorEvent,
@@ -715,6 +718,7 @@ func HideNonPublicMonsterFields(g *Game, m *api.Monster) {
 	m.OnDeath = []*api.Droppable{}
 	m.Attributes = nil
 	m.MaxAttributes = nil
+	m.LastDamageTaken = nil
 }
 
 func RemovePlayerFromTile(o *api.MapObjects, p *gameobject.Player) {

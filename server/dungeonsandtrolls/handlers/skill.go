@@ -27,6 +27,7 @@ func tilesInRange(game *dungeonsandtrolls.Game, startingPosition *api.Coordinate
 }
 
 func validateSkill(game *dungeonsandtrolls.Game, skillUse *api.SkillUse, p gameobject.Skiller) error {
+	p.SetMovingTo(nil)
 	if p.IsStunned() {
 		return fmt.Errorf("you are stunned")
 	}
@@ -51,11 +52,9 @@ func validateSkill(game *dungeonsandtrolls.Game, skillUse *api.SkillUse, p gameo
 		if s.Flags.RequiresLineOfSight {
 			// TODO check that target is in los
 		}
-		if s.Flags.RequiresAlone {
-			for _, mo := range tilesInRange(game, p.GetPosition(), 5) {
-				if len(mo.Monsters) > 0 || len(mo.Players) > 0 {
-					return fmt.Errorf("you are not alone")
-				}
+		if s.Flags.RequiresOutOfCombat {
+			if p.GetLastDamageTaken() < 3 {
+				return fmt.Errorf("cannot use this skill, you have taken damage recently (out of combat flag)")
 			}
 		}
 	}

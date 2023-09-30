@@ -18,10 +18,12 @@ type Positioner interface {
 type Alive interface {
 	Positioner
 	IsStunned() bool
+	DamageTaken()
 }
 
 type Skiller interface {
 	Alive
 	GetSkill(id string) (*api.Skill, bool)
 	GetAttributes() *api.Attributes
+	GetLastDamageTaken() int32
 }

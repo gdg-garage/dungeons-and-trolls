@@ -12,29 +12,29 @@ import (
 const baseStat float32 = 100
 
 type Player struct {
-	Position        *api.Coordinates            `json:"position"`
-	MovingTo        *paths.Path                 `json:"-"`
-	Equipped        map[api.Item_Type]*api.Item `json:"-"`
-	Character       *api.Character              `json:"character"`
-	BaseAttributes  *api.Attributes             `json:"-"`
-	ItemAttributes  *api.Attributes             `json:"-"`
-	MaxStats        *api.Attributes             `json:"-"`
-	Skills          map[string]*api.Skill       `json:"-"`
-	IsAdmin         bool                        `json:"admin"`
-	Stun            Stun                        `json:"-"`
-	LastDamageTaken int32                       `json:"-"`
+	Position       *api.Coordinates            `json:"position"`
+	MovingTo       *paths.Path                 `json:"-"`
+	Equipped       map[api.Item_Type]*api.Item `json:"-"`
+	Character      *api.Character              `json:"character"`
+	BaseAttributes *api.Attributes             `json:"-"`
+	ItemAttributes *api.Attributes             `json:"-"`
+	MaxStats       *api.Attributes             `json:"-"`
+	Skills         map[string]*api.Skill       `json:"-"`
+	IsAdmin        bool                        `json:"admin"`
+	Stun           Stun                        `json:"-"`
 }
 
 func CreatePlayer(name string) *Player {
 	p := &Player{
 		Character: &api.Character{
-			Name: name,
-			Id:   GetNewId(),
+			Name:            name,
+			Id:              GetNewId(),
+			LastDamageTaken: 10,
 		},
 		Equipped: map[api.Item_Type]*api.Item{},
 	}
 	p.InitAttributes()
-	p.ResetAttributes()
+	p.UpdateAttributes()
 	return p
 }
 
@@ -64,6 +64,9 @@ func (p *Player) InitAttributes() {
 		Mana:    pointy.Float32(baseStat),
 		Stamina: pointy.Float32(baseStat),
 	}
+	p.Character.Attributes.Life = pointy.Float32(baseStat)
+	p.Character.Attributes.Stamina = pointy.Float32(baseStat)
+	p.Character.Attributes.Mana = pointy.Float32(baseStat)
 }
 
 func (p *Player) ResetAttributes() error {
@@ -89,7 +92,7 @@ func (p *Player) UpdateAttributes() error {
 	log.Info().Msgf("%s (%s) current attributes %+v", p.GetId(), p.GetName(), p.GetAttributes())
 	currentAttributes := proto.Clone(p.Character.Attributes).(*api.Attributes)
 	err := p.ResetAttributes()
-	log.Info().Msgf("%s (%s) base attributes %+v", p.GetId(), p.GetName(), p.GetAttributes())
+	log.Info().Msgf("%s (%s) base attributes %+v", p.GetId(), p.GetName(), p.BaseAttributes)
 	if err != nil {
 		return err
 	}
@@ -109,7 +112,7 @@ func (p *Player) UpdateAttributes() error {
 	if !ok {
 		return fmt.Errorf("cloning max stats failed")
 	}
-	err = MaxAllAttributes(p.MaxStats, p.ItemAttributes, true)
+	err = MaxAllAttributes(p.MaxStats, p.GetAttributes(), true)
 	if err != nil {
 		return err
 	}
@@ -120,9 +123,11 @@ func (p *Player) UpdateAttributes() error {
 	}
 	p.Character.MaxAttributes = p.MaxStats
 	SubtractAllAttributes(added, lastMax, true)
-	p.Character.Attributes.Life = currentAttributes.Life
-	p.Character.Attributes.Mana = currentAttributes.Mana
-	p.Character.Attributes.Stamina = currentAttributes.Stamina
+	if currentAttributes != nil {
+		p.Character.Attributes.Life = currentAttributes.Life
+		p.Character.Attributes.Mana = currentAttributes.Mana
+		p.Character.Attributes.Stamina = currentAttributes.Stamina
+	}
 	*p.Character.Attributes.Life += *added.Life
 	*p.Character.Attributes.Mana += *added.Mana
 	*p.Character.Attributes.Stamina += *added.Stamina
@@ -167,6 +172,14 @@ func (p *Player) GetAttributes() *api.Attributes {
 
 func (p *Player) IsStunned() bool {
 	return p.Stun.IsStunned
+}
+
+func (p *Player) GetLastDamageTaken() int32 {
+	return p.Character.LastDamageTaken
+}
+
+func (p *Player) DamageTaken() {
+	p.Character.LastDamageTaken = -1
 }
 
 func (p *Player) generateSkills() {

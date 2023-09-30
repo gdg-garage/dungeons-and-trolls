@@ -39,11 +39,6 @@ service DungeonsAndTrolls {
   // of execution is defined in the message.
   rpc AssignSkillPoints(AttributesWithParams) returns (google.protobuf.Empty) {}
 
-  // TODO teleport home
-  // maybe it is enough that you can always move to the 0 floor
-
-  // TODO: How to use stairs.
-  //  * this is probably just a condition for move.
   // TODO: Stats? Those will be probably in Grafana (not sure if we need an rpc
   // for that).
 }
@@ -235,6 +230,7 @@ message Monster {
   optional string algorithm = 11;
   repeated Droppable on_death = 12;
   optional Attributes max_attributes = 13;
+  optional int32 last_damage_taken = 14;
 }
 
 message Character {
@@ -247,7 +243,7 @@ message Character {
   float skill_points = 7;
   repeated Effect effects = 9;
   Attributes max_attributes = 10;
-  // TODO add max attributes
+  int32 last_damage_taken = 11;
   // TODo propagate positions
 }
 
@@ -311,7 +307,7 @@ message Droppable {
 }
 
 message SkillGenericFlags {
-  bool requires_alone = 1; // requires that the caster is alone (no other creature (player or monster) are visible in 5 range), furthermore the skill is canceled if you take any damage while using it
+  bool requires_out_of_combat = 1; // requires that the caster has not taken any damage in last 2 ticks
   bool requires_line_of_sight = 2; // requires the target position be visible from the caster position
   bool passive = 3; // the effects of the skill are automatically applied every tick, assuming the cost can be paid; multiple passive skills are allowed
 }

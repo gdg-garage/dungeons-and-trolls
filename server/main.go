@@ -37,9 +37,13 @@ type server struct {
 	G *dungeonsandtrolls.Game
 }
 
-func filterGameState(game *dungeonsandtrolls.Game, g *api.GameState) {
+func filterGameState(game *dungeonsandtrolls.Game, g *api.GameState, level *int32) {
+	// TODO send only necessary level
 	// filter monsters for non-monster players
 	for _, l := range g.Map.Levels {
+		if level != nil && l.Level != *level {
+			continue
+		}
 		for _, o := range l.Objects {
 			for _, m := range o.Monsters {
 				dungeonsandtrolls.HideNonPublicMonsterFields(game, m)
@@ -54,7 +58,16 @@ func filterGameState(game *dungeonsandtrolls.Game, g *api.GameState) {
 			}
 		}
 	}
-	hideUnidentifiedItems(game, g)
+	if level != nil && *level != 0 {
+		// Show shop only on 0th floor
+		game.Game.ShopItems = []*api.Item{}
+	} else {
+		hideUnidentifiedItems(game, g)
+	}
+}
+
+func filterMonsterGameState(game *dungeonsandtrolls.Game, g *api.GameState) {
+	game.Game.ShopItems = []*api.Item{}
 }
 
 func hideUnidentifiedItems(game *dungeonsandtrolls.Game, g *api.GameState) {
@@ -95,7 +108,7 @@ func (s *server) Game(ctx context.Context, params *api.GameStateParams) (*api.Ga
 
 	// token not found
 	if err != nil || len(token) == 0 {
-		filterGameState(s.G, g)
+		filterGameState(s.G, g, nil)
 		return g, nil
 	}
 	// token is present
@@ -104,11 +117,13 @@ func (s *server) Game(ctx context.Context, params *api.GameStateParams) (*api.Ga
 		return nil, err
 	}
 	if !p.IsAdmin {
-		filterGameState(s.G, g)
+		filterGameState(s.G, g, &p.GetPosition().Level)
 		g.Character = p.Character
 		g.CurrentPosition = gameobject.CoordinatesToPosition(p.Position)
 		g.CurrentLevel = &p.Position.Level
 	}
+	// Monster admin
+	filterMonsterGameState(s.G, g)
 
 	return g, nil
 }
