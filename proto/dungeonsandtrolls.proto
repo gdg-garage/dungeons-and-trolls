@@ -122,7 +122,9 @@ message Waypoint {
 
 message GameStateParams {
   // default false
-  optional bool blocking = 3;
+  optional bool blocking = 1;
+  // default true
+  optional bool items = 2;
 }
 
 message CommandsBatch {

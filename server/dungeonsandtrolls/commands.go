@@ -330,6 +330,8 @@ func EvaluateEffects(g *Game, effects []*api.Effect, a *api.Attributes, receiver
 		})
 		//}
 
+		// TODO do not go over max
+
 		e.Duration--
 		if e.Duration > 0 {
 			keptEffects = append(keptEffects, e)

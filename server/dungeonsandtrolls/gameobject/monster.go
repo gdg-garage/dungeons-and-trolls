@@ -17,6 +17,7 @@ type Monster struct {
 }
 
 func CreateMonster(mon *api.Monster, p *api.Coordinates) *Monster {
+	mon.Attributes.Constant = pointy.Float32(1)
 	for _, i := range mon.EquippedItems {
 		MergeAllAttributes(mon.Attributes, i.Attributes, true)
 	}
