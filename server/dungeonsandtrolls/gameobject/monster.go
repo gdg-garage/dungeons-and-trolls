@@ -11,7 +11,6 @@ import (
 type Monster struct {
 	Position *api.Coordinates      `json:"position"`
 	MovingTo *paths.Path           `json:"-"`
-	MaxStats *api.Attributes       `json:"-"`
 	Monster  *api.Monster          `json:"-"`
 	Skills   map[string]*api.Skill `json:"-"`
 	Stun     Stun                  `json:"-"`
@@ -22,15 +21,14 @@ func CreateMonster(mon *api.Monster, p *api.Coordinates) *Monster {
 		MergeAllAttributes(mon.Attributes, i.Attributes, true)
 	}
 
-	maxAttributes, ok := proto.Clone(mon.Attributes).(*api.Attributes)
-	if !ok {
-		log.Warn().Msgf("cloning monster attributes failed")
-	}
 	// TODO check
 	m := &Monster{
 		Position: p,
 		Monster:  mon,
-		MaxStats: maxAttributes,
+	}
+	maxAttributes, ok := proto.Clone(mon.Attributes).(*api.Attributes)
+	if !ok {
+		log.Warn().Msgf("cloning monster attributes failed")
 	}
 	m.Monster.MaxAttributes = maxAttributes
 	m.Monster.LastDamageTaken = pointy.Int32(10)
@@ -94,7 +92,7 @@ func (m *Monster) generateSkills() {
 
 func (m *Monster) UpdateAttributes() {
 	currentAttributes := proto.Clone(m.GetAttributes()).(*api.Attributes)
-	m.Monster.Attributes = proto.Clone(m.MaxStats).(*api.Attributes)
+	m.Monster.Attributes = proto.Clone(m.Monster.MaxAttributes).(*api.Attributes)
 	m.GetAttributes().Life = currentAttributes.Life
 	m.GetAttributes().Mana = currentAttributes.Mana
 	m.GetAttributes().Stamina = currentAttributes.Stamina

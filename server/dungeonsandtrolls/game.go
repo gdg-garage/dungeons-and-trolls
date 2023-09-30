@@ -700,16 +700,8 @@ func HideNonPublicMonsterFields(g *Game, m *api.Monster) {
 	for _, e := range m.Effects {
 		gameobject.FilterEffect(e)
 	}
-	o, err := g.GetObjectById(m.GetId())
-	if err != nil {
-		log.Warn().Err(err).Msg("")
-	}
-	mo, ok := o.(*gameobject.Monster)
-	if !ok {
-		log.Warn().Msg("not a monster")
-	} else {
-		m.LifePercentage = float32(math.Round(float64(*m.Attributes.Life) / float64(*mo.Monster.MaxAttributes.Life) * 100))
-	}
+
+	m.LifePercentage = float32(math.Round(float64(*m.Attributes.Life) / float64(*m.MaxAttributes.Life) * 100))
 
 	// Hide the rest
 	m.EquippedItems = []*api.Item{}
