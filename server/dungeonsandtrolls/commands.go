@@ -305,25 +305,26 @@ func EvaluateEffects(g *Game, effects []*api.Effect, a *api.Attributes, receiver
 		if err != nil {
 			return keptEffects, err
 		}
-		if e.DamageType != api.DamageType_none {
-			damage := gameobject.EvaluateDamage(float64(e.DamageAmount), e.DamageType, a)
+		// TODO enable when ready
+		//if e.DamageType != api.DamageType_none {
+		damage := gameobject.EvaluateDamage(float64(e.DamageAmount), e.DamageType, a)
 
-			var attackerName string
-			if e.XCasterId != nil {
-				attacker, err := g.GetObjectById(*e.XCasterId)
-				if err == nil {
-					attackerName = attacker.GetName()
-				}
+		var attackerName string
+		if e.XCasterId != nil {
+			attacker, err := g.GetObjectById(*e.XCasterId)
+			if err == nil {
+				attackerName = attacker.GetName()
 			}
-
-			damageEvent := api.Event_DAMAGE
-			g.LogEvent(&api.Event{
-				Type:        &damageEvent,
-				Message:     fmt.Sprintf("%s (%s): damaged %s (%s): %f with %s", *e.XCasterId, attackerName, receiver.GetId(), receiver.GetName(), damage, e.DamageType.String()),
-				Damage:      &damage,
-				Coordinates: receiver.GetPosition(),
-			})
 		}
+
+		damageEvent := api.Event_DAMAGE
+		g.LogEvent(&api.Event{
+			Type:        &damageEvent,
+			Message:     fmt.Sprintf("%s (%s): damaged %s (%s): %f with %s", *e.XCasterId, attackerName, receiver.GetId(), receiver.GetName(), damage, e.DamageType.String()),
+			Damage:      &damage,
+			Coordinates: receiver.GetPosition(),
+		})
+		//}
 
 		e.Duration--
 		if e.Duration > 0 {
