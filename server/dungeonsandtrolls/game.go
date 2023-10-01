@@ -293,7 +293,6 @@ func (g *Game) processCommands() {
 			}
 		}
 
-		//TODO skill on newly bought (picked up) items?
 		if c.Skill != nil {
 			skiller.SetMovingTo(nil)
 			err = ExecuteSkill(g, skiller, c.Skill)
