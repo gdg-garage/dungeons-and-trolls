@@ -9,11 +9,12 @@ import (
 )
 
 type Monster struct {
-	Position *api.Coordinates      `json:"position"`
-	MovingTo *paths.Path           `json:"-"`
-	Monster  *api.Monster          `json:"-"`
-	Skills   map[string]*api.Skill `json:"-"`
-	Stun     Stun                  `json:"-"`
+	Position     *api.Coordinates      `json:"position"`
+	MovingTo     *paths.Path           `json:"-"`
+	Monster      *api.Monster          `json:"-"`
+	Skills       map[string]*api.Skill `json:"-"`
+	Stun         Stun                  `json:"-"`
+	TeleportedTo TeleportPosition      `json:"-"`
 }
 
 func CreateMonster(mon *api.Monster, p *api.Coordinates) *Monster {
@@ -80,6 +81,23 @@ func (m *Monster) GetLastDamageTaken() int32 {
 
 func (m *Monster) DamageTaken() {
 	m.Monster.LastDamageTaken = pointy.Int32(-1)
+}
+
+func (m *Monster) GetTeleportTo() *TeleportPosition {
+	return &m.TeleportedTo
+}
+
+func (m *Monster) Stunned() {
+	// TODO log stun?
+	if !m.Stun.IsImmune {
+		m.Stun.IsStunned = true
+		// cancel movement
+		m.SetMovingTo(nil)
+	}
+}
+
+func (m *Monster) AddEffect(e *api.Effect) {
+	m.Monster.Effects = append(m.Monster.Effects, e)
 }
 
 func (m *Monster) generateSkills() {

@@ -175,36 +175,50 @@ func ExecuteSkill(game *Game, player gameobject.Skiller, su *api.SkillUse) error
 		duration = gameobject.RoundSkill(d)
 	}
 
+	var targetPos *api.Coordinates
+	switch s.Target {
+	case api.Skill_character:
+		character, err := game.GetObjectById(*su.TargetId)
+		if err != nil {
+			return err
+		}
+		switch ch := character.(type) {
+		case *gameobject.Player:
+			targetPos = ch.GetPosition()
+		case *gameobject.Monster:
+			targetPos = ch.GetPosition()
+		default:
+			return fmt.Errorf("targetPos is not a monster or player")
+		}
+	case api.Skill_position:
+		targetPos = gameobject.PositionToCoordinates(su.Position, player.GetPosition().Level)
+	case api.Skill_none:
+		targetPos = player.GetPosition()
+	}
+
 	if s.CasterEffects != nil {
 		e, err := gameobject.EvaluateSkillAttributes(s.CasterEffects.Attributes, player.GetAttributes())
 		if err != nil {
 			return err
 		}
 		switch pt := player.(type) {
-		case *gameobject.Player:
+		case gameobject.Skiller:
 			casterId := player.GetId()
 			if s.CasterEffects.Flags.Stun {
-				// TODO log stun?
-				pt.Stun.IsStunned = true
+				pt.Stunned()
 			}
-			pt.Character.Effects = append(pt.Character.Effects, &api.Effect{
+			pt.AddEffect(&api.Effect{
 				Effects:   e,
 				Duration:  int32(duration),
 				XCasterId: &casterId,
 			})
-		case *gameobject.Monster:
-			casterId := player.GetId()
-			if s.CasterEffects.Flags.Stun {
-				// TODO log stun?
-				pt.Stun.IsStunned = true
+
+			if s.CasterEffects.Flags.Movement {
+				gameobject.TeleportMoveTo(pt, targetPos)
 			}
-			pt.Monster.Effects = append(pt.Monster.Effects, &api.Effect{
-				Effects:   e,
-				Duration:  int32(duration),
-				XCasterId: &casterId,
-			})
 		}
 
+		// todo add faction and timeout death
 		for _, sum := range s.CasterEffects.Summons {
 			summon(game, sum, player)
 		}
@@ -270,13 +284,6 @@ func ExecuteSkill(game *Game, player gameobject.Skiller, su *api.SkillUse) error
 			}
 		}
 	case api.Skill_position:
-		// teleport
-		if s.CasterEffects.Flags.Movement {
-			err = game.MoveCharacter(player, gameobject.PositionToCoordinates(su.Position, player.GetPosition().Level))
-			if err != nil {
-				return err
-			}
-		}
 		return fmt.Errorf("not implemented")
 	}
 	return nil

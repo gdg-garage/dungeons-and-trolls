@@ -515,6 +515,17 @@ func (g *Game) processCommands() {
 		}
 	}
 
+	// resolve teleports and knockbacks
+	for _, i := range g.idToObject {
+		switch c := i.(type) {
+		case gameobject.Skiller:
+			// TODO add knockback
+			if c.GetTeleportTo().Move != nil {
+				g.MoveCharacter(c, c.GetTeleportTo().Move)
+			}
+		}
+	}
+
 	g.Commands = map[string]*api.CommandsBatch{}
 }
 
@@ -637,6 +648,16 @@ func (g *Game) MoveCharacter(p gameobject.Positioner, c *api.Coordinates) error 
 
 	}
 	p.SetPosition(c)
+	return nil
+}
+
+func (g *Game) ForceMoveCharacter(p gameobject.Positioner, c *api.Coordinates) error {
+	err := g.MoveCharacter(p, c)
+	if err != nil {
+		return err
+	}
+	// cancel movement
+	p.SetMovingTo(nil)
 	return nil
 }
 

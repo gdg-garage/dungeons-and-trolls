@@ -22,6 +22,7 @@ type Player struct {
 	Skills         map[string]*api.Skill       `json:"-"`
 	IsAdmin        bool                        `json:"admin"`
 	Stun           Stun                        `json:"-"`
+	TeleportedTo   TeleportPosition            `json:"-"`
 }
 
 func CreatePlayer(name string) *Player {
@@ -182,6 +183,22 @@ func (p *Player) GetLastDamageTaken() int32 {
 
 func (p *Player) DamageTaken() {
 	p.Character.LastDamageTaken = -1
+}
+
+func (p *Player) GetTeleportTo() *TeleportPosition {
+	return &p.TeleportedTo
+}
+
+func (p *Player) AddEffect(e *api.Effect) {
+	p.Character.Effects = append(p.Character.Effects, e)
+}
+
+func (p *Player) Stunned() {
+	if !p.Stun.IsImmune {
+		p.Stun.IsStunned = true
+		// cancel movement
+		p.SetMovingTo(nil)
+	}
 }
 
 func (p *Player) generateSkills() {

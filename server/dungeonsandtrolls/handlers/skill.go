@@ -46,7 +46,6 @@ func validateSkill(game *dungeonsandtrolls.Game, skillUse *api.SkillUse, p gameo
 	if (skillUse.TargetId != nil || skillUse.Position != nil) && (s.Target == api.Skill_none) {
 		return fmt.Errorf("skill target should be none")
 	}
-	// TODO check none skills - no position and no target
 
 	if s.Flags != nil {
 		if s.Flags.RequiresLineOfSight {
@@ -56,6 +55,16 @@ func validateSkill(game *dungeonsandtrolls.Game, skillUse *api.SkillUse, p gameo
 			if p.GetLastDamageTaken() < 3 {
 				return fmt.Errorf("cannot use this skill, you have taken damage recently (out of combat flag)")
 			}
+		}
+	}
+
+	if s.Cost != nil {
+		satisfied, err := gameobject.SatisfyingAttributes(p.GetAttributes(), s.Cost)
+		if err != nil {
+			return err
+		}
+		if !satisfied {
+			return fmt.Errorf("requirements (cost) for the skill are not satisfied")
 		}
 	}
 
@@ -102,15 +111,7 @@ func validateSkill(game *dungeonsandtrolls.Game, skillUse *api.SkillUse, p gameo
 			return err
 		}
 	}
-	if s.Cost != nil {
-		satisfied, err := gameobject.SatisfyingAttributes(p.GetAttributes(), s.Cost)
-		if err != nil {
-			return err
-		}
-		if !satisfied {
-			return fmt.Errorf("requirements (cost) for the skill are not satisfied")
-		}
-	}
+
 	return nil
 }
 
