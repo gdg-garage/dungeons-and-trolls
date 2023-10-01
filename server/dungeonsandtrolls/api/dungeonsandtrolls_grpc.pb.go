@@ -26,6 +26,7 @@ type DungeonsAndTrollsClient interface {
 	Game(ctx context.Context, in *GameStateParams, opts ...grpc.CallOption) (*GameState, error)
 	GameLevel(ctx context.Context, in *GameStateParamsLevel, opts ...grpc.CallOption) (*GameState, error)
 	Players(ctx context.Context, in *PlayersParams, opts ...grpc.CallOption) (*PlayersInfo, error)
+	Levels(ctx context.Context, in *PlayersParams, opts ...grpc.CallOption) (*AvailableLevels, error)
 	Register(ctx context.Context, in *User, opts ...grpc.CallOption) (*Registration, error)
 	Buy(ctx context.Context, in *IdentifiersWithParams, opts ...grpc.CallOption) (*emptypb.Empty, error)
 	PickUp(ctx context.Context, in *IdentifierWithParams, opts ...grpc.CallOption) (*emptypb.Empty, error)
@@ -67,6 +68,15 @@ func (c *dungeonsAndTrollsClient) GameLevel(ctx context.Context, in *GameStatePa
 func (c *dungeonsAndTrollsClient) Players(ctx context.Context, in *PlayersParams, opts ...grpc.CallOption) (*PlayersInfo, error) {
 	out := new(PlayersInfo)
 	err := c.cc.Invoke(ctx, "/dungeonsandtrolls.DungeonsAndTrolls/Players", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *dungeonsAndTrollsClient) Levels(ctx context.Context, in *PlayersParams, opts ...grpc.CallOption) (*AvailableLevels, error) {
+	out := new(AvailableLevels)
+	err := c.cc.Invoke(ctx, "/dungeonsandtrolls.DungeonsAndTrolls/Levels", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -170,6 +180,7 @@ type DungeonsAndTrollsServer interface {
 	Game(context.Context, *GameStateParams) (*GameState, error)
 	GameLevel(context.Context, *GameStateParamsLevel) (*GameState, error)
 	Players(context.Context, *PlayersParams) (*PlayersInfo, error)
+	Levels(context.Context, *PlayersParams) (*AvailableLevels, error)
 	Register(context.Context, *User) (*Registration, error)
 	Buy(context.Context, *IdentifiersWithParams) (*emptypb.Empty, error)
 	PickUp(context.Context, *IdentifierWithParams) (*emptypb.Empty, error)
@@ -195,6 +206,9 @@ func (UnimplementedDungeonsAndTrollsServer) GameLevel(context.Context, *GameStat
 }
 func (UnimplementedDungeonsAndTrollsServer) Players(context.Context, *PlayersParams) (*PlayersInfo, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method Players not implemented")
+}
+func (UnimplementedDungeonsAndTrollsServer) Levels(context.Context, *PlayersParams) (*AvailableLevels, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method Levels not implemented")
 }
 func (UnimplementedDungeonsAndTrollsServer) Register(context.Context, *User) (*Registration, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method Register not implemented")
@@ -289,6 +303,24 @@ func _DungeonsAndTrolls_Players_Handler(srv interface{}, ctx context.Context, de
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(DungeonsAndTrollsServer).Players(ctx, req.(*PlayersParams))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _DungeonsAndTrolls_Levels_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(PlayersParams)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(DungeonsAndTrollsServer).Levels(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/dungeonsandtrolls.DungeonsAndTrolls/Levels",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(DungeonsAndTrollsServer).Levels(ctx, req.(*PlayersParams))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -491,6 +523,10 @@ var DungeonsAndTrolls_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "Players",
 			Handler:    _DungeonsAndTrolls_Players_Handler,
+		},
+		{
+			MethodName: "Levels",
+			Handler:    _DungeonsAndTrolls_Levels_Handler,
 		},
 		{
 			MethodName: "Register",

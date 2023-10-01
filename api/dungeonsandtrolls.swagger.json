@@ -268,6 +268,46 @@
         ]
       }
     },
+    "/v1/levels": {
+      "get": {
+        "summary": "Sends info about",
+        "operationId": "DungeonsAndTrolls_Levels",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/dungeonsandtrollsAvailableLevels"
+            }
+          },
+          "403": {
+            "description": "Returned when the user does not have permission to access the resource.",
+            "schema": {}
+          },
+          "404": {
+            "description": "Returned when the resource does not exist.",
+            "schema": {}
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "blocking",
+            "description": "default false",
+            "in": "query",
+            "required": false,
+            "type": "boolean"
+          }
+        ],
+        "tags": [
+          "DungeonsAndTrolls"
+        ]
+      }
+    },
     "/v1/monsters-commands": {
       "post": {
         "summary": "Control monsters. Admin only.",
@@ -730,6 +770,18 @@
         }
       }
     },
+    "dungeonsandtrollsAvailableLevels": {
+      "type": "object",
+      "properties": {
+        "levels": {
+          "type": "array",
+          "items": {
+            "type": "integer",
+            "format": "int32"
+          }
+        }
+      }
+    },
     "dungeonsandtrollsCharacter": {
       "type": "object",
       "properties": {
@@ -927,6 +979,14 @@
           "type": "number",
           "format": "float",
           "x-nullable": true
+        },
+        "playerId": {
+          "type": "string",
+          "x-nullable": true
+        },
+        "skillName": {
+          "type": "string",
+          "x-nullable": true
         }
       }
     },
@@ -984,6 +1044,10 @@
         "score": {
           "type": "number",
           "format": "float"
+        },
+        "maxLevel": {
+          "type": "integer",
+          "format": "int32"
         }
       }
     },

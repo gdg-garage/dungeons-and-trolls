@@ -9,6 +9,8 @@ http:
       get: "/v1/game/{level}"
     - selector: dungeonsandtrolls.DungeonsAndTrolls.Players
       get: "/v1/players"
+    - selector: dungeonsandtrolls.DungeonsAndTrolls.Levels
+      get: "/v1/levels"
     - selector: dungeonsandtrolls.DungeonsAndTrolls.Register
       post: /v1/register
       body: "*"

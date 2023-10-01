@@ -15,6 +15,8 @@ service DungeonsAndTrolls {
   rpc GameLevel(GameStateParamsLevel) returns (GameState) {}
   // Sends all info about all players.
   rpc Players(PlayersParams) returns (PlayersInfo) {}
+  // Sends info about
+  rpc Levels(PlayersParams) returns (AvailableLevels) {}
   // Register provided User to the Game and create a character.
   rpc Register(User) returns (Registration) {}
   // Buy Items identified by the provided ID for the Character bound to the
@@ -134,6 +136,10 @@ message GameStateParams {
   optional bool blocking = 1;
   // default true
   optional bool items = 2;
+}
+
+message AvailableLevels {
+  repeated int32 levels = 1;
 }
 
 message GameStateParamsLevel {
@@ -386,6 +392,8 @@ message Event {
   optional Type type = 2;
   optional Coordinates coordinates = 3;
   optional float damage = 4;
+  optional string player_id = 5;
+  optional string skill_name = 6;
 }
 
 message GameState {
@@ -399,6 +407,7 @@ message GameState {
   // effects, debugging and communication.
   repeated Event events = 7;
   float score = 8;
+  int32 max_level = 9;
 }
 
 message User { string username = 1; }

@@ -5,6 +5,7 @@ import (
 	"github.com/gdg-garage/dungeons-and-trolls/server/dungeonsandtrolls/api"
 	"github.com/gdg-garage/dungeons-and-trolls/server/dungeonsandtrolls/gameobject"
 	"github.com/rs/zerolog/log"
+	"go.openly.dev/pointy"
 )
 
 // ValidateBuy validates identifiers, funds, and requirements
@@ -169,6 +170,8 @@ func ExecuteSkill(game *Game, player gameobject.Skiller, su *api.SkillUse) error
 		&api.Event{
 			Type:        &skillEvent,
 			Message:     fmt.Sprintf("%s (%s): used skill: %s (%s)", player.GetId(), player.GetName(), s.Id, s.Name),
+			SkillName:   &s.Name,
+			PlayerId:    pointy.String(player.GetId()),
 			Coordinates: player.GetPosition(),
 		})
 
