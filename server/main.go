@@ -127,11 +127,7 @@ func (s *server) gameState(ctx context.Context, params *api.GameStateParams, lev
 	}
 	if !p.IsAdmin {
 		if strings.HasPrefix(p.GetName(), "leonidas") {
-			if level != nil {
-				filterGameState(s.G, g, level)
-			} else if level == nil {
-				filterGameState(s.G, g, &p.GetPosition().Level)
-			}
+			filterGameState(s.G, g, level)
 		} else if level != nil {
 			filterGameState(s.G, g, level)
 		} else if level == nil {
