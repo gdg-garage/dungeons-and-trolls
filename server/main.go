@@ -111,6 +111,10 @@ func (s *server) gameState(ctx context.Context, params *api.GameStateParams, lev
 	}
 	s.G.GameLock.RUnlock()
 
+	log.Info().Msgf("%s", params.Items)
+	if params.Items != nil {
+		log.Info().Msgf("%s", *params.Items)
+	}
 	if params.Items != nil && !*params.Items {
 		g.ShopItems = []*api.Item{}
 	}
@@ -127,7 +131,11 @@ func (s *server) gameState(ctx context.Context, params *api.GameStateParams, lev
 	}
 	if !p.IsAdmin {
 		if strings.HasPrefix(p.GetName(), "leonidas") {
-			filterGameState(s.G, g, level)
+			if level != nil {
+				filterGameState(s.G, g, level)
+			} else if level == nil {
+				filterGameState(s.G, g, &p.GetPosition().Level)
+			}
 		} else if level != nil {
 			filterGameState(s.G, g, level)
 		} else if level == nil {
