@@ -839,14 +839,14 @@
     "dungeonsandtrollsDamageType": {
       "type": "string",
       "enum": [
+        "none",
         "slash",
         "pierce",
         "fire",
         "poison",
         "electric"
       ],
-      "default": "slash",
-      "title": "TODO enable none\n  none = 0;\n  slash = 1;\n  pierce = 2;\n  fire = 3;\n  poison = 4;\n  electric = 5;"
+      "default": "none"
     },
     "dungeonsandtrollsDecoration": {
       "type": "object",
