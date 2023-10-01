@@ -104,10 +104,12 @@ func (s *server) gameState(ctx context.Context, params *api.GameStateParams, lev
 		s.G.WaitForNextTick(tick)
 	}
 
+	s.G.GameLock.RLock()
 	g, ok := proto.Clone(&s.G.Game).(*api.GameState)
 	if !ok {
 		return nil, fmt.Errorf("cloning GameState failed")
 	}
+	s.G.GameLock.RUnlock()
 
 	if params.Items != nil && !*params.Items {
 		g.ShopItems = []*api.Item{}
@@ -144,6 +146,28 @@ func (s *server) gameState(ctx context.Context, params *api.GameStateParams, lev
 
 func (s *server) Game(ctx context.Context, params *api.GameStateParams) (*api.GameState, error) {
 	return s.gameState(ctx, params, nil)
+}
+
+func (s *server) Players(ctx context.Context, params *api.PlayersParams) (*api.PlayersInfo, error) {
+	var players []*api.Character
+
+	// Maybe block
+	s.G.GameLock.RLock()
+	tick := s.G.Game.Tick
+	s.G.GameLock.RUnlock()
+	// Players are special and is not blocking by default also it is blocking before the actual work
+	if params.Blocking != nil && *params.Blocking {
+		s.G.WaitForNextTick(tick)
+	}
+
+	// read players
+	s.G.GameLock.RLock()
+	for _, p := range s.G.Players {
+		players = append(players, p.Character)
+	}
+	s.G.GameLock.RUnlock()
+
+	return &api.PlayersInfo{Players: players}, nil
 }
 
 func (s *server) GameLevel(ctx context.Context, params *api.GameStateParamsLevel) (*api.GameState, error) {

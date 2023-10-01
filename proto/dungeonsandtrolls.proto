@@ -11,8 +11,10 @@ import "google/protobuf/struct.proto";
 service DungeonsAndTrolls {
   // Sends all info about the game.
   rpc Game(GameStateParams) returns (GameState) {}
-  // Sends all info about the game.
+  // Sends all info about the game level.
   rpc GameLevel(GameStateParamsLevel) returns (GameState) {}
+  // Sends all info about all players.
+  rpc Players(PlayersParams) returns (PlayersInfo) {}
   // Register provided User to the Game and create a character.
   rpc Register(User) returns (Registration) {}
   // Buy Items identified by the provided ID for the Character bound to the
@@ -96,6 +98,11 @@ message CommandsForMonstersWithParams {
 message AttributesWithParams {
   Attributes attributes = 1;
   // default true
+  optional bool blocking =2;
+}
+
+message PlayersParams {
+  // default false
   optional bool blocking =2;
 }
 
@@ -257,6 +264,10 @@ message Character {
   Attributes max_attributes = 10;
   int32 last_damage_taken = 11;
   // TODo propagate positions
+}
+
+message PlayersInfo {
+  repeated Character players = 1;
 }
 
 message Skill {
