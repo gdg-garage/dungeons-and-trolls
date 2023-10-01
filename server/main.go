@@ -184,16 +184,14 @@ func (s *server) Levels(ctx context.Context, params *api.PlayersParams) (*api.Av
 		s.G.WaitForNextTick(tick)
 	}
 
-	// read players
+	// read levels
 	s.G.GameLock.RLock()
 	for _, l := range s.G.Game.Map.Levels {
 		levels = append(levels, l.Level)
 	}
 	s.G.GameLock.RUnlock()
 
-	sort.Slice(levels, func(i, j int) bool {
-		return i < j
-	})
+	sort.Slice(levels, func(i, j int) bool { return levels[i] < levels[j] })
 
 	return &api.AvailableLevels{Levels: levels}, nil
 }
