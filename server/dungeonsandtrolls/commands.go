@@ -122,6 +122,7 @@ func Equip(game *Game, player *gameobject.Player, item *api.Item) error {
 }
 
 func ExecutePickUp(game *Game, p *gameobject.Player, i *api.Identifier) error {
+
 	// TODO solve concurrent pickUp (more than one player wants to pick up the same item)
 	// TODO how to solve attributes consistently
 	return fmt.Errorf("not implemented")
@@ -134,13 +135,23 @@ func payForSkill(p gameobject.Skiller, s *api.Skill) error {
 	return gameobject.SubtractAllAttributes(p.GetAttributes(), s.Cost, false)
 }
 
-func summon(game *Game, sum *api.Droppable, player gameobject.Skiller) {
+func summon(game *Game, sum *api.Droppable, player gameobject.Skiller, duration int32) {
 	po := game.GetMapObjectsOrCreateDefault(player.GetPosition())
 	switch so := sum.Data.(type) {
 	case *api.Droppable_Monster:
 		so.Monster.Id = gameobject.GetNewId()
+		if so.Monster.Faction == "inherited" {
+			switch p := player.(type) {
+			case *gameobject.Player:
+				so.Monster.Faction = "player"
+			case *gameobject.Monster:
+				so.Monster.Faction = p.Monster.Faction
+			}
+		}
 		po.Monsters = append(po.Monsters, so.Monster)
-		game.Register(gameobject.CreateMonster(so.Monster, player.GetPosition()))
+		moGo := gameobject.CreateMonster(so.Monster, player.GetPosition())
+		moGo.KillCounter = &duration
+		game.Register(moGo)
 	case *api.Droppable_Decoration:
 		po.Decorations = append(po.Decorations, so.Decoration)
 	default:
@@ -220,7 +231,7 @@ func ExecuteSkill(game *Game, player gameobject.Skiller, su *api.SkillUse) error
 
 		// todo add faction and timeout death
 		for _, sum := range s.CasterEffects.Summons {
-			summon(game, sum, player)
+			summon(game, sum, player, int32(duration))
 		}
 
 		// TODO summons
@@ -259,7 +270,7 @@ func ExecuteSkill(game *Game, player gameobject.Skiller, su *api.SkillUse) error
 					XCasterId:    &casterId,
 				})
 				for _, sum := range s.CasterEffects.Summons {
-					summon(game, sum, c)
+					summon(game, sum, c, int32(duration))
 				}
 				// TODO we can probably move them
 			case *gameobject.Player:
@@ -276,7 +287,7 @@ func ExecuteSkill(game *Game, player gameobject.Skiller, su *api.SkillUse) error
 					XCasterId:    &casterId,
 				})
 				for _, sum := range s.CasterEffects.Summons {
-					summon(game, sum, c)
+					summon(game, sum, c, int32(duration))
 				}
 				// TODO we can probably move them
 			default:

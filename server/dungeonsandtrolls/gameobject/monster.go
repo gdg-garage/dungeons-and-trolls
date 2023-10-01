@@ -15,6 +15,7 @@ type Monster struct {
 	Skills       map[string]*api.Skill `json:"-"`
 	Stun         Stun                  `json:"-"`
 	TeleportedTo TeleportPosition      `json:"-"`
+	KillCounter  *int32                `json:"-"`
 }
 
 func CreateMonster(mon *api.Monster, p *api.Coordinates) *Monster {

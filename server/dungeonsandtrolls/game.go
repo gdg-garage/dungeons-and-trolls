@@ -447,7 +447,11 @@ func (g *Game) processCommands() {
 	for _, i := range g.idToObject {
 		switch c := i.(type) {
 		case *gameobject.Monster:
-			if c.Monster.Attributes.Life != nil && *c.Monster.Attributes.Life <= 0 {
+			// move kill count
+			if c.KillCounter != nil {
+				*c.KillCounter -= 1
+			}
+			if (c.Monster.Attributes.Life != nil && *c.Monster.Attributes.Life <= 0) || (c.KillCounter != nil && *c.KillCounter <= 0) {
 				o, err := g.GetObjectsOnPosition(c.GetPosition())
 				if err != nil {
 					g.LogEvent(&api.Event{
