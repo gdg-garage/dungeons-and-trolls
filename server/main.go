@@ -70,7 +70,7 @@ func filterGameState(game *dungeonsandtrolls.Game, g *api.GameState, level *int3
 }
 
 func filterMonsterGameState(game *dungeonsandtrolls.Game, g *api.GameState) {
-	game.Game.ShopItems = []*api.Item{}
+	g.ShopItems = []*api.Item{}
 }
 
 func hideUnidentifiedItems(game *dungeonsandtrolls.Game, g *api.GameState) {
@@ -111,10 +111,6 @@ func (s *server) gameState(ctx context.Context, params *api.GameStateParams, lev
 	}
 	s.G.GameLock.RUnlock()
 
-	log.Info().Msgf("%s", params.Items)
-	if params.Items != nil {
-		log.Info().Msgf("%s", *params.Items)
-	}
 	if params.Items != nil && !*params.Items {
 		g.ShopItems = []*api.Item{}
 	}
