@@ -4,11 +4,16 @@ import (
 	"fmt"
 	"github.com/gdg-garage/dungeons-and-trolls/server/dungeonsandtrolls"
 	"github.com/gdg-garage/dungeons-and-trolls/server/dungeonsandtrolls/api"
+	"github.com/gdg-garage/dungeons-and-trolls/server/dungeonsandtrolls/gameobject"
 )
 
-func validateYell(game *dungeonsandtrolls.Game, message *api.Message) error {
-	if len(message.Text) > 80 {
-		return fmt.Errorf("message is too long >80 (we are not Twitter)")
+func validateYell(game *dungeonsandtrolls.Game, message *api.Message, p *gameobject.Player) error {
+	limit := 80
+	if p.IsAdmin {
+		limit = 200
+	}
+	if len(message.Text) > limit {
+		return fmt.Errorf("message is too long >%d (we are not Twitter)", limit)
 	}
 	return nil
 }
@@ -25,7 +30,7 @@ func Yell(game *dungeonsandtrolls.Game, message *api.Message, token string) erro
 	// TODO translate IDs to names
 	// - consider IDs as one char?
 
-	err = validateYell(game, message)
+	err = validateYell(game, message, p)
 	if err != nil {
 		return err
 	}
