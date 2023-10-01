@@ -15,7 +15,7 @@ func validatePickUp(game *dungeonsandtrolls.Game, i *api.Identifier, p *gameobje
 
 	// TODO maybe buyValidation could be used if the price is 0?
 	// check item (exists and is item)
-	o, err := game.GetObjectsOnPosition(p.Position)
+	o, err := game.GetObjectsOnPosition(p.GetPosition())
 	if err != nil {
 		return err
 	}

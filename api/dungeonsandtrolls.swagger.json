@@ -771,8 +771,10 @@
         },
         "lastDamageTaken": {
           "type": "integer",
-          "format": "int32",
-          "title": "TODo propagate positions"
+          "format": "int32"
+        },
+        "coordinates": {
+          "$ref": "#/definitions/dungeonsandtrollsCoordinates"
         }
       }
     },

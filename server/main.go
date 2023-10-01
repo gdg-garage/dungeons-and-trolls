@@ -134,8 +134,8 @@ func (s *server) gameState(ctx context.Context, params *api.GameStateParams, lev
 			filterGameState(s.G, g, &p.GetPosition().Level)
 		}
 		g.Character = p.Character
-		g.CurrentPosition = gameobject.CoordinatesToPosition(p.Position)
-		g.CurrentLevel = &p.Position.Level
+		g.CurrentPosition = gameobject.CoordinatesToPosition(p.GetPosition())
+		g.CurrentLevel = &p.GetPosition().Level
 	} else {
 		// Monster admin
 		filterMonsterGameState(s.G, g)

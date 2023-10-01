@@ -86,7 +86,7 @@ func validateSkill(game *dungeonsandtrolls.Game, skillUse *api.SkillUse, p gameo
 			if s.Target != api.Skill_character {
 				return fmt.Errorf("the skill %s is not supposed to be used on characters", skillUse.SkillId)
 			}
-			err = checkDistance(p.GetPosition(), p.GetAttributes(), v.Position, s)
+			err = checkDistance(p.GetPosition(), p.GetAttributes(), v.GetPosition(), s)
 			if err != nil {
 				return err
 			}

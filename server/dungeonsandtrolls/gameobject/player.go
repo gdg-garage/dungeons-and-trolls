@@ -12,7 +12,6 @@ import (
 const baseStat float32 = 100
 
 type Player struct {
-	Position       *api.Coordinates            `json:"position"`
 	MovingTo       *paths.Path                 `json:"-"`
 	Equipped       map[api.Item_Type]*api.Item `json:"-"`
 	Character      *api.Character              `json:"character"`
@@ -149,11 +148,11 @@ func (p *Player) GetName() string {
 }
 
 func (p *Player) GetPosition() *api.Coordinates {
-	return p.Position
+	return p.Character.Coordinates
 }
 
 func (p *Player) SetPosition(c *api.Coordinates) {
-	p.Position = c
+	p.Character.Coordinates = c
 }
 
 func (p *Player) GetMovingTo() *paths.Path {

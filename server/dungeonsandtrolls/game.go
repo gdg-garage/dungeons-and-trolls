@@ -192,12 +192,12 @@ func (g *Game) Respawn(player *gameobject.Player, markDeath bool) {
 		g.LogEvent(&api.Event{
 			Type:        &deathEvent,
 			Message:     fmt.Sprintf("%s (%s) died", player.GetId(), player.Character.Name),
-			Coordinates: player.Position,
+			Coordinates: player.GetPosition(),
 		})
 	}
 
-	if player.Position != nil {
-		o, err := g.GetObjectsOnPosition(player.Position)
+	if player.GetPosition() != nil {
+		o, err := g.GetObjectsOnPosition(player.GetPosition())
 		if err != nil {
 			log.Warn().Err(err).Msg("")
 		} else if o != nil {
@@ -363,14 +363,14 @@ func (g *Game) processCommands() {
 			p.MovingTo = nil
 		}
 		// check stairs
-		o, err := g.GetObjectsOnPosition(p.Position)
+		o, err := g.GetObjectsOnPosition(p.GetPosition())
 		if err != nil {
 			log.Warn().Err(err).Msg("")
 			continue
 		}
 		if o.IsStairs {
 			// spawn in the next level.
-			g.SpawnPlayer(p, p.Position.Level+1)
+			g.SpawnPlayer(p, p.GetPosition().Level+1)
 			// cancel currently invalid path
 			p.MovingTo = nil
 			// TODO log level traverse stats
@@ -434,7 +434,7 @@ func (g *Game) processCommands() {
 				g.LogEvent(&api.Event{
 					Type:        &errorEvent,
 					Message:     fmt.Sprintf("failed to evaluate effects for player %s: %s", c.GetId(), err.Error()),
-					Coordinates: c.Position,
+					Coordinates: c.GetPosition(),
 				})
 			} else {
 				c.Character.Effects = e
@@ -563,7 +563,7 @@ func (g *Game) SpawnPlayer(p *gameobject.Player, level int32) {
 
 // Todo more generic version?
 func (g *Game) removePlayerFromPosition(p *gameobject.Player) {
-	o, err := g.GetObjectsOnPosition(p.Position)
+	o, err := g.GetObjectsOnPosition(p.GetPosition())
 	if err != nil {
 		// maybe destroyed level
 		log.Warn().Err(err).Msg("")
