@@ -34,7 +34,7 @@ func validateMonsterCommands(game *dungeonsandtrolls.Game, mc *api.CommandsForMo
 			return fmt.Errorf("monsters are not allowed to shop")
 		}
 		if c.Yell != nil {
-			err = validateYell(game, c.Yell)
+			err = validateYell(game, c.Yell, p)
 			if err != nil {
 				return err
 			}

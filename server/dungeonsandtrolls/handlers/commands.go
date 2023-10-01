@@ -27,7 +27,7 @@ func Commands(game *dungeonsandtrolls.Game, c *api.CommandsBatch, token string) 
 		}
 	}
 	if c.Yell != nil {
-		err = validateYell(game, c.Yell)
+		err = validateYell(game, c.Yell, p)
 		if err != nil {
 			return err
 		}
