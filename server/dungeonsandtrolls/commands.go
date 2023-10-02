@@ -123,7 +123,6 @@ func Equip(game *Game, player *gameobject.Player, item *api.Item) error {
 }
 
 func ExecutePickUp(game *Game, p *gameobject.Player, i *api.Identifier) error {
-
 	// TODO solve concurrent pickUp (more than one player wants to pick up the same item)
 	// TODO how to solve attributes consistently
 	return fmt.Errorf("not implemented")
@@ -232,7 +231,6 @@ func ExecuteSkill(game *Game, player gameobject.Skiller, su *api.SkillUse) error
 			}
 		}
 
-		// todo add faction and timeout death
 		for _, sum := range s.CasterEffects.Summons {
 			summon(game, sum, player, int32(duration))
 		}
@@ -259,30 +257,10 @@ func ExecuteSkill(game *Game, player gameobject.Skiller, su *api.SkillUse) error
 			// TODO summons
 			// TODO flags
 			switch c := character.(type) {
-			case *gameobject.Monster:
+			case gameobject.Skiller:
 				casterId := player.GetId()
-				if s.TargetEffects.Flags.Stun {
-					// TODO log stun?
-					c.Stun.IsStunned = true
-				}
-				c.Monster.Effects = append(c.Monster.Effects, &api.Effect{
-					Effects:      e,
-					DamageAmount: float32(d),
-					DamageType:   s.DamageType,
-					Duration:     int32(duration),
-					XCasterId:    &casterId,
-				})
-				for _, sum := range s.CasterEffects.Summons {
-					summon(game, sum, c, int32(duration))
-				}
-				// TODO we can probably move them
-			case *gameobject.Player:
-				casterId := player.GetId()
-				if s.TargetEffects.Flags.Stun {
-					// TODO log stun?
-					c.Stun.IsStunned = true
-				}
-				c.Character.Effects = append(c.Character.Effects, &api.Effect{
+				c.Stunned()
+				c.AddEffect(&api.Effect{
 					Effects:      e,
 					DamageAmount: float32(d),
 					DamageType:   s.DamageType,
@@ -298,7 +276,7 @@ func ExecuteSkill(game *Game, player gameobject.Skiller, su *api.SkillUse) error
 			}
 		}
 	case api.Skill_position:
-		return fmt.Errorf("not implemented")
+		//return fmt.Errorf("not implemented")
 	}
 	return nil
 }

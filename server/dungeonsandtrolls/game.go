@@ -45,14 +45,7 @@ type Game struct {
 
 	idToObject map[string]gameobject.Ider
 
-	// todo create player cache
-
 	Commands map[string]*api.CommandsBatch
-
-	// TODO last action in level probably in map cache
-	// TODO time since generated level
-	// - if level is too old regen
-	// TODO regen 0 level and respawn players there based on the rules described above.
 }
 
 func NewGame() *Game {
@@ -91,16 +84,16 @@ func CreateGame() (*Game, error) {
 
 	// TODO this needs to be properly thought out
 
-	err := g.gameStorage.ReadTo(gameStorageKey, g)
+	err := g.gameStorage.ReadTo(gameTickStorageKey, &g.Game.Tick)
+	if err != nil {
+		log.Warn().Msgf("Game tick was not loaded from the storage %v", err)
+	}
+	err = g.gameStorage.ReadTo(gameStorageKey, g)
 	if err != nil {
 		log.Warn().Msgf("Game was not loaded from the storage %v", err)
 	} else {
 		g.AddLevels(0, g.MaxLevelReached)
 		g.handleStoredPlayers()
-	}
-	err = g.gameStorage.ReadTo(gameTickStorageKey, &g.Game.Tick)
-	if err != nil {
-		log.Warn().Msgf("Game tick was not loaded from the storage %v", err)
 	}
 
 	go g.gameLoop()
@@ -134,15 +127,10 @@ func (g *Game) generateLevels(start int32, end int32) string {
 func (g *Game) gameLoop() {
 	for {
 		startTime := time.Now()
-		// TODO lock
 		g.GameLock.Lock()
 		g.Game.Events = []*api.Event{}
 		g.processCommands()
-		// TODO map garbage collection
-		// - go through objects and remove empty ones
-		// - sort by position
-		// - update the cache
-		// - unregister IDs
+
 		g.TickCond.L.Lock()
 		g.Game.Tick++
 		g.TickCond.L.Unlock()
@@ -151,13 +139,95 @@ func (g *Game) gameLoop() {
 		// Copy score - for storage reasons
 		// TODO maybe use the same solution as for tick or find something more elegant
 		g.Game.Score = g.Score
+
+		// mark active levels
+		for _, p := range g.Players {
+			lc, err := g.GetCachedLevel(p.GetPosition().Level)
+			if err != nil {
+				log.Warn().Msgf("Getting level cache for %d failed", p.GetPosition().Level)
+			} else {
+				lc.LastInteractedTick = g.Game.Tick
+			}
+		}
+
+		// regenerate levels
+		for l, lc := range g.mapCache.Level {
+			if IsMapDeprecated(lc, g.Game.Tick, l) {
+				// map garbage collection
+				log.Info().Msgf("Garbage collecting level %d", l)
+				for _, i := range lc.Objects {
+					for _, o := range i {
+						for _, p := range o.Players {
+							if l != 0 {
+								log.Warn().Msgf("Player %s (%s) is on a dead level (%d) for some reason, respawning", p.GetId(), p.GetName(), l)
+								// TODO this is dumb
+								for _, gop := range g.Players {
+									if gop.GetId() != p.GetId() {
+										g.Respawn(gop, false)
+									}
+								}
+							}
+						}
+						for _, j := range o.Items {
+							g.Unregister(j)
+						}
+						for _, j := range o.Monsters {
+							g.Unregister(j)
+						}
+
+					}
+				}
+				g.mapCache.ClearLevelCache(l)
+				// TODO check all valid
+				// - go through objects and remove empty ones
+				// - sort by position
+				// - update the cache
+				// - unregister IDs
+				for i, lvl := range g.Game.Map.Levels {
+					if lvl.Level == l {
+						g.Game.Map.Levels[i] = g.Game.Map.Levels[len(g.Game.Map.Levels)-1]
+						g.Game.Map.Levels = g.Game.Map.Levels[:len(g.Game.Map.Levels)-1]
+						break
+					}
+				}
+				if l == 0 {
+					g.AddLevel(0)
+					// respawn players on level 0
+					for _, p := range g.Players {
+						if p.GetPosition().Level == 0 {
+							g.Respawn(p, false)
+						}
+					}
+				}
+			}
+		}
+		g.SortMaps()
 		g.GameLock.Unlock()
 		g.storeGameState()
-		// TODO regenerate levels
+
 		// TODO generate new levels (based on all the skips)
 		//log.Debug().Msgf("sleeping for %v", LoopTime-time.Since(startTime))
 		time.Sleep(LoopTime - time.Since(startTime))
 	}
+}
+
+func IsMapDeprecated(mm *LevelCache, t int32, l int32) bool {
+	if l == 0 {
+		if (t - mm.GeneratedTick) > 30 {
+			log.Info().Msgf("first level is deprecated")
+			return true
+		}
+	} else {
+		if (t - mm.GeneratedTick) > 4*60 {
+			log.Info().Msgf("%d level is deprecated due to age", l)
+			return true
+		}
+		if (t - mm.LastInteractedTick) > 60 {
+			log.Info().Msgf("%d level is deprecated due to inactivity", l)
+			return true
+		}
+	}
+	return false
 }
 
 func (g *Game) AddLevels(start int32, end int32) {
@@ -171,7 +241,10 @@ func (g *Game) AddLevels(start int32, end int32) {
 	}
 
 	g.Game.Map.Levels = append(g.Game.Map.Levels, m.Levels...)
+	g.SortMaps()
+}
 
+func (g *Game) SortMaps() {
 	sort.Slice(g.Game.Map.Levels, func(i, j int) bool {
 		return g.Game.Map.Levels[i].Level < g.Game.Map.Levels[j].Level
 	})
@@ -524,7 +597,8 @@ func (g *Game) processCommands() {
 		case gameobject.Skiller:
 			// TODO add knockback
 			if c.GetTeleportTo().Move != nil {
-				g.MoveCharacter(c, c.GetTeleportTo().Move)
+				log.Info().Msgf("moving %s (%s) based on casts %+v", c.GetId(), c.GetName(), c.GetTeleportTo().Move)
+				g.ForceMoveCharacter(c, c.GetTeleportTo().Move)
 			}
 		}
 	}

@@ -14,8 +14,9 @@ func checkDistance(playerPosition *api.Coordinates, playerAttributes *api.Attrib
 	if err != nil {
 		return err
 	}
-	if float64(distance) > gameobject.RoundRange(distanceValue) {
-		return fmt.Errorf("cast location is too far away")
+	distanceValue = gameobject.RoundRange(distanceValue)
+	if float64(distance) > distanceValue {
+		return fmt.Errorf("cast location is too far away %d > %f", distance, distanceValue)
 	}
 	return nil
 }
@@ -74,15 +75,7 @@ func validateSkill(game *dungeonsandtrolls.Game, skillUse *api.SkillUse, p gameo
 			return fmt.Errorf("targetId %s is not valid", *skillUse.TargetId)
 		}
 		switch v := t.(type) {
-		case *gameobject.Monster:
-			if s.Target != api.Skill_character {
-				return fmt.Errorf("the skill %s is not supposed to be used on characters", skillUse.SkillId)
-			}
-			err = checkDistance(p.GetPosition(), p.GetAttributes(), v.Position, s)
-			if err != nil {
-				return err
-			}
-		case *gameobject.Player:
+		case gameobject.Skiller:
 			if s.Target != api.Skill_character {
 				return fmt.Errorf("the skill %s is not supposed to be used on characters", skillUse.SkillId)
 			}

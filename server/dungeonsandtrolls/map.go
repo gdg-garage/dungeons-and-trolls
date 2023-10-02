@@ -11,11 +11,14 @@ import (
 )
 
 type LevelCache struct {
-	SpawnPoint *api.Coordinates
-	Width      int32
-	Height     int32
-	Objects    map[int32]map[int32]*api.MapObjects
-	Grid       *paths.Grid
+	SpawnPoint         *api.Coordinates
+	Width              int32
+	Height             int32
+	Objects            map[int32]map[int32]*api.MapObjects
+	Grid               *paths.Grid
+	GeneratedTick      int32
+	LastInteractedTick int32
+	Fov                [][]bool
 }
 
 type MapCache struct {
@@ -308,6 +311,10 @@ func (lc *LevelCache) CacheObjectsOnPosition(p *api.Coordinates, mo *api.MapObje
 	return lc.Objects[p.PositionX][p.PositionY]
 }
 
+func (m *MapCache) ClearLevelCache(l int32) {
+	delete(m.Level, l)
+}
+
 func (m *MapCache) createLevelCache(l int32) *LevelCache {
 	if _, ok := m.Level[l]; !ok {
 		m.Level[l] = &LevelCache{
@@ -326,6 +333,7 @@ func (m *MapCache) CachedLevel(l int32) (*LevelCache, error) {
 
 func LevelsPostProcessing(g *Game, m *api.Map, mapCache *MapCache) error {
 	for _, l := range m.Levels {
+		log.Info().Msgf("generated level %d", l.Level)
 		// Strip items from the first level.
 		if l.Level == gameobject.ZeroLevel {
 			for _, o := range l.Objects {
@@ -353,6 +361,8 @@ func LevelsPostProcessing(g *Game, m *api.Map, mapCache *MapCache) error {
 		lc := mapCache.createLevelCache(l.Level)
 		lc.Width = l.Width
 		lc.Height = l.Height
+		lc.GeneratedTick = g.Game.Tick
+		lc.LastInteractedTick = g.Game.Tick
 		lc.Grid = paths.NewGrid(int(l.Width), int(l.Height), 1, 1)
 
 		spawn, err := findLevelSpawnPoint(l)
