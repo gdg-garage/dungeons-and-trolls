@@ -336,6 +336,10 @@ func LevelsPostProcessing(g *Game, m *api.Map, mapCache *MapCache) error {
 		log.Info().Msgf("generated level %d", l.Level)
 		// Strip items from the first level.
 		if l.Level == gameobject.ZeroLevel {
+			for _, s := range g.Game.ShopItems {
+				g.Unregister(s)
+			}
+			g.Game.ShopItems = []*api.Item{}
 			for _, o := range l.Objects {
 				for _, i := range o.Items {
 					g.AddItem(i)
