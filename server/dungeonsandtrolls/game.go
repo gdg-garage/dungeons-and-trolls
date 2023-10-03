@@ -661,6 +661,15 @@ func (g *Game) removeMonsterFromPosition(m *gameobject.Monster) {
 	}
 }
 
+func (g *Game) findLevel(lvl int32) *api.Level {
+	for _, l := range g.Game.Map.Levels {
+		if l.Level == lvl {
+			return l
+		}
+	}
+	return nil
+}
+
 // Todo more generic version?
 func (g *Game) addPlayerToNewPosition(o *api.MapObjects, p *api.Character, c *api.Coordinates, lc *LevelCache) {
 	if o != nil {
@@ -673,8 +682,14 @@ func (g *Game) addPlayerToNewPosition(o *api.MapObjects, p *api.Character, c *ap
 			},
 			IsFree: true,
 		}
-		g.Game.Map.Levels[c.Level].Objects = append(g.Game.Map.Levels[c.Level].Objects, mo)
-		lc.CacheObjectsOnPosition(c, mo)
+		l := g.findLevel(c.Level)
+		if l != nil {
+			l.Objects = append(l.Objects, mo)
+			lc.CacheObjectsOnPosition(c, mo)
+		} else {
+			log.Warn().Msgf("player moved to level %d which does not exist", c.Level)
+		}
+
 	}
 }
 
@@ -689,8 +704,13 @@ func (g *Game) addMonsterToNewPosition(o *api.MapObjects, m *api.Monster, c *api
 			},
 			IsFree: true,
 		}
-		g.Game.Map.Levels[c.Level].Objects = append(g.Game.Map.Levels[c.Level].Objects, mo)
-		lc.CacheObjectsOnPosition(c, mo)
+		l := g.findLevel(c.Level)
+		if l != nil {
+			l.Objects = append(l.Objects, mo)
+			lc.CacheObjectsOnPosition(c, mo)
+		} else {
+			log.Warn().Msgf("player moved to level %d which does not exist", c.Level)
+		}
 	}
 }
 
