@@ -133,6 +133,7 @@ func (g *Game) gameLoop() {
 		g.Game.Events = []*api.Event{}
 
 		for _, r := range g.Respawns {
+			g.Commands[r.GetId()] = &api.CommandsBatch{}
 			g.Respawn(r, true)
 		}
 		g.Respawns = []*gameobject.Player{}
@@ -213,7 +214,6 @@ func (g *Game) gameLoop() {
 		g.GameLock.Unlock()
 		g.storeGameState()
 
-		// TODO generate new levels (based on all the skips)
 		//log.Debug().Msgf("sleeping for %v", LoopTime-time.Since(startTime))
 		time.Sleep(LoopTime - time.Since(startTime))
 	}
