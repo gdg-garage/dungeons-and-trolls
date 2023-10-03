@@ -20,7 +20,6 @@ type Player struct {
 	MaxStats       *api.Attributes             `json:"-"`
 	Skills         map[string]*api.Skill       `json:"-"`
 	IsAdmin        bool                        `json:"admin"`
-	Stun           Stun                        `json:"-"`
 	TeleportedTo   TeleportPosition            `json:"-"`
 }
 
@@ -173,7 +172,7 @@ func (p *Player) GetAttributes() *api.Attributes {
 }
 
 func (p *Player) IsStunned() bool {
-	return p.Stun.IsStunned
+	return p.Character.Stun.IsStunned
 }
 
 func (p *Player) GetLastDamageTaken() int32 {
@@ -193,11 +192,15 @@ func (p *Player) AddEffect(e *api.Effect) {
 }
 
 func (p *Player) Stunned() {
-	if !p.Stun.IsImmune {
-		p.Stun.IsStunned = true
+	if !p.Character.Stun.IsImmune {
+		p.Character.Stun.IsStunned = true
 		// cancel movement
 		p.SetMovingTo(nil)
 	}
+}
+
+func (p *Player) Stun() *api.Stun {
+	return p.Character.Stun
 }
 
 func (p *Player) generateSkills() {

@@ -228,9 +228,9 @@ message Stats {
   float stamina = 3;
 }
 
-message Rewards {
-  optional int32 xp = 1;
-  optional int32 money = 2;
+message Stun {
+  bool is_stunned = 1;
+  bool is_immune = 2;
 }
 
 message Monster {
@@ -249,6 +249,7 @@ message Monster {
   repeated Droppable on_death = 12;
   optional Attributes max_attributes = 13;
   optional int32 last_damage_taken = 14;
+  optional Stun stun = 15;
 }
 
 message Character {
@@ -263,6 +264,7 @@ message Character {
   Attributes max_attributes = 10;
   int32 last_damage_taken = 11;
   Coordinates coordinates = 12;
+  Stun stun = 13;
 }
 
 message PlayersInfo {

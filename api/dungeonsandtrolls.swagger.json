@@ -827,6 +827,9 @@
         },
         "coordinates": {
           "$ref": "#/definitions/dungeonsandtrollsCoordinates"
+        },
+        "stun": {
+          "$ref": "#/definitions/dungeonsandtrollsStun"
         }
       }
     },
@@ -1309,6 +1312,10 @@
           "type": "integer",
           "format": "int32",
           "x-nullable": true
+        },
+        "stun": {
+          "$ref": "#/definitions/dungeonsandtrollsStun",
+          "x-nullable": true
         }
       }
     },
@@ -1529,6 +1536,17 @@
         "position": {
           "$ref": "#/definitions/dungeonsandtrollsPosition",
           "x-nullable": true
+        }
+      }
+    },
+    "dungeonsandtrollsStun": {
+      "type": "object",
+      "properties": {
+        "isStunned": {
+          "type": "boolean"
+        },
+        "isImmune": {
+          "type": "boolean"
         }
       }
     },

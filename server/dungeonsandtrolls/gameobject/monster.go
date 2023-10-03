@@ -13,7 +13,6 @@ type Monster struct {
 	MovingTo     *paths.Path           `json:"-"`
 	Monster      *api.Monster          `json:"-"`
 	Skills       map[string]*api.Skill `json:"-"`
-	Stun         Stun                  `json:"-"`
 	TeleportedTo TeleportPosition      `json:"-"`
 	KillCounter  *int32                `json:"-"`
 }
@@ -73,7 +72,7 @@ func (m *Monster) GetAttributes() *api.Attributes {
 }
 
 func (m *Monster) IsStunned() bool {
-	return m.Stun.IsStunned
+	return m.Monster.Stun.IsStunned
 }
 
 func (m *Monster) GetLastDamageTaken() int32 {
@@ -90,11 +89,15 @@ func (m *Monster) GetTeleportTo() *TeleportPosition {
 
 func (m *Monster) Stunned() {
 	// TODO log stun?
-	if !m.Stun.IsImmune {
-		m.Stun.IsStunned = true
+	if !m.Monster.Stun.IsImmune {
+		m.Monster.Stun.IsStunned = true
 		// cancel movement
 		m.SetMovingTo(nil)
 	}
+}
+
+func (m *Monster) Stun() *api.Stun {
+	return m.Monster.Stun
 }
 
 func (m *Monster) AddEffect(e *api.Effect) {

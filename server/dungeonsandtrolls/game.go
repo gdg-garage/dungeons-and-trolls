@@ -333,20 +333,20 @@ func (g *Game) processCommands() {
 	for _, i := range g.idToObject {
 		switch c := i.(type) {
 		case *gameobject.Monster:
-			if c.Stun.IsStunned {
-				c.Stun.IsStunned = false
-				c.Stun.IsImmune = true
+			if c.Stun().IsStunned {
+				c.Stun().IsStunned = false
+				c.Stun().IsImmune = true
 			}
-			if c.Stun.IsImmune {
-				c.Stun.IsImmune = false
+			if c.Stun().IsImmune {
+				c.Stun().IsImmune = false
 			}
 		case *gameobject.Player:
-			if c.Stun.IsStunned {
-				c.Stun.IsStunned = false
-				c.Stun.IsImmune = true
+			if c.Stun().IsStunned {
+				c.Stun().IsStunned = false
+				c.Stun().IsImmune = true
 			}
-			if c.Stun.IsImmune {
-				c.Stun.IsImmune = false
+			if c.Stun().IsImmune {
+				c.Stun().IsImmune = false
 			}
 		}
 	}
@@ -837,6 +837,7 @@ func HideNonPublicMonsterFields(g *Game, m *api.Monster) {
 	m.Attributes = nil
 	m.MaxAttributes = nil
 	m.LastDamageTaken = nil
+	m.Stun = nil
 }
 
 func RemovePlayerFromTile(o *api.MapObjects, p *gameobject.Player) {
