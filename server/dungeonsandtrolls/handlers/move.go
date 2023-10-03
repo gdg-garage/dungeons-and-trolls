@@ -33,10 +33,18 @@ func validateAndSetMove(game *dungeonsandtrolls.Game, c *api.Position, p gameobj
 	if c.PositionX >= lc.Width || c.PositionY >= lc.Height {
 		return fmt.Errorf("position (%d, %d) is out of the level map", c.PositionX, c.PositionY)
 	}
+	if p.GetPosition().PositionX >= lc.Width || p.GetPosition().PositionY >= lc.Height {
+		return fmt.Errorf("player position (%d, %d) is out of the level map", p.GetPosition().PositionX, p.GetPosition().PositionY)
+	}
 	if p.GetPosition() == nil {
 		log.Warn().Msgf("trying to move %s which is on nil pos", p.GetId())
 		return fmt.Errorf("tried to move with %s which is on nil pos", p.GetId())
 	}
+	if lc.Grid == nil {
+		log.Warn().Msgf("trying to move on level which does not have paths", p.GetPosition().Level)
+		return fmt.Errorf("tried to move on level %d wihthout any paths", p.GetPosition().Level)
+	}
+
 	path := lc.Grid.GetPathFromCells(
 		lc.Grid.Get(int(p.GetPosition().PositionX), int(p.GetPosition().PositionY)),
 		lc.Grid.Get(int(c.PositionX), int(c.PositionY)), false, true)
