@@ -45,7 +45,9 @@ type Game struct {
 
 	idToObject map[string]gameobject.Ider
 
-	Commands map[string]*api.CommandsBatch
+	Commands map[string]*api.CommandsBatch `json:"-"`
+
+	Respawns []*gameobject.Player `json:"-"`
 }
 
 func NewGame() *Game {
@@ -129,6 +131,12 @@ func (g *Game) gameLoop() {
 		startTime := time.Now()
 		g.GameLock.Lock()
 		g.Game.Events = []*api.Event{}
+
+		for _, r := range g.Respawns {
+			g.Respawn(r, true)
+		}
+		g.Respawns = []*gameobject.Player{}
+
 		g.processCommands()
 
 		g.TickCond.L.Lock()

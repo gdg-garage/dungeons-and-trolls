@@ -14,10 +14,7 @@ func Respawn(game *dungeonsandtrolls.Game, token string) error {
 		return fmt.Errorf("admin players are are not allowed to call non-monster commands")
 	}
 
-	// TODO defer this
-	game.GameLock.Lock()
-	game.Respawn(p, true)
-	game.GameLock.Unlock()
+	game.Respawns = append(game.Respawns, p)
 
 	return nil
 }
