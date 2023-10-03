@@ -388,6 +388,7 @@ message Event {
     DEATH = 6;
     SCORE = 7;
     MOVE = 8;
+    AOE = 9;
   }
 
   string message = 1;
@@ -396,6 +397,9 @@ message Event {
   optional float damage = 4;
   optional string player_id = 5;
   optional string skill_name = 6;
+  optional float radius = 7;
+  optional Coordinates target = 8;
+  optional Skill skill = 9;
 }
 
 message GameState {

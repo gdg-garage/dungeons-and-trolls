@@ -21,7 +21,7 @@ func checkDistance(playerPosition *api.Coordinates, playerAttributes *api.Attrib
 	return nil
 }
 
-func tilesInRange(game *dungeonsandtrolls.Game, startingPosition *api.Coordinates, rng int32) []*api.MapObjects {
+func TilesInRange(game *dungeonsandtrolls.Game, startingPosition *api.Coordinates, rng int32) []*api.MapObjects {
 	// TODO implement
 	// <=
 	return []*api.MapObjects{}
@@ -100,6 +100,15 @@ func validateSkill(game *dungeonsandtrolls.Game, skillUse *api.SkillUse, p gameo
 			return fmt.Errorf("skill target position (%d, %d) not found in the level", skillUse.Position.PositionX, skillUse.Position.PositionY)
 		}
 		err = checkDistance(p.GetPosition(), p.GetAttributes(), gameobject.PositionToCoordinates(skillUse.Position, p.GetPosition().Level), s)
+		if s.CasterEffects.Flags.Movement {
+			pos, err := game.GetObjectsOnPosition(gameobject.PositionToCoordinates(skillUse.Position, p.GetPosition().Level))
+			if err != nil {
+				return fmt.Errorf("an error occured during movement %s", err.Error())
+			}
+			if pos != nil && !pos.IsFree {
+				return fmt.Errorf("move postion (%d, %d) is not free", skillUse.Position.PositionX, skillUse.Position.PositionY)
+			}
+		}
 		if err != nil {
 			return err
 		}

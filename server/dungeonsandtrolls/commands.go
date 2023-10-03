@@ -165,14 +165,17 @@ func ExecuteSkill(game *Game, player gameobject.Skiller, su *api.SkillUse) error
 		return fmt.Errorf("skill %s not found for character", su.SkillId)
 	}
 	skillEvent := api.Event_SKILL
-	game.LogEvent(
-		&api.Event{
-			Type:        &skillEvent,
-			Message:     fmt.Sprintf("%s (%s): used skill: %s (%s)", player.GetId(), player.GetName(), s.Id, s.Name),
-			SkillName:   &s.Name,
-			PlayerId:    pointy.String(player.GetId()),
-			Coordinates: player.GetPosition(),
-		})
+	aoeEvent := api.Event_AOE
+
+	event := &api.Event{
+		Type:        &skillEvent,
+		Message:     fmt.Sprintf("%s (%s): used skill: %s (%s)", player.GetId(), player.GetName(), s.Id, s.Name),
+		SkillName:   &s.Name,
+		PlayerId:    pointy.String(player.GetId()),
+		Coordinates: player.GetPosition(),
+		Skill:       s,
+	}
+	defer game.LogEvent(event)
 
 	err := payForSkill(player, s)
 	if err != nil {
@@ -187,6 +190,12 @@ func ExecuteSkill(game *Game, player gameobject.Skiller, su *api.SkillUse) error
 		}
 		duration = gameobject.RoundSkill(d)
 	}
+
+	radiusValue, err := gameobject.AttributesValue(player.GetAttributes(), s.Radius)
+	if err != nil {
+		return err
+	}
+	radiusValue = gameobject.RoundSkill(radiusValue)
 
 	var targetPos *api.Coordinates
 	switch s.Target {
@@ -208,6 +217,8 @@ func ExecuteSkill(game *Game, player gameobject.Skiller, su *api.SkillUse) error
 	case api.Skill_none:
 		targetPos = player.GetPosition()
 	}
+
+	event.Target = targetPos
 
 	if s.CasterEffects != nil {
 		e, err := gameobject.EvaluateSkillAttributes(s.CasterEffects.Attributes, player.GetAttributes())
@@ -235,8 +246,23 @@ func ExecuteSkill(game *Game, player gameobject.Skiller, su *api.SkillUse) error
 			summon(game, sum, player, int32(duration))
 		}
 
-		// TODO summons
-		// TODO flags
+		if radiusValue > 0 {
+			game.LogEvent(&api.Event{
+				Type:        &aoeEvent,
+				Message:     fmt.Sprintf("%s (%s): caused aoe effect", player.GetId(), player.GetName()),
+				SkillName:   &s.Name,
+				Coordinates: player.GetPosition(),
+				Radius:      pointy.Float32(float32(radiusValue)),
+			})
+			//TODO
+			//for _, t := range handlers.TilesInRange(game, player.GetPosition(), int32(radiusValue)) {
+			//	//for t.Monsters
+			//	//for t.Players
+			//}
+		}
+
+		// TODO AOE
+		// TODO flags (knockback, ground)
 	}
 
 	switch s.Target {
@@ -254,8 +280,7 @@ func ExecuteSkill(game *Game, player gameobject.Skiller, su *api.SkillUse) error
 			if err != nil {
 				return err
 			}
-			// TODO summons
-			// TODO flags
+
 			switch c := character.(type) {
 			case gameobject.Skiller:
 				casterId := player.GetId()
@@ -270,7 +295,27 @@ func ExecuteSkill(game *Game, player gameobject.Skiller, su *api.SkillUse) error
 				for _, sum := range s.CasterEffects.Summons {
 					summon(game, sum, c, int32(duration))
 				}
-				// TODO we can probably move them
+
+				if s.CasterEffects.Flags.Movement {
+					gameobject.TeleportMoveTo(c, targetPos)
+				}
+
+				if radiusValue > 0 {
+					game.LogEvent(&api.Event{
+						Type:        &aoeEvent,
+						Message:     fmt.Sprintf("%s (%s): caused aoe effect", player.GetId(), player.GetName()),
+						SkillName:   &s.Name,
+						Coordinates: player.GetPosition(),
+						Radius:      pointy.Float32(float32(radiusValue)),
+					})
+					//TODO
+					//for _, t := range handlers.TilesInRange(game, player.GetPosition(), int32(radiusValue)) {
+					//	//for t.Monsters
+					//	//for t.Players
+					//}
+				}
+
+				// TODO flags (knockback)
 			default:
 				return fmt.Errorf("tried to cast character spell on non-character")
 			}
@@ -278,6 +323,7 @@ func ExecuteSkill(game *Game, player gameobject.Skiller, su *api.SkillUse) error
 	case api.Skill_position:
 		//return fmt.Errorf("not implemented")
 	}
+
 	return nil
 }
 
