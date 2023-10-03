@@ -9,7 +9,7 @@ import (
 )
 
 func validatePickUp(game *dungeonsandtrolls.Game, i *api.Identifier, p *gameobject.Player) error {
-	if p.Stun.IsStunned {
+	if p.Stun().IsStunned {
 		return fmt.Errorf("you are stunned")
 	}
 

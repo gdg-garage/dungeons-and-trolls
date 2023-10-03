@@ -10,7 +10,7 @@ import (
 
 // ValidateBuy validates identifiers, funds, and requirements
 func ValidateBuy(game *Game, p *gameobject.Player, identifiers *api.Identifiers) error {
-	if p.Stun.IsStunned {
+	if p.Stun().IsStunned {
 		return fmt.Errorf("you are stunned")
 	}
 

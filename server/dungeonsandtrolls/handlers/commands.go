@@ -12,7 +12,7 @@ func Commands(game *dungeonsandtrolls.Game, c *api.CommandsBatch, token string) 
 		return err
 	}
 
-	if p.Stun.IsStunned {
+	if p.Stun().IsStunned {
 		return fmt.Errorf("you are stunned")
 	}
 

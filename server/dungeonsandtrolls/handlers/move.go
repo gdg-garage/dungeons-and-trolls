@@ -41,7 +41,7 @@ func validateAndSetMove(game *dungeonsandtrolls.Game, c *api.Position, p gameobj
 		return fmt.Errorf("tried to move with %s which is on nil pos", p.GetId())
 	}
 	if lc.Grid == nil {
-		log.Warn().Msgf("trying to move on level which does not have paths", p.GetPosition().Level)
+		log.Warn().Msgf("trying to move on level %d which does not have paths", p.GetPosition().Level)
 		return fmt.Errorf("tried to move on level %d wihthout any paths", p.GetPosition().Level)
 	}
 

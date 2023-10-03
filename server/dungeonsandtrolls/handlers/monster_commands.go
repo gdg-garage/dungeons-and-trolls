@@ -18,7 +18,7 @@ func validateMonsterCommands(game *dungeonsandtrolls.Game, mc *api.CommandsForMo
 			return fmt.Errorf("tried to control monster with ID %s which does not exist", mId)
 		}
 		m, ok := o.(*gameobject.Monster)
-		if m.Stun.IsStunned {
+		if m.Stun().IsStunned {
 			return fmt.Errorf("tried to control stunned monster")
 		}
 		if !ok {
