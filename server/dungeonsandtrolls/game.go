@@ -508,13 +508,13 @@ func (g *Game) processCommands() {
 			} else {
 				c.Monster.Effects = e
 			}
-			if *c.GetAttributes().Life > *c.Monster.MaxAttributes.Life {
+			if c.GetAttributes().Life != nil && c.Monster.MaxAttributes.Life != nil && *c.GetAttributes().Life > *c.Monster.MaxAttributes.Life {
 				c.GetAttributes().Life = c.Monster.MaxAttributes.Life
 			}
-			if *c.GetAttributes().Stamina > *c.Monster.MaxAttributes.Stamina {
+			if c.GetAttributes().Stamina != nil && c.Monster.MaxAttributes.Stamina != nil && *c.GetAttributes().Stamina > *c.Monster.MaxAttributes.Stamina {
 				c.GetAttributes().Stamina = c.Monster.MaxAttributes.Stamina
 			}
-			if *c.GetAttributes().Mana > *c.Monster.MaxAttributes.Mana {
+			if c.GetAttributes().Mana != nil && c.Monster.MaxAttributes.Mana != nil && *c.GetAttributes().Mana > *c.Monster.MaxAttributes.Mana {
 				c.GetAttributes().Mana = c.Monster.MaxAttributes.Mana
 			}
 		case *gameobject.Player:
