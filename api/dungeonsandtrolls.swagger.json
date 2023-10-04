@@ -2,7 +2,7 @@
   "swagger": "2.0",
   "info": {
     "title": "Dungeons and Trolls",
-    "version": "1.5.0"
+    "version": "1.6.0"
   },
   "tags": [
     {
@@ -990,6 +990,19 @@
         "skillName": {
           "type": "string",
           "x-nullable": true
+        },
+        "radius": {
+          "type": "number",
+          "format": "float",
+          "x-nullable": true
+        },
+        "target": {
+          "$ref": "#/definitions/dungeonsandtrollsCoordinates",
+          "x-nullable": true
+        },
+        "skill": {
+          "$ref": "#/definitions/dungeonsandtrollsSkill",
+          "x-nullable": true
         }
       }
     },
@@ -1004,7 +1017,8 @@
         "SKILL",
         "DEATH",
         "SCORE",
-        "MOVE"
+        "MOVE",
+        "AOE"
       ],
       "default": "DAMAGE"
     },
