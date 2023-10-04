@@ -160,6 +160,7 @@ func (g *Game) gameLoop() {
 		}
 
 		// regenerate levels
+		var respawnPlayers []*gameobject.Player
 		for l, lc := range g.mapCache.Level {
 			if IsMapDeprecated(lc, g.Game.Tick, l) {
 				// map garbage collection
@@ -169,11 +170,9 @@ func (g *Game) gameLoop() {
 						for _, p := range o.Players {
 							if l != 0 {
 								log.Warn().Msgf("Player %s (%s) is on a dead level (%d) for some reason, respawning", p.GetId(), p.GetName(), l)
-								// TODO this is dumb
-								for _, gop := range g.Players {
-									if gop.GetId() == p.GetId() {
-										g.Respawn(gop, false)
-									}
+								pl, err := g.GetObjectById(p.GetId())
+								if err != nil {
+									respawnPlayers = append(respawnPlayers, pl.(*gameobject.Player))
 								}
 							}
 						}
@@ -208,6 +207,9 @@ func (g *Game) gameLoop() {
 					}
 				}
 			}
+		}
+		for _, p := range respawnPlayers {
+			g.Respawn(p, false)
 		}
 		g.SortMaps()
 		g.GameLock.Unlock()
