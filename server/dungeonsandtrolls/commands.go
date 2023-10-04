@@ -6,6 +6,7 @@ import (
 	"github.com/gdg-garage/dungeons-and-trolls/server/dungeonsandtrolls/gameobject"
 	"github.com/rs/zerolog/log"
 	"go.openly.dev/pointy"
+	"golang.org/x/exp/slices"
 )
 
 // ValidateBuy validates identifiers, funds, and requirements
@@ -343,13 +344,19 @@ func ExecuteAssignSkillPoints(player *gameobject.Player, a *api.Attributes) erro
 }
 
 func EvaluateEffects(g *Game, effects []*api.Effect, a *api.Attributes, receiver gameobject.Alive) ([]*api.Effect, error) {
-	// TODO first buffs then damage
 	var keptEffects []*api.Effect
-	for _, e := range effects {
+	var errIdx []int
+
+	// Apply buffs - maybe it will grant more resist
+	for i, e := range effects {
 		err := gameobject.MergeAllAttributes(a, e.Effects, false)
 		if err != nil {
-			return keptEffects, err
+			errIdx = append(errIdx, i)
 		}
+	}
+
+	// Deal damage
+	for _, e := range effects {
 		if e.DamageType != api.DamageType_none {
 			damage := gameobject.EvaluateDamage(float64(e.DamageAmount), e.DamageType, a)
 
@@ -373,8 +380,14 @@ func EvaluateEffects(g *Game, effects []*api.Effect, a *api.Attributes, receiver
 				Coordinates: receiver.GetPosition(),
 			})
 		}
+	}
 
-		// TODO do not go over max
+	// what to keep
+	for i, e := range effects {
+		// skip effects which caused err
+		if slices.Contains(errIdx, i) {
+			continue
+		}
 
 		e.Duration--
 		if e.Duration > 0 {

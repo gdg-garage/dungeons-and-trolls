@@ -100,6 +100,7 @@ func nonNilMonster(m *api.Monster) {
 	if m.Attributes == nil {
 		m.Attributes = &api.Attributes{}
 	}
+	m.Stun = &api.Stun{}
 	for _, d := range m.OnDeath {
 		nonNil(d)
 	}

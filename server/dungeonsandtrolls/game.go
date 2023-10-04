@@ -289,6 +289,7 @@ func (g *Game) Respawn(player *gameobject.Player, markDeath bool) {
 	player.InitAttributes()
 	player.UpdateAttributes()
 	player.Character.Money = g.GetMoney()
+	player.Character.Stun = &api.Stun{}
 	player.Character.SkillPoints = float32(g.MaxLevelReached)
 	player.Character.Equip = []*api.Item{}
 	player.Equipped = map[api.Item_Type]*api.Item{}
@@ -495,8 +496,9 @@ func (g *Game) processCommands() {
 
 	for _, i := range g.idToObject {
 		switch c := i.(type) {
+		// TODO use only one function
 		case *gameobject.Monster:
-			e, err := EvaluateEffects(g, c.Monster.Effects, c.Monster.Attributes, c)
+			e, err := EvaluateEffects(g, c.Monster.Effects, c.GetAttributes(), c)
 			*c.Monster.LastDamageTaken += 1
 			if err != nil {
 				g.LogEvent(&api.Event{
@@ -507,8 +509,17 @@ func (g *Game) processCommands() {
 			} else {
 				c.Monster.Effects = e
 			}
+			if *c.GetAttributes().Life > *c.Monster.MaxAttributes.Life {
+				c.GetAttributes().Life = c.Monster.MaxAttributes.Life
+			}
+			if *c.GetAttributes().Stamina > *c.Monster.MaxAttributes.Stamina {
+				c.GetAttributes().Stamina = c.Monster.MaxAttributes.Stamina
+			}
+			if *c.GetAttributes().Mana > *c.Monster.MaxAttributes.Mana {
+				c.GetAttributes().Mana = c.Monster.MaxAttributes.Mana
+			}
 		case *gameobject.Player:
-			e, err := EvaluateEffects(g, c.Character.Effects, c.Character.Attributes, c)
+			e, err := EvaluateEffects(g, c.Character.Effects, c.GetAttributes(), c)
 			c.Character.LastDamageTaken += 1
 			if err != nil {
 				g.LogEvent(&api.Event{
@@ -518,6 +529,15 @@ func (g *Game) processCommands() {
 				})
 			} else {
 				c.Character.Effects = e
+			}
+			if *c.GetAttributes().Life > *c.Character.MaxAttributes.Life {
+				c.GetAttributes().Life = c.Character.MaxAttributes.Life
+			}
+			if *c.GetAttributes().Stamina > *c.Character.MaxAttributes.Stamina {
+				c.GetAttributes().Stamina = c.Character.MaxAttributes.Stamina
+			}
+			if *c.GetAttributes().Mana > *c.Character.MaxAttributes.Mana {
+				c.GetAttributes().Mana = c.Character.MaxAttributes.Mana
 			}
 		}
 	}
