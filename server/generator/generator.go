@@ -18,7 +18,7 @@ func GenerateLevel(start int32, end int32, max int32) string {
 	cmd.Stderr = stderr
 	cmd.Stdout = stdout
 
-	log.Info().Msgf("raw generator output: %s", stdout.String())
+	log.Info().Str("output", stdout.String()).Msgf("raw generator output")
 
 	if err := cmd.Run(); err != nil {
 		log.Warn().Msgf("stderr: %s", stderr.String())
