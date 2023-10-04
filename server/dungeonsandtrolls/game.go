@@ -369,6 +369,16 @@ func (g *Game) processCommands() {
 		}
 	}
 
+	for _, p := range g.Players {
+		p.UpdateAttributes()
+	}
+	for _, o := range g.idToObject {
+		switch m := o.(type) {
+		case *gameobject.Monster:
+			m.UpdateAttributes()
+		}
+	}
+
 	// passives
 	for _, p := range g.Players {
 		g.processPassives(p)

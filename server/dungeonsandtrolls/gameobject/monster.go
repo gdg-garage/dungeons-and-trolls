@@ -120,7 +120,6 @@ func (m *Monster) GetSkills() map[string]*api.Skill {
 func (m *Monster) UpdateAttributes() {
 	currentAttributes := proto.Clone(m.GetAttributes()).(*api.Attributes)
 	m.Monster.Attributes = proto.Clone(m.Monster.MaxAttributes).(*api.Attributes)
-	// TODO add item attrs
 	m.GetAttributes().Life = currentAttributes.Life
 	m.GetAttributes().Mana = currentAttributes.Mana
 	m.GetAttributes().Stamina = currentAttributes.Stamina
