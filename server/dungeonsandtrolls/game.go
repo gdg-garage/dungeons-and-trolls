@@ -328,6 +328,21 @@ func (g *Game) GetMapObjectsOrCreateDefault(c *api.Coordinates) *api.MapObjects 
 	})
 }
 
+func (g *Game) processPassives(p gameobject.Skiller) {
+	for _, s := range p.GetSkills() {
+		if s.Flags.Passive {
+			// Use passive skill as none skill
+			err := ExecuteSkill(g, p, &api.SkillUse{
+				SkillId: s.Id,
+			})
+			if err != nil {
+				log.Warn().Err(err).Msg("")
+			}
+		}
+	}
+
+}
+
 func (g *Game) processCommands() {
 	errorEvent := api.Event_ERROR
 	deathEvent := api.Event_DEATH
@@ -351,6 +366,17 @@ func (g *Game) processCommands() {
 			if c.Stun().IsImmune {
 				c.Stun().IsImmune = false
 			}
+		}
+	}
+
+	// passives
+	for _, p := range g.Players {
+		g.processPassives(p)
+	}
+	for _, o := range g.idToObject {
+		switch m := o.(type) {
+		case *gameobject.Monster:
+			g.processPassives(m)
 		}
 	}
 
@@ -491,8 +517,6 @@ func (g *Game) processCommands() {
 			continue
 		}
 	}
-
-	// TODO passive skills
 
 	// TODO ground effects - pass to players and monsters
 

@@ -183,6 +183,10 @@ func (p *Player) DamageTaken() {
 	p.Character.LastDamageTaken = -1
 }
 
+func (p *Player) GetSkills() map[string]*api.Skill {
+	return p.Skills
+}
+
 func (p *Player) GetTeleportTo() *TeleportPosition {
 	return &p.TeleportedTo
 }

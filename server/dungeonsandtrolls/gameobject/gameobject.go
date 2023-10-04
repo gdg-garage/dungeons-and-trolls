@@ -31,6 +31,7 @@ type Skiller interface {
 	Stunned()
 	Stun() *api.Stun
 	AddEffect(e *api.Effect)
+	GetSkills() map[string]*api.Skill
 }
 
 type TeleportPosition struct {
