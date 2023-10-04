@@ -94,7 +94,7 @@ func CreateGame() (*Game, error) {
 	if err != nil {
 		log.Warn().Msgf("Game was not loaded from the storage %v", err)
 	} else {
-		g.AddLevels(0, g.MaxLevelReached)
+		g.AddLevels(0, 0)
 		g.handleStoredPlayers()
 	}
 
