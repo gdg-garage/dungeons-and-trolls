@@ -171,7 +171,7 @@ func (g *Game) gameLoop() {
 								log.Warn().Msgf("Player %s (%s) is on a dead level (%d) for some reason, respawning", p.GetId(), p.GetName(), l)
 								// TODO this is dumb
 								for _, gop := range g.Players {
-									if gop.GetId() != p.GetId() {
+									if gop.GetId() == p.GetId() {
 										g.Respawn(gop, false)
 									}
 								}
@@ -183,7 +183,6 @@ func (g *Game) gameLoop() {
 						for _, j := range o.Monsters {
 							g.Unregister(j)
 						}
-
 					}
 				}
 				g.mapCache.ClearLevelCache(l)
@@ -226,7 +225,7 @@ func IsMapDeprecated(mm *LevelCache, t int32, l int32) bool {
 			return true
 		}
 	} else {
-		if (t - mm.GeneratedTick) > 4*60 {
+		if (t - mm.GeneratedTick) > 8*60 {
 			log.Info().Msgf("%d level is deprecated due to age", l)
 			return true
 		}
