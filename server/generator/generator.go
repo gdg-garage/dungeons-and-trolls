@@ -18,12 +18,12 @@ func GenerateLevel(start int32, end int32, max int32) string {
 	cmd.Stderr = stderr
 	cmd.Stdout = stdout
 
-	log.Info().Str("output", stdout.String()).Msgf("raw generator output")
-
 	if err := cmd.Run(); err != nil {
 		log.Warn().Msgf("stderr: %s", stderr.String())
 		log.Fatal().Msgf("failed to run %s: %v", binary, err)
 	}
+
+	log.Info().Str("output", stdout.String()).Msgf("raw generator output")
 
 	return stdout.String()
 }
