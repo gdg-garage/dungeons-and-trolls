@@ -172,8 +172,9 @@ func (g *Game) gameLoop() {
 								log.Warn().Msgf("Player %s (%s) is on a dead level (%d) for some reason, respawning", p.GetId(), p.GetName(), l)
 								pl, err := g.GetObjectById(p.GetId())
 								if err != nil {
-									respawnPlayers = append(respawnPlayers, pl.(*gameobject.Player))
+									log.Warn().Err(err).Msg("")
 								}
+								respawnPlayers = append(respawnPlayers, pl.(*gameobject.Player))
 							}
 						}
 						for _, j := range o.Items {
@@ -202,7 +203,7 @@ func (g *Game) gameLoop() {
 					// respawn players on level 0
 					for _, p := range g.Players {
 						if p.GetPosition().Level == 0 {
-							g.Respawn(p, false)
+							g.ForceMoveCharacter(p, p.GetPosition())
 						}
 					}
 				}
