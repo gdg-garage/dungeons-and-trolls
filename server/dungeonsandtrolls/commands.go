@@ -4,9 +4,11 @@ import (
 	"fmt"
 	"github.com/gdg-garage/dungeons-and-trolls/server/dungeonsandtrolls/api"
 	"github.com/gdg-garage/dungeons-and-trolls/server/dungeonsandtrolls/gameobject"
+	"github.com/gdg-garage/dungeons-and-trolls/server/dungeonsandtrolls/utils"
 	"github.com/rs/zerolog/log"
 	"go.openly.dev/pointy"
 	"golang.org/x/exp/slices"
+	"google.golang.org/protobuf/proto"
 )
 
 // ValidateBuy validates identifiers, funds, and requirements
@@ -158,7 +160,7 @@ func payForSkill(p gameobject.Skiller, s *api.Skill) error {
 	return gameobject.SubtractAllAttributes(p.GetAttributes(), s.Cost, false)
 }
 
-func summon(game *Game, sum *api.Droppable, player gameobject.Skiller, duration int32) {
+func summon(game *Game, sum *api.Droppable, player gameobject.Skiller, target *api.Coordinates, duration int32) {
 	po := game.GetMapObjectsOrCreateDefault(player.GetPosition())
 	switch so := sum.Data.(type) {
 	case *api.Droppable_Monster:
@@ -172,7 +174,7 @@ func summon(game *Game, sum *api.Droppable, player gameobject.Skiller, duration 
 			}
 		}
 		po.Monsters = append(po.Monsters, so.Monster)
-		moGo := gameobject.CreateMonster(so.Monster, player.GetPosition())
+		moGo := gameobject.CreateMonster(so.Monster, target)
 		moGo.KillCounter = &duration
 		game.Register(moGo)
 	case *api.Droppable_Decoration:
@@ -180,6 +182,70 @@ func summon(game *Game, sum *api.Droppable, player gameobject.Skiller, duration 
 	default:
 		log.Warn().Msgf("summon of something unexpected attempted %s", sum.Data)
 	}
+}
+
+func TilesInRange(game *Game, startingPosition *api.Coordinates, rng int32) []*api.MapObjects {
+	var aoe []*api.MapObjects
+	lc, err := game.GetCachedLevel(startingPosition.Level)
+	if err != nil {
+		log.Warn().Err(err).Msgf("level retrieval failed for aoe")
+		return aoe
+	}
+	p := proto.Clone(startingPosition).(*api.Coordinates)
+	for x := startingPosition.PositionX - rng; x < startingPosition.PositionX+rng; x++ {
+		if x < 0 || x >= lc.Height {
+			continue
+		}
+		p.PositionX = x
+		for y := startingPosition.PositionY - rng; y < startingPosition.PositionY+rng; y++ {
+			if y < 0 || y >= lc.Width {
+				continue
+			}
+			p.PositionY = y
+			dist := utils.ManhattanDistance(startingPosition.PositionX, startingPosition.PositionY, p.PositionX, p.PositionY)
+			if dist > rng {
+				continue
+			}
+			mo, err := game.GetObjectsOnPosition(p)
+			if mo == nil {
+				log.Warn().Err(err).Msgf("tile retrieval failed for aoe")
+				continue
+			}
+			aoe = append(aoe, mo)
+		}
+	}
+
+	return aoe
+}
+
+func findSkillerAndAddEffect(g *Game, tid string, damage float64, s *api.Skill, e *api.Attributes, duration int32, casterId string, targetPos *api.Coordinates) error {
+	soi, err := g.GetObjectById(tid)
+	so := soi.(gameobject.Skiller)
+	if err != nil {
+		return err
+	}
+
+	so.AddEffect(&api.Effect{
+		Effects:      e,
+		DamageAmount: float32(damage),
+		DamageType:   s.DamageType,
+		Duration:     duration,
+		XCasterId:    &casterId,
+	})
+
+	if s.CasterEffects.Flags.Stun {
+		so.Stunned()
+	}
+
+	if s.CasterEffects.Flags.Movement {
+		gameobject.TeleportMoveTo(so, targetPos)
+	}
+
+	if s.CasterEffects.Flags.Knockback {
+		// todo knockback
+	}
+
+	return nil
 }
 
 func ExecuteSkill(game *Game, player gameobject.Skiller, su *api.SkillUse) error {
@@ -243,6 +309,8 @@ func ExecuteSkill(game *Game, player gameobject.Skiller, su *api.SkillUse) error
 
 	event.Target = targetPos
 
+	casterId := player.GetId()
+
 	if s.CasterEffects != nil {
 		e, err := gameobject.EvaluateSkillAttributes(s.CasterEffects.Attributes, player.GetAttributes())
 		if err != nil {
@@ -250,10 +318,10 @@ func ExecuteSkill(game *Game, player gameobject.Skiller, su *api.SkillUse) error
 		}
 		switch pt := player.(type) {
 		case gameobject.Skiller:
-			casterId := player.GetId()
 			if s.CasterEffects.Flags.Stun {
 				pt.Stunned()
 			}
+
 			pt.AddEffect(&api.Effect{
 				Effects:   e,
 				Duration:  int32(duration),
@@ -266,9 +334,27 @@ func ExecuteSkill(game *Game, player gameobject.Skiller, su *api.SkillUse) error
 		}
 
 		for _, sum := range s.CasterEffects.Summons {
-			summon(game, sum, player, int32(duration))
+			summon(game, sum, player, player.GetPosition(), int32(duration))
 		}
 
+		if s.CasterEffects.Flags.Knockback {
+			// TODO flags knockback
+		}
+	}
+
+	// TODO ground effect
+
+	if s.TargetEffects != nil {
+		e, err := gameobject.EvaluateSkillAttributes(s.TargetEffects.Attributes, player.GetAttributes())
+		if err != nil {
+			return err
+		}
+		d, err := gameobject.AttributesValue(player.GetAttributes(), s.DamageAmount)
+		if err != nil {
+			return err
+		}
+
+		// AOE
 		if radiusValue > 0 {
 			game.LogEvent(&api.Event{
 				Type:        &aoeEvent,
@@ -277,74 +363,55 @@ func ExecuteSkill(game *Game, player gameobject.Skiller, su *api.SkillUse) error
 				Coordinates: player.GetPosition(),
 				Radius:      pointy.Float32(float32(radiusValue)),
 			})
-			//TODO
-			//for _, t := range handlers.TilesInRange(game, player.GetPosition(), int32(radiusValue)) {
-			//	//for t.Monsters
-			//	//for t.Players
-			//}
-		}
-
-		// TODO AOE
-		// TODO flags (knockback, ground)
-	}
-
-	switch s.Target {
-	case api.Skill_character:
-		character, err := game.GetObjectById(*su.TargetId)
-		if err != nil {
-			return err
-		}
-		if s.TargetEffects != nil {
-			e, err := gameobject.EvaluateSkillAttributes(s.TargetEffects.Attributes, player.GetAttributes())
+			for _, t := range TilesInRange(game, targetPos, int32(radiusValue)) {
+				for _, m := range t.Monsters {
+					err := findSkillerAndAddEffect(game, m.GetId(), d, s, e, int32(duration), casterId, targetPos)
+					if err != nil {
+						return err
+					}
+				}
+				for _, p := range t.Players {
+					if p.GetId() == player.GetId() && s.Target != api.Skill_character {
+						continue
+					}
+					err := findSkillerAndAddEffect(game, p.GetId(), d, s, e, int32(duration), casterId, targetPos)
+					if err != nil {
+						return err
+					}
+				}
+			}
+		} else if s.Target == api.Skill_position {
+			// apply to everyone (else) on the same tile
+			for _, t := range TilesInRange(game, targetPos, 0) {
+				for _, m := range t.Monsters {
+					err := findSkillerAndAddEffect(game, m.GetId(), d, s, e, int32(duration), casterId, targetPos)
+					if err != nil {
+						return err
+					}
+				}
+				for _, p := range t.Players {
+					if p.GetId() == player.GetId() {
+						continue
+					}
+					err := findSkillerAndAddEffect(game, p.GetId(), d, s, e, int32(duration), casterId, targetPos)
+					if err != nil {
+						return err
+					}
+				}
+			}
+		} else if s.Target == api.Skill_character {
+			// apply to the target char regardless the range
+			err := findSkillerAndAddEffect(game, *su.TargetId, d, s, e, int32(duration), casterId, targetPos)
 			if err != nil {
 				return err
 			}
-			d, err := gameobject.AttributesValue(player.GetAttributes(), s.DamageAmount)
-			if err != nil {
-				return err
-			}
-
-			switch c := character.(type) {
-			case gameobject.Skiller:
-				casterId := player.GetId()
-				c.Stunned()
-				c.AddEffect(&api.Effect{
-					Effects:      e,
-					DamageAmount: float32(d),
-					DamageType:   s.DamageType,
-					Duration:     int32(duration),
-					XCasterId:    &casterId,
-				})
-				for _, sum := range s.CasterEffects.Summons {
-					summon(game, sum, c, int32(duration))
-				}
-
-				if s.CasterEffects.Flags.Movement {
-					gameobject.TeleportMoveTo(c, targetPos)
-				}
-
-				if radiusValue > 0 {
-					game.LogEvent(&api.Event{
-						Type:        &aoeEvent,
-						Message:     fmt.Sprintf("%s (%s): caused aoe effect", player.GetId(), player.GetName()),
-						SkillName:   &s.Name,
-						Coordinates: player.GetPosition(),
-						Radius:      pointy.Float32(float32(radiusValue)),
-					})
-					//TODO
-					//for _, t := range handlers.TilesInRange(game, player.GetPosition(), int32(radiusValue)) {
-					//	//for t.Monsters
-					//	//for t.Players
-					//}
-				}
-
-				// TODO flags (knockback)
-			default:
-				return fmt.Errorf("tried to cast character spell on non-character")
-			}
 		}
-	case api.Skill_position:
-		//return fmt.Errorf("not implemented")
+
+		// TODO flags (knockback)
+
+		for _, sum := range s.TargetEffects.Summons {
+			summon(game, sum, player, targetPos, int32(duration))
+		}
 	}
 
 	return nil

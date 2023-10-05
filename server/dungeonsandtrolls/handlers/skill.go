@@ -21,12 +21,6 @@ func checkDistance(playerPosition *api.Coordinates, playerAttributes *api.Attrib
 	return nil
 }
 
-func TilesInRange(game *dungeonsandtrolls.Game, startingPosition *api.Coordinates, rng int32) []*api.MapObjects {
-	// TODO implement
-	// <=
-	return []*api.MapObjects{}
-}
-
 func validateSkill(game *dungeonsandtrolls.Game, skillUse *api.SkillUse, p gameobject.Skiller) error {
 	p.SetMovingTo(nil)
 	if p.IsStunned() {
@@ -86,7 +80,6 @@ func validateSkill(game *dungeonsandtrolls.Game, skillUse *api.SkillUse, p gameo
 		default:
 			return fmt.Errorf("using skill on wrong object type with id %s", *skillUse.TargetId)
 		}
-		// TODO check flags
 	}
 	if skillUse.Position != nil {
 		if skillUse.Position == nil && s.Target == api.Skill_position {
