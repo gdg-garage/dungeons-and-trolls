@@ -3,7 +3,6 @@ package gameobject
 import (
 	"fmt"
 	"github.com/gdg-garage/dungeons-and-trolls/server/dungeonsandtrolls/api"
-	"github.com/rs/zerolog/log"
 	"github.com/solarlune/paths"
 	"go.openly.dev/pointy"
 	"google.golang.org/protobuf/proto"
@@ -90,10 +89,10 @@ func (p *Player) updateAttributesUsingEffects() {
 }
 
 func (p *Player) UpdateAttributes() error {
-	log.Info().Msgf("%s (%s) current attributes %+v", p.GetId(), p.GetName(), p.GetAttributes())
+	//log.Info().Msgf("%s (%s) current attributes %+v", p.GetId(), p.GetName(), p.GetAttributes())
 	currentAttributes := proto.Clone(p.Character.Attributes).(*api.Attributes)
 	err := p.ResetAttributes()
-	log.Info().Msgf("%s (%s) base attributes %+v", p.GetId(), p.GetName(), p.BaseAttributes)
+	//log.Info().Msgf("%s (%s) base attributes %+v", p.GetId(), p.GetName(), p.BaseAttributes)
 	if err != nil {
 		return err
 	}
@@ -103,9 +102,9 @@ func (p *Player) UpdateAttributes() error {
 			return err
 		}
 	}
-	log.Info().Msgf("%s (%s) item attributes %+v", p.GetId(), p.GetName(), p.ItemAttributes)
+	//log.Info().Msgf("%s (%s) item attributes %+v", p.GetId(), p.GetName(), p.ItemAttributes)
 	err = MergeAllAttributes(p.GetAttributes(), p.ItemAttributes, false)
-	log.Info().Msgf("%s (%s) max attributes %+v", p.GetId(), p.GetName(), p.MaxStats)
+	//log.Info().Msgf("%s (%s) max attributes %+v", p.GetId(), p.GetName(), p.MaxStats)
 	if err != nil {
 		return err
 	}
@@ -117,7 +116,7 @@ func (p *Player) UpdateAttributes() error {
 	if err != nil {
 		return err
 	}
-	log.Info().Msgf("%s (%s) new max attributes %+v", p.GetId(), p.GetName(), p.MaxStats)
+	//log.Info().Msgf("%s (%s) new max attributes %+v", p.GetId(), p.GetName(), p.MaxStats)
 	added, ok := proto.Clone(p.MaxStats).(*api.Attributes)
 	if !ok {
 		return fmt.Errorf("cloning max stats failed")
@@ -132,9 +131,9 @@ func (p *Player) UpdateAttributes() error {
 	*p.Character.Attributes.Life += *added.Life
 	*p.Character.Attributes.Mana += *added.Mana
 	*p.Character.Attributes.Stamina += *added.Stamina
-	log.Info().Msgf("%s (%s) final attributes without effects %+v", p.GetId(), p.GetName(), p.GetAttributes())
+	//log.Info().Msgf("%s (%s) final attributes without effects %+v", p.GetId(), p.GetName(), p.GetAttributes())
 	p.updateAttributesUsingEffects()
-	log.Info().Msgf("%s (%s) final attributes with effects %+v", p.GetId(), p.GetName(), p.GetAttributes())
+	//log.Info().Msgf("%s (%s) final attributes with effects %+v", p.GetId(), p.GetName(), p.GetAttributes())
 	return nil
 }
 

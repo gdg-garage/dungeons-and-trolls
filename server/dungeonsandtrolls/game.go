@@ -173,8 +173,9 @@ func (g *Game) gameLoop() {
 								pl, err := g.GetObjectById(p.GetId())
 								if err != nil {
 									log.Warn().Err(err).Msg("")
+								} else {
+									respawnPlayers = append(respawnPlayers, pl.(*gameobject.Player))
 								}
-								respawnPlayers = append(respawnPlayers, pl.(*gameobject.Player))
 							}
 						}
 						for _, j := range o.Items {
@@ -528,7 +529,42 @@ func (g *Game) processCommands() {
 		}
 	}
 
-	// TODO ground effects - pass to players and monsters
+	// copy ground effects with zero duration
+	for _, l := range g.Game.Map.Levels {
+		for _, o := range l.Objects {
+			for _, e := range o.Effects {
+				for _, m := range o.Monsters {
+					mon, err := g.GetObjectById(m.GetId())
+					if err != nil {
+						log.Warn().Err(err).Msg("")
+					} else {
+						mon.(*gameobject.Monster).AddEffect(&api.Effect{
+							DamageType:   e.DamageType,
+							DamageAmount: e.DamageAmount,
+							XCasterId:    e.XCasterId,
+							Effects:      e.Effects,
+							Duration:     1,
+						})
+					}
+				}
+				for _, p := range o.Players {
+					pl, err := g.GetObjectById(p.GetId())
+					if err != nil {
+						log.Warn().Err(err).Msg("")
+					} else {
+						pl.(*gameobject.Monster).AddEffect(&api.Effect{
+							DamageType:   e.DamageType,
+							DamageAmount: e.DamageAmount,
+							XCasterId:    e.XCasterId,
+							Effects:      e.Effects,
+							Duration:     1,
+						})
+					}
+				}
+			}
+		}
+
+	}
 
 	for _, i := range g.idToObject {
 		switch c := i.(type) {
