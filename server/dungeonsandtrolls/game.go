@@ -169,12 +169,14 @@ func (g *Game) gameLoop() {
 					for _, o := range i {
 						for _, p := range o.Players {
 							if l != 0 {
-								log.Warn().Msgf("Player %s (%s) is on a dead level (%d) for some reason, respawning", p.GetId(), p.GetName(), l)
+								log.Warn().Msgf("Player %s (%s) is on a dead level (%d) - respawning", p.GetId(), p.GetName(), l)
 								pl, err := g.GetObjectById(p.GetId())
 								if err != nil {
 									log.Warn().Err(err).Msg("")
 								} else {
-									respawnPlayers = append(respawnPlayers, pl.(*gameobject.Player))
+									pl := pl.(*gameobject.Player)
+									respawnPlayers = append(respawnPlayers, pl)
+									pl.SetPosition(nil)
 								}
 							}
 						}
@@ -203,6 +205,7 @@ func (g *Game) gameLoop() {
 					g.AddLevel(0)
 					// respawn players on level 0
 					for _, p := range g.Players {
+						p.SetPosition(nil)
 						if p.GetPosition().Level == 0 {
 							g.ForceMoveCharacter(p, p.GetPosition())
 						}
@@ -854,7 +857,6 @@ func (g *Game) MoveCharacter(p gameobject.Positioner, c *api.Coordinates) error 
 		case *gameobject.Monster:
 			g.addMonsterToNewPosition(o, pt.Monster, c, lc)
 		}
-
 	}
 	p.SetPosition(c)
 	return nil
