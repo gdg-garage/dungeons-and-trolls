@@ -1162,6 +1162,10 @@
           "type": "integer",
           "format": "int32"
         },
+        "horror": {
+          "type": "number",
+          "format": "float"
+        },
         "free": {
           "type": "array",
           "items": {

@@ -270,7 +270,6 @@ func (g *Game) MarkVisitedLevel(level int32) {
 }
 
 func (g *Game) Respawn(player *gameobject.Player, markDeath bool) {
-	// TODO mark death if appropriate
 	if markDeath {
 		deathEvent := api.Event_DEATH
 		g.LogEvent(&api.Event{
