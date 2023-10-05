@@ -124,9 +124,31 @@ func Equip(game *Game, player *gameobject.Player, item *api.Item) error {
 }
 
 func ExecutePickUp(game *Game, p *gameobject.Player, i *api.Identifier) error {
-	// TODO solve concurrent pickUp (more than one player wants to pick up the same item)
-	// TODO how to solve attributes consistently
-	return fmt.Errorf("not implemented")
+	// Check that object is still in the game - it is unregistered on pickup (first player takes the item).
+	// it should not be common - it may be improved.
+	maybeItem, err := game.GetObjectById(i.Id)
+	item, ok := maybeItem.(*api.Item)
+	if !ok {
+		log.Warn().Msgf("What should be an item is not")
+	}
+	if err != nil {
+		log.Warn().Err(err).Msgf("tried to pick up non-existent item")
+		return nil
+	}
+	err = p.Equip(item)
+	if err != nil {
+		log.Warn().Err(err).Msgf("equip of the picked up item %s failed", i.GetId())
+	}
+	err = p.UpdateAttributes()
+	if err != nil {
+		log.Warn().Err(err).Msgf("player attributes update failed after pick up")
+	}
+	o, err := game.GetObjectsOnPosition(p.GetPosition())
+	if err != nil {
+		log.Warn().Err(err).Msgf("position of picked up item %s is malformed", i.GetId())
+	}
+	game.removeItemFromTile(o, item)
+	return nil
 }
 
 func payForSkill(p gameobject.Skiller, s *api.Skill) error {

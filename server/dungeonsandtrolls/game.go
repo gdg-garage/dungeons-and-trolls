@@ -750,6 +750,19 @@ func (g *Game) removePlayerFromPosition(p *gameobject.Player) {
 	}
 }
 
+func (g *Game) removeItemFromTile(o *api.MapObjects, i *api.Item) {
+	for pi, pd := range o.Items {
+		if pd.Id == i.GetId() {
+			// move last element to removed position
+			o.Items[pi] = o.Items[len(o.Items)-1]
+			// shorten the slice
+			o.Items = o.Items[:len(o.Items)-1]
+			break
+		}
+	}
+	g.Unregister(i)
+}
+
 func (g *Game) removeMonsterFromPosition(m *gameobject.Monster) {
 	o, err := g.GetObjectsOnPosition(m.Position)
 	if err != nil {
