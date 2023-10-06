@@ -286,6 +286,11 @@ func ExecuteSkill(game *Game, player gameobject.Skiller, su *api.SkillUse) error
 	}
 	radiusValue = gameobject.RoundSkill(radiusValue)
 
+	d, err := gameobject.AttributesValue(player.GetAttributes(), s.DamageAmount)
+	if err != nil {
+		return err
+	}
+
 	var targetPos *api.Coordinates
 	switch s.Target {
 	case api.Skill_character:
@@ -342,14 +347,116 @@ func ExecuteSkill(game *Game, player gameobject.Skiller, su *api.SkillUse) error
 		}
 	}
 
-	// TODO ground effect
+	if s.CasterEffects.Flags.GroundEffect {
+		game.LogEvent(&api.Event{
+			Type:        &aoeEvent,
+			Message:     fmt.Sprintf("%s (%s): caused aoe ground effect", player.GetId(), player.GetName()),
+			SkillName:   &s.Name,
+			Coordinates: player.GetPosition(),
+			Radius:      pointy.Float32(float32(radiusValue)),
+		})
 
-	if s.TargetEffects != nil {
+		e, err := gameobject.EvaluateSkillAttributes(s.CasterEffects.Attributes, player.GetAttributes())
+		if err != nil {
+			return err
+		}
+
+		for _, t := range TilesInRange(game, player.GetPosition(), int32(radiusValue)) {
+			t.Effects = append(t.Effects, &api.Effect{
+				Effects:      e,
+				DamageAmount: float32(d),
+				DamageType:   s.DamageType,
+				Duration:     int32(duration),
+				XCasterId:    &casterId,
+			})
+
+			// stun should be applied multiple times (but it is not supported now)
+			if s.CasterEffects.Flags.Stun {
+				for _, p := range t.Players {
+					soi, err := game.GetObjectById(p.GetId())
+					so := soi.(gameobject.Skiller)
+					if err != nil {
+						return err
+					}
+
+					if s.CasterEffects.Flags.Stun {
+						so.Stunned()
+					}
+				}
+
+				for _, p := range t.Monsters {
+					soi, err := game.GetObjectById(p.GetId())
+					so := soi.(gameobject.Skiller)
+					if err != nil {
+						return err
+					}
+
+					if s.CasterEffects.Flags.Stun {
+						so.Stunned()
+					}
+				}
+			}
+		}
+	}
+
+	if s.TargetEffects.Flags.GroundEffect {
+		game.LogEvent(&api.Event{
+			Type:        &aoeEvent,
+			Message:     fmt.Sprintf("%s (%s): caused aoe ground effect", player.GetId(), player.GetName()),
+			SkillName:   &s.Name,
+			Coordinates: targetPos,
+			Radius:      pointy.Float32(float32(radiusValue)),
+		})
+
 		e, err := gameobject.EvaluateSkillAttributes(s.TargetEffects.Attributes, player.GetAttributes())
 		if err != nil {
 			return err
 		}
-		d, err := gameobject.AttributesValue(player.GetAttributes(), s.DamageAmount)
+
+		for _, t := range TilesInRange(game, targetPos, int32(radiusValue)) {
+			t.Effects = append(t.Effects, &api.Effect{
+				Effects:      e,
+				DamageAmount: float32(d),
+				DamageType:   s.DamageType,
+				Duration:     int32(duration),
+				XCasterId:    &casterId,
+			})
+
+			// stun should be applied multiple times (but it is not supported now)
+			if s.CasterEffects.Flags.Stun {
+				for _, p := range t.Players {
+					soi, err := game.GetObjectById(p.GetId())
+					so := soi.(gameobject.Skiller)
+					if err != nil {
+						return err
+					}
+
+					if s.CasterEffects.Flags.Stun {
+						so.Stunned()
+					}
+				}
+
+				for _, p := range t.Monsters {
+					soi, err := game.GetObjectById(p.GetId())
+					so := soi.(gameobject.Skiller)
+					if err != nil {
+						return err
+					}
+
+					if s.CasterEffects.Flags.Stun {
+						so.Stunned()
+					}
+				}
+			}
+		}
+	}
+
+	if s.CasterEffects.Flags.GroundEffect || s.TargetEffects.Flags.GroundEffect {
+		return nil
+	}
+
+	if s.TargetEffects != nil {
+		e, err := gameobject.EvaluateSkillAttributes(s.TargetEffects.Attributes, player.GetAttributes())
 		if err != nil {
 			return err
 		}
@@ -360,7 +467,7 @@ func ExecuteSkill(game *Game, player gameobject.Skiller, su *api.SkillUse) error
 				Type:        &aoeEvent,
 				Message:     fmt.Sprintf("%s (%s): caused aoe effect", player.GetId(), player.GetName()),
 				SkillName:   &s.Name,
-				Coordinates: player.GetPosition(),
+				Coordinates: targetPos,
 				Radius:      pointy.Float32(float32(radiusValue)),
 			})
 			for _, t := range TilesInRange(game, targetPos, int32(radiusValue)) {
