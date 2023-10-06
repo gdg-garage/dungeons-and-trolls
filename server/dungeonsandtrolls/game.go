@@ -15,6 +15,7 @@ import (
 	"github.com/gdg-garage/dungeons-and-trolls/server/dungeonsandtrolls/utils"
 	"github.com/gdg-garage/dungeons-and-trolls/server/generator"
 	"github.com/rs/zerolog/log"
+	"google.golang.org/protobuf/proto"
 )
 
 const LoopTime = time.Second
@@ -221,8 +222,10 @@ func (g *Game) gameLoop() {
 			// respawn players on level 0
 			for _, p := range g.Players {
 				if p.GetPosition().Level == 0 {
+
+					previousPosition := proto.Clone(p.GetPosition())
 					p.SetPosition(nil)
-					g.ForceMoveCharacter(p, p.GetPosition())
+					g.ForceMoveCharacter(p, previousPosition.(*api.Coordinates))
 				}
 			}
 		}
