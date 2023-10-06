@@ -165,6 +165,8 @@ func (g *Game) gameLoop() {
 
 		// regenerate levels
 		var respawnPlayers []*gameobject.Player
+		var deprecatedLevels []int32
+		var deprecatedZero bool
 		for l, lc := range g.mapCache.Level {
 			if IsMapDeprecated(lc, g.Game.Tick, l) {
 				// map garbage collection
@@ -192,28 +194,35 @@ func (g *Game) gameLoop() {
 						}
 					}
 				}
-				g.mapCache.ClearLevelCache(l)
-				// TODO check all valid
-				// - go through objects and remove empty ones
-				// - sort by position
-				// - update the cache
-				// - unregister IDs
-				for i, lvl := range g.Game.Map.Levels {
-					if lvl.Level == l {
-						g.Game.Map.Levels[i] = g.Game.Map.Levels[len(g.Game.Map.Levels)-1]
-						g.Game.Map.Levels = g.Game.Map.Levels[:len(g.Game.Map.Levels)-1]
-						break
-					}
-				}
+				deprecatedLevels = append(deprecatedLevels, l)
 				if l == 0 {
-					g.AddLevel(0)
-					// respawn players on level 0
-					for _, p := range g.Players {
-						if p.GetPosition().Level == 0 {
-							p.SetPosition(nil)
-							g.ForceMoveCharacter(p, p.GetPosition())
-						}
-					}
+					deprecatedZero = true
+				}
+
+			}
+		}
+		for _, l := range deprecatedLevels {
+			g.mapCache.ClearLevelCache(l)
+			// TODO check all valid
+			// - go through objects and remove empty ones
+			// - sort by position
+			// - update the cache
+			// - unregister IDs
+			for i, lvl := range g.Game.Map.Levels {
+				if lvl.Level == l {
+					g.Game.Map.Levels[i] = g.Game.Map.Levels[len(g.Game.Map.Levels)-1]
+					g.Game.Map.Levels = g.Game.Map.Levels[:len(g.Game.Map.Levels)-1]
+					break
+				}
+			}
+		}
+		if deprecatedZero {
+			g.AddLevel(0)
+			// respawn players on level 0
+			for _, p := range g.Players {
+				if p.GetPosition().Level == 0 {
+					p.SetPosition(nil)
+					g.ForceMoveCharacter(p, p.GetPosition())
 				}
 			}
 		}
