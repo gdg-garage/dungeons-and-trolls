@@ -159,6 +159,10 @@ func (g *Game) gameLoop() {
 			}
 		}
 
+		for l, lc := range g.mapCache.Level {
+			log.Info().Msgf("Level %d age %d last interacted %d", l, g.Game.Tick-lc.GeneratedTick, g.Game.Tick-lc.LastInteractedTick)
+		}
+
 		// regenerate levels
 		var respawnPlayers []*gameobject.Player
 		for l, lc := range g.mapCache.Level {
@@ -205,8 +209,8 @@ func (g *Game) gameLoop() {
 					g.AddLevel(0)
 					// respawn players on level 0
 					for _, p := range g.Players {
-						p.SetPosition(nil)
 						if p.GetPosition().Level == 0 {
+							p.SetPosition(nil)
 							g.ForceMoveCharacter(p, p.GetPosition())
 						}
 					}
