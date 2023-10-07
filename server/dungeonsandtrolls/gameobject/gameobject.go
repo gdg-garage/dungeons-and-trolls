@@ -6,7 +6,7 @@ import (
 	"github.com/solarlune/paths"
 )
 
-var ZeroLevel int32 = 0
+const ZeroLevel int32 = 0
 
 type Positioner interface {
 	Ider

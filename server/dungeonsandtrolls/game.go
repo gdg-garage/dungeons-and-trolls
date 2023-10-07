@@ -134,7 +134,6 @@ func (g *Game) gameLoop() {
 		g.Game.Events = []*api.Event{}
 
 		for _, r := range g.Respawns {
-			g.Commands[r.GetId()] = &api.CommandsBatch{}
 			g.Respawn(r, true)
 		}
 		g.Respawns = []*gameobject.Player{}
@@ -155,9 +154,9 @@ func (g *Game) gameLoop() {
 			}
 		}
 
-		for l, lc := range g.mapCache.Level {
-			log.Info().Msgf("Level %d age %d last interacted %d", l, g.Game.Tick-lc.GeneratedTick, g.Game.Tick-lc.LastInteractedTick)
-		}
+		//for l, lc := range g.mapCache.Level {
+		//	log.Info().Msgf("Level %d age %d last interacted %d", l, g.Game.Tick-lc.GeneratedTick, g.Game.Tick-lc.LastInteractedTick)
+		//}
 
 		// regenerate levels
 		var respawnPlayers []*gameobject.Player
@@ -176,9 +175,9 @@ func (g *Game) gameLoop() {
 								if err != nil {
 									log.Warn().Err(err).Msg("")
 								} else {
-									pl := pl.(*gameobject.Player)
-									respawnPlayers = append(respawnPlayers, pl)
-									pl.SetPosition(nil)
+									player := pl.(*gameobject.Player)
+									respawnPlayers = append(respawnPlayers, player)
+									player.SetPosition(nil)
 								}
 							}
 						}
@@ -225,6 +224,7 @@ func (g *Game) gameLoop() {
 			}
 		}
 		for _, p := range respawnPlayers {
+			log.Info().Msgf("Player %s (%s) is respawned because it was on a dead level", p.GetId(), p.GetName())
 			g.Respawn(p, false)
 		}
 		g.SortMaps()
@@ -290,6 +290,9 @@ func (g *Game) MarkVisitedLevel(level int32) {
 }
 
 func (g *Game) Respawn(player *gameobject.Player, markDeath bool) {
+	g.Commands[player.GetId()] = &api.CommandsBatch{}
+	player.SetMovingTo(nil)
+
 	if markDeath {
 		deathEvent := api.Event_DEATH
 		g.LogEvent(&api.Event{
@@ -302,7 +305,7 @@ func (g *Game) Respawn(player *gameobject.Player, markDeath bool) {
 	if player.GetPosition() != nil {
 		o, err := g.GetObjectsOnPosition(player.GetPosition())
 		if err != nil {
-			log.Warn().Err(err).Msg("")
+			log.Warn().Err(err).Msg("while respawning player (move from pos)")
 		} else if o != nil {
 			RemovePlayerFromTile(o, player)
 		}
@@ -751,6 +754,7 @@ func (g *Game) SpawnPlayer(p *gameobject.Player, level int32) {
 	}
 
 	c := lc.SpawnPoint
+	log.Info().Msgf("spawning on %d position %+v", level, lc.SpawnPoint)
 	err = g.MoveCharacter(p, c)
 	if err != nil {
 		log.Warn().Err(err).Msg("")
