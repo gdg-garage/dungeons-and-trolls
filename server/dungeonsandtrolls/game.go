@@ -141,11 +141,6 @@ func (g *Game) gameLoop() {
 
 		g.processCommands()
 
-		g.TickCond.L.Lock()
-		g.Game.Tick++
-		g.TickCond.L.Unlock()
-		g.TickCond.Broadcast()
-
 		// Copy score - for storage reasons
 		// TODO maybe use the same solution as for tick or find something more elegant
 		g.Game.Score = g.Score
@@ -233,6 +228,12 @@ func (g *Game) gameLoop() {
 			g.Respawn(p, false)
 		}
 		g.SortMaps()
+
+		g.TickCond.L.Lock()
+		g.Game.Tick++
+		g.TickCond.L.Unlock()
+		g.TickCond.Broadcast()
+
 		g.GameLock.Unlock()
 		g.storeGameState()
 
