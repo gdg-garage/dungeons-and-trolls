@@ -754,7 +754,7 @@ func (g *Game) SpawnPlayer(p *gameobject.Player, level int32) {
 	}
 
 	c := lc.SpawnPoint
-	log.Info().Msgf("spawning on %d position %+v", level, lc.SpawnPoint)
+	log.Info().Msgf("spawning %s (%s) on %d position %+v", p.GetId(), p.GetName(), level, lc.SpawnPoint)
 	err = g.MoveCharacter(p, c)
 	if err != nil {
 		log.Warn().Err(err).Msg("")
