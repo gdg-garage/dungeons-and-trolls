@@ -1,0 +1,64 @@
+version: "3.8"
+
+services:
+  server:
+    build: server
+    environment:
+      - DISCORD_TOKEN=
+      - GARAGE_GUILD_ID=
+    volumes:
+      - ./data:/app/data
+    expose:
+      - 8080
+    labels:
+      - "traefik.http.routers.server.entrypoints=web"
+      - "traefik.http.routers.server.rule=Host(`localhost`)"
+      - "traefik.http.routers.server.middlewares=secured"
+      - "traefik.http.middlewares.secured.chain.middlewares=server_compress,cors"
+      - "traefik.http.middlewares.server_compress.compress=true"
+      - "traefik.port=8080"
+      - "traefik.http.middlewares.cors.headers.accesscontrolallowmethods=*"
+      - "traefik.http.middlewares.cors.headers.accesscontrolallowheaders=*"
+      - "traefik.http.middlewares.cors.headers.accesscontrolalloworiginlist=*"
+      - "traefik.http.middlewares.cors.headers.accesscontrolmaxage=100"
+      - "traefik.http.middlewares.cors.headers.addvaryheader=true"
+    restart: always
+
+  traefik:
+    image: traefik
+    command:
+      - "--api.insecure=true"
+      - "--api.dashboard=true"
+      - "--accesslog=true"
+      - "--providers.docker=true"
+      - "--entrypoints.web.address=:80"
+      - "--metrics.prometheus=true"
+      - "--entryPoints.metrics.address=:8082"
+      - "--metrics.prometheus.entryPoint=metrics"
+    labels:
+      - "traefik.http.routers.traefik.service=api@internal"
+      #- "traefik.http.routers.traefik.middlewares=auth"
+      #- "traefik.http.services.traefik.loadbalancer.server.port=8080"
+      #expose:
+      #- 8080
+    ports:
+      - "8080:8080"
+      - "8082:8082"
+      - "80:80"
+#      - "88:88"
+    volumes:
+      - "./letsencrypt:/letsencrypt"
+      - "/var/run/docker.sock:/var/run/docker.sock:ro"
+    restart: always
+
+  vector:
+    container_name: vector
+    image: timberio/vector:latest-debian
+    restart: always
+    volumes:
+      - ./config/vector.toml:/etc/vector/vector.toml:ro
+      - /var/lib/docker/containers:/var/lib/docker/containers:ro
+      - /var/run/docker.sock:/var/run/docker.sock
+
+
+

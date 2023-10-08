@@ -401,6 +401,7 @@ message Event {
   optional float radius = 7;
   optional Coordinates target = 8;
   optional Skill skill = 9;
+  optional bool is_ranged = 10;
 }
 
 message GameState {

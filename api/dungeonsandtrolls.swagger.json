@@ -1003,6 +1003,10 @@
         "skill": {
           "$ref": "#/definitions/dungeonsandtrollsSkill",
           "x-nullable": true
+        },
+        "isRanged": {
+          "type": "boolean",
+          "x-nullable": true
         }
       }
     },
