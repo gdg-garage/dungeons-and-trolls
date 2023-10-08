@@ -256,6 +256,16 @@ func ExecuteSkill(game *Game, player gameobject.Skiller, su *api.SkillUse) error
 	skillEvent := api.Event_SKILL
 	aoeEvent := api.Event_AOE
 
+	distanceValue, err := gameobject.AttributesValue(player.GetAttributes(), s.Range)
+	if err != nil {
+		return err
+	}
+	distanceValue = gameobject.RoundRange(distanceValue)
+	ranged := false
+	if distanceValue >= 3 {
+		ranged = true
+	}
+
 	event := &api.Event{
 		Type:        &skillEvent,
 		Message:     fmt.Sprintf("%s (%s): used skill: %s (%s)", player.GetId(), player.GetName(), s.Id, s.Name),
@@ -263,10 +273,11 @@ func ExecuteSkill(game *Game, player gameobject.Skiller, su *api.SkillUse) error
 		PlayerId:    pointy.String(player.GetId()),
 		Coordinates: player.GetPosition(),
 		Skill:       s,
+		IsRanged:    &ranged,
 	}
 	defer game.LogEvent(event)
 
-	err := payForSkill(player, s)
+	err = payForSkill(player, s)
 	if err != nil {
 		return err
 	}
