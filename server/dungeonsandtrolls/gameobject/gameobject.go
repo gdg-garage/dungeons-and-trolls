@@ -28,6 +28,7 @@ type Skiller interface {
 	GetAttributes() *api.Attributes
 	GetLastDamageTaken() int32
 	GetTeleportTo() *TeleportPosition
+	ResetTeleportTo()
 	Stunned()
 	Stun() *api.Stun
 	AddEffect(e *api.Effect)

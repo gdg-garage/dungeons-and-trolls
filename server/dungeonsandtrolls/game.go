@@ -134,6 +134,7 @@ func (g *Game) gameLoop() {
 		g.Game.Events = []*api.Event{}
 
 		for _, r := range g.Respawns {
+			log.Info().Msgf("respawning player %s (%s)", r.GetId(), r.GetName())
 			g.Respawn(r, true)
 		}
 		g.Respawns = []*gameobject.Player{}
@@ -306,6 +307,7 @@ func (g *Game) Respawn(player *gameobject.Player, markDeath bool) {
 		o, err := g.GetObjectsOnPosition(player.GetPosition())
 		if err != nil {
 			log.Warn().Err(err).Msg("while respawning player (move from pos)")
+			player.SetPosition(nil)
 		} else if o != nil {
 			RemovePlayerFromTile(o, player)
 		}
@@ -317,8 +319,9 @@ func (g *Game) Respawn(player *gameobject.Player, markDeath bool) {
 	player.Character.Stun = &api.Stun{}
 	player.Character.SkillPoints = float32(g.MaxLevelReached)
 	player.Character.Equip = []*api.Item{}
+	player.ResetTeleportTo()
+	player.Character.Effects = []*api.Effect{}
 	player.Equipped = map[api.Item_Type]*api.Item{}
-
 	g.Register(player)
 }
 
@@ -722,6 +725,7 @@ func (g *Game) processCommands() {
 				log.Info().Msgf("moving %s (%s) based on casts %+v", c.GetId(), c.GetName(), c.GetTeleportTo().Move)
 				g.ForceMoveCharacter(c, c.GetTeleportTo().Move)
 			}
+			c.ResetTeleportTo()
 		}
 	}
 

@@ -190,6 +190,10 @@ func (p *Player) GetTeleportTo() *TeleportPosition {
 	return &p.TeleportedTo
 }
 
+func (p *Player) ResetTeleportTo() {
+	p.TeleportedTo = TeleportPosition{}
+}
+
 func (p *Player) AddEffect(e *api.Effect) {
 	p.Character.Effects = append(p.Character.Effects, e)
 }

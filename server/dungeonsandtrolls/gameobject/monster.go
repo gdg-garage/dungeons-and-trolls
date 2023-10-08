@@ -87,6 +87,10 @@ func (m *Monster) GetTeleportTo() *TeleportPosition {
 	return &m.TeleportedTo
 }
 
+func (m *Monster) ResetTeleportTo() {
+	m.TeleportedTo = TeleportPosition{}
+}
+
 func (m *Monster) Stunned() {
 	// TODO log stun?
 	if !m.Monster.Stun.IsImmune {
