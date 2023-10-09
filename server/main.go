@@ -14,6 +14,7 @@ import (
 	"google.golang.org/grpc/metadata"
 	"google.golang.org/protobuf/proto"
 	"google.golang.org/protobuf/types/known/emptypb"
+	"math"
 	"net"
 	"net/http"
 	"sort"
@@ -21,6 +22,282 @@ import (
 )
 
 const apiKeyFieldName = "X-API-key"
+
+type MapCellExt struct {
+	mapObjects  *api.MapObjects
+	distance    int
+	lineOfSight bool
+}
+
+type PlainPos struct {
+	PositionX int32
+	PositionY int32
+}
+
+func PlainPosFromApiPos(position *api.Position) PlainPos {
+	return PlainPos{
+		PositionX: position.PositionX,
+		PositionY: position.PositionY,
+	}
+}
+
+func calculateDistanceAndLineOfSight(currentMap *api.Level, currentPosition *api.Position) map[PlainPos]MapCellExt {
+	// distance to obstacles used for line of sight
+	distanceToFirstObstacle := make(map[float32]float32)
+	currentPlainPos := PlainPosFromApiPos(currentPosition)
+
+	// map for resulting map positions with distance and line of sight
+	resultMap := make(map[PlainPos]MapCellExt)
+	// fill map with map objects
+	for _, objects := range currentMap.Objects {
+		resultMap[currentPlainPos] = MapCellExt{
+			mapObjects:  objects,
+			distance:    math.MaxInt32,
+			lineOfSight: false,
+		}
+	}
+
+	//b.Logger.Debugw("Original map -> (player: A, no data / free: ' ', wall: w, spawn: *, stairs: s, unknown: ?)")
+	//for y := int32(0); y < currentMap.Height; y++ {
+	//	row := ""
+	//	for x := int32(0); x < currentMap.Width; x++ {
+	//		cell, found := resultMap[makePosition(x, y)]
+	//		if currentPosition.PositionX == x && currentPosition.PositionY == y {
+	//			row += "A"
+	//		} else if !found {
+	//			row += " "
+	//		} else if cell.mapObjects.IsSpawn {
+	//			row += "*"
+	//		} else if cell.mapObjects.IsStairs {
+	//			row += "s"
+	//		} else if cell.mapObjects.IsFree {
+	//			row += " "
+	//		} else if cell.mapObjects.IsWall {
+	//			row += "w"
+	//		} else {
+	//			row += "?"
+	//		}
+	//	}
+	//	//b.Logger.Debugf("Map row: %s (y = %d)", row, y)
+	//}
+
+	// standard BFS stuff
+	visited := make(map[PlainPos]bool)
+	var queue []PlainPos
+
+	// start from player
+	// add current node to queue and add its distance to final map
+	queue = append(queue, currentPlainPos)
+	cell, found := resultMap[currentPlainPos]
+	mapObjects := &api.MapObjects{}
+	if found {
+		mapObjects = cell.mapObjects
+	}
+	resultMap[currentPlainPos] = MapCellExt{
+		mapObjects:  mapObjects,
+		distance:    0,
+		lineOfSight: true,
+	}
+
+	for len(queue) > 0 {
+		node := queue[0]
+		queue = queue[1:]
+
+		nodeVisited, found := visited[node]
+		if !found || !nodeVisited {
+			visited[node] = true
+
+			// Enqueue all unvisited neighbors
+			for _, neighbor := range getNeighbors(node) {
+				// neighbors can be out of the map,
+				cell, found := resultMap[neighbor]
+				// must be in bounds
+				// must not be visited
+				// must be free
+				if isInBounds(currentMap, &neighbor) && !visited[neighbor] && (!found || cell.mapObjects.IsFree) {
+					mapObjects := &api.MapObjects{
+						IsFree: true,
+					}
+					if found {
+						mapObjects = cell.mapObjects
+					}
+					distance := resultMap[node].distance + 1
+					lineOfSight := getLoS(currentMap, resultMap, distanceToFirstObstacle, currentPosition, neighbor)
+					resultMap[neighbor] = MapCellExt{
+						mapObjects:  mapObjects,
+						distance:    distance,
+						lineOfSight: lineOfSight,
+					}
+					queue = append(queue, neighbor)
+				}
+			}
+		}
+	}
+
+	//b.Logger.Debugw("Map with distances -> (player: A, no data: !, not reachable: ~, distance < 10: 0-9, distance >= 10: +)")
+	//for y := int32(0); y < currentMap.Height; y++ {
+	//	row := ""
+	//	for x := int32(0); x < currentMap.Width; x++ {
+	//		cell, found := resultMap[makePosition(x, y)]
+	//		if makePosition(x, y) == currentPosition {
+	//			row += "A"
+	//		} else if !found {
+	//			row += "!"
+	//		} else if cell.distance < 10 {
+	//			row += fmt.Sprintf("%d", cell.distance)
+	//		} else if cell.distance == math.MaxInt32 {
+	//			row += "~"
+	//		} else {
+	//			row += "+"
+	//		}
+	//	}
+	//	//b.Logger.Debugf("Map row: %s (y = %d)", row, y)
+	//}
+
+	//b.Logger.Debugw("Map with line of sight -> (player: A, no data: !, line of sight: ' ', wall: w, no line of sight: ~)")
+	//for y := int32(0); y < currentMap.Height; y++ {
+	//	row := ""
+	//	for x := int32(0); x < currentMap.Width; x++ {
+	//		cell, found := resultMap[makePosition(x, y)]
+	//		if makePosition(x, y) == currentPosition {
+	//			row += "A"
+	//		} else if !found {
+	//			row += "!"
+	//		} else if cell.lineOfSight {
+	//			row += " "
+	//		} else if cell.mapObjects.IsWall {
+	//			row += "w"
+	//		} else {
+	//			row += "~"
+	//		}
+	//	}
+	//	//b.Logger.Debugf("Map row: %s (y = %d)", row, y)
+	//}
+
+	return resultMap
+}
+
+func makePosition(x int32, y int32) PlainPos {
+	return PlainPos{
+		PositionX: x,
+		PositionY: y,
+	}
+}
+
+func getNeighbors(pos PlainPos) []PlainPos {
+	return []PlainPos{
+		makePosition(pos.PositionX-1, pos.PositionY),
+		makePosition(pos.PositionX+1, pos.PositionY),
+		makePosition(pos.PositionX, pos.PositionY-1),
+		makePosition(pos.PositionX, pos.PositionY+1),
+	}
+}
+
+func isInBounds(currentMap *api.Level, pos *PlainPos) bool {
+	return pos.PositionX >= 0 && pos.PositionX < currentMap.Width && pos.PositionY >= 0 && pos.PositionY < currentMap.Height
+}
+
+func getLoS(currentLevel *api.Level, resultMap map[PlainPos]MapCellExt, distanceToFirstObstacle map[float32]float32, pos1 *api.Position, pos2 PlainPos) bool {
+	// get the center of the cell
+	x1 := float32(pos1.PositionX) + 0.5
+	y1 := float32(pos1.PositionY) + 0.5
+	x2 := float32(pos2.PositionX) + 0.5
+	y2 := float32(pos2.PositionY) + 0.5
+
+	// slope := float32(y2-y1) / float32(x2-x1)
+	distance := math.Sqrt(float64((x2-x1)*(x2-x1) + (y2-y1)*(y2-y1)))
+	// angle in radians
+	slope := float32(math.Atan2(float64(y2-y1), float64(x2-x1)))
+	// angleDegrees := angleRadians * 180 / math.Pi
+
+	// TODO: somehow round the value to prevent cache misses
+	losDist, found := distanceToFirstObstacle[slope]
+	if found {
+		//b.Logger.Debugw("LoS: found in cache",
+		//	"playerPosition", pos1,
+		//	"position", pos2,
+		//	"slope", slope,
+		//	"distance", distance,
+		//	"lineOfSightDistance", losDist,
+		//	"lineOfSight", distance < float64(losDist),
+		//)
+		return distance < float64(losDist)
+	}
+	losDist = rayTrace(currentLevel, resultMap, slope, x1, y1, x2, y2)
+	distanceToFirstObstacle[slope] = losDist
+	//b.Logger.Debugw("LoS: calculated",
+	//	"playerPosition", pos1,
+	//	"position", pos2,
+	//	"slope", slope,
+	//	"distance", distance,
+	//	"lineOfSightDistance", losDist,
+	//	"lineOfSight", distance < float64(losDist),
+	//)
+	return distance < float64(losDist)
+}
+
+func rayTrace(currentLevel *api.Level, resultMap map[PlainPos]MapCellExt, slope float32, x1 float32, y1 float32, x2 float32, y2 float32) float32 {
+	dx := x2 - x1
+	dy := y2 - y1
+
+	// Calculate absolute values of dx and dy
+	if dx < 0 {
+		dx = -dx
+	}
+	if dy < 0 {
+		dy = -dy
+	}
+
+	// Determine the sign of movement along x and y
+	sx := float32(1)
+	sy := float32(1)
+	if x1 > x2 {
+		sx = -1
+	}
+	if y1 > y2 {
+		sy = -1
+	}
+
+	// Initialize error variables
+	e := dx - dy
+	x := x1
+	y := y1
+
+	for {
+		// TODO: any mapping needed here?
+		pos := getPositionsForFloatCoords(x, y)
+		// Check the current cell for obstacles or objects
+		cell, found := resultMap[pos]
+
+		// obstacle hit if end of map OR not free
+		if !isInBounds(currentLevel, &pos) || (found && !cell.mapObjects.IsFree) {
+			dist := math.Sqrt(float64((x-x1)*(x-x1) + (y-y1)*(y-y1)))
+			return float32(dist)
+		}
+
+		// Calculate the next step
+		e2 := 2 * e
+		if e2 > -dy {
+			e -= dy
+			x += sx
+		}
+		if e2 < dx {
+			e += dx
+			y += sy
+		}
+	}
+}
+
+func getPositionsForFloatCoords(x float32, y float32) PlainPos {
+	// I was worried about what position to return if the float values are exactly on the border between two positions.
+	// But it looks like this works fine.
+	// NOTE: This might be something to adjust if we see weird line of sight.
+	//			 E.g. if we see different LoS on right and left side of player or obstacle.
+	return PlainPos{
+		PositionX: int32(x),
+		PositionY: int32(y),
+	}
+}
 
 func getToken(ctx context.Context) (string, error) {
 	md, ok := metadata.FromIncomingContext(ctx)
@@ -39,7 +316,7 @@ type server struct {
 	G *dungeonsandtrolls.Game
 }
 
-func filterGameState(game *dungeonsandtrolls.Game, g *api.GameState, level *int32) {
+func filterGameState(game *dungeonsandtrolls.Game, g *api.GameState, level *int32, position *api.Position) {
 	// filter monsters for non-monster players
 	var keptLevels []*api.Level
 	for _, l := range g.Map.Levels {
@@ -59,6 +336,22 @@ func filterGameState(game *dungeonsandtrolls.Game, g *api.GameState, level *int3
 				gameobject.FilterEffect(e)
 			}
 		}
+
+		if position != nil {
+			log.Info().Msgf("los")
+			distInfo := calculateDistanceAndLineOfSight(l, position)
+			for p, i := range distInfo {
+				l.PlayerMap = append(l.PlayerMap, &api.PlayerSpecificMap{
+					Position: &api.Position{
+						PositionX: p.PositionX,
+						PositionY: p.PositionY,
+					},
+					LineOfSight: i.lineOfSight,
+					Distance:    int32(i.distance),
+				})
+			}
+		}
+
 		keptLevels = append(keptLevels, l)
 	}
 	g.Map.Levels = keptLevels
@@ -125,7 +418,6 @@ func (s *server) gameState(ctx context.Context, params *api.GameStateParams, lev
 			}
 			for x, vy := range lc.Fow {
 				for y, fow := range vy {
-					log.Info().Msgf("adding fow for (%d, %d)", x, y)
 					l.FogOfWar = append(l.FogOfWar, &api.FogOfWarMap{
 						Position: &api.Position{
 							PositionX: x,
@@ -140,7 +432,7 @@ func (s *server) gameState(ctx context.Context, params *api.GameStateParams, lev
 
 	// token not found
 	if err != nil || len(token) == 0 {
-		filterGameState(s.G, g, level)
+		filterGameState(s.G, g, level, nil)
 		return g, nil
 	}
 	// token is present
@@ -150,11 +442,11 @@ func (s *server) gameState(ctx context.Context, params *api.GameStateParams, lev
 	}
 	if !p.IsAdmin {
 		if strings.HasPrefix(p.GetName(), "leonidas") {
-			filterGameState(s.G, g, level)
+			filterGameState(s.G, g, level, gameobject.CoordinatesToPosition(p.GetPosition()))
 		} else if level != nil {
-			filterGameState(s.G, g, level)
+			filterGameState(s.G, g, level, gameobject.CoordinatesToPosition(p.GetPosition()))
 		} else if level == nil {
-			filterGameState(s.G, g, &p.GetPosition().Level)
+			filterGameState(s.G, g, &p.GetPosition().Level, gameobject.CoordinatesToPosition(p.GetPosition()))
 		}
 		g.Character = p.Character
 		g.CurrentPosition = gameobject.CoordinatesToPosition(p.GetPosition())

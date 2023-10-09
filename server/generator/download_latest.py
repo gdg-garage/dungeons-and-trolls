@@ -38,7 +38,10 @@ def find_latest_artifact_url():
     g = Github(auth=auth)
     repo = g.get_repo(GENERATOR_REPO)
 
-    latest_valid_run = repo.get_workflow_runs(branch="master", status="success", exclude_pull_requests=True)[0]
+    latest_valid_run = None
+    for r in repo.get_workflow("deploy.yml").get_runs(branch="master", status="success"): #, exclude_pull_requests=True):
+        latest_valid_run = r
+        break
 
     for artifact in repo.get_artifacts():
         if artifact.workflow_run.id != latest_valid_run.id:

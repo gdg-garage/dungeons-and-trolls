@@ -1211,10 +1211,10 @@
             "$ref": "#/definitions/dungeonsandtrollsFogOfWarMap"
           }
         },
-        "userMap": {
+        "playerMap": {
           "type": "array",
           "items": {
-            "$ref": "#/definitions/dungeonsandtrollsUserSpecificMap"
+            "$ref": "#/definitions/dungeonsandtrollsPlayerSpecificMap"
           }
         }
       }
@@ -1364,6 +1364,21 @@
         "stun": {
           "$ref": "#/definitions/dungeonsandtrollsStun",
           "x-nullable": true
+        }
+      }
+    },
+    "dungeonsandtrollsPlayerSpecificMap": {
+      "type": "object",
+      "properties": {
+        "position": {
+          "$ref": "#/definitions/dungeonsandtrollsPosition"
+        },
+        "distance": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "lineOfSight": {
+          "type": "boolean"
         }
       }
     },
@@ -1603,21 +1618,6 @@
       "properties": {
         "username": {
           "type": "string"
-        }
-      }
-    },
-    "dungeonsandtrollsUserSpecificMap": {
-      "type": "object",
-      "properties": {
-        "position": {
-          "$ref": "#/definitions/dungeonsandtrollsPosition"
-        },
-        "distance": {
-          "type": "integer",
-          "format": "int32"
-        },
-        "lineOfSight": {
-          "type": "boolean"
         }
       }
     },

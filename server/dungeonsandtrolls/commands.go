@@ -262,7 +262,7 @@ func ExecuteSkill(game *Game, player gameobject.Skiller, su *api.SkillUse) error
 	}
 	distanceValue = gameobject.RoundRange(distanceValue)
 	ranged := false
-	if distanceValue >= 3 {
+	if distanceValue > 3 {
 		ranged = true
 	}
 
