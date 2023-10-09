@@ -2,7 +2,7 @@
   "swagger": "2.0",
   "info": {
     "title": "Dungeons and Trolls",
-    "version": "1.7.0"
+    "version": "1.9.0"
   },
   "tags": [
     {
@@ -207,6 +207,13 @@
             "in": "query",
             "required": false,
             "type": "boolean"
+          },
+          {
+            "name": "fogOfWar",
+            "description": "default false",
+            "in": "query",
+            "required": false,
+            "type": "boolean"
           }
         ],
         "tags": [
@@ -258,6 +265,13 @@
           {
             "name": "items",
             "description": "default true",
+            "in": "query",
+            "required": false,
+            "type": "boolean"
+          },
+          {
+            "name": "fogOfWar",
+            "description": "default false",
             "in": "query",
             "required": false,
             "type": "boolean"
@@ -1026,6 +1040,17 @@
       ],
       "default": "DAMAGE"
     },
+    "dungeonsandtrollsFogOfWarMap": {
+      "type": "object",
+      "properties": {
+        "position": {
+          "$ref": "#/definitions/dungeonsandtrollsPosition"
+        },
+        "fogOfWar": {
+          "type": "boolean"
+        }
+      }
+    },
     "dungeonsandtrollsGameState": {
       "type": "object",
       "properties": {
@@ -1170,14 +1195,9 @@
           "type": "number",
           "format": "float"
         },
-        "free": {
-          "type": "array",
-          "items": {
-            "type": "array",
-            "items": {
-              "type": "object"
-            }
-          }
+        "deprecationInSeconds": {
+          "type": "integer",
+          "format": "int32"
         },
         "objects": {
           "type": "array",
@@ -1185,10 +1205,16 @@
             "$ref": "#/definitions/dungeonsandtrollsMapObjects"
           }
         },
-        "ascii": {
+        "fogOfWar": {
           "type": "array",
           "items": {
-            "type": "string"
+            "$ref": "#/definitions/dungeonsandtrollsFogOfWarMap"
+          }
+        },
+        "userMap": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/dungeonsandtrollsUserSpecificMap"
           }
         }
       }
@@ -1580,6 +1606,21 @@
         }
       }
     },
+    "dungeonsandtrollsUserSpecificMap": {
+      "type": "object",
+      "properties": {
+        "position": {
+          "$ref": "#/definitions/dungeonsandtrollsPosition"
+        },
+        "distance": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "lineOfSight": {
+          "type": "boolean"
+        }
+      }
+    },
     "dungeonsandtrollsWaypoint": {
       "type": "object",
       "properties": {
@@ -1597,13 +1638,6 @@
         }
       },
       "additionalProperties": {}
-    },
-    "protobufNullValue": {
-      "type": "string",
-      "enum": [
-        "NULL_VALUE"
-      ],
-      "default": "NULL_VALUE"
     },
     "rpcStatus": {
       "type": "object",

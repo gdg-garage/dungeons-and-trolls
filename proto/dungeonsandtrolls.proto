@@ -136,6 +136,8 @@ message GameStateParams {
   optional bool blocking = 1;
   // default true
   optional bool items = 2;
+  // default false
+  optional bool fog_of_war = 3;
 }
 
 message AvailableLevels {
@@ -147,7 +149,9 @@ message GameStateParamsLevel {
   optional bool blocking = 1;
   // default true
   optional bool items = 2;
-  int32 level = 3;
+  // default false
+  optional bool fog_of_war = 3;
+  int32 level = 4;
 }
 
 message CommandsBatch {
@@ -371,12 +375,27 @@ message Level {
   int32 width = 2;
   int32 height = 3;
   float horror = 4;
-  repeated google.protobuf.ListValue free = 5;
+  int32 deprecation_in_seconds = 5;
+
   repeated MapObjects objects = 6;
-  repeated string ascii = 7;
+  repeated FogOfWarMap fog_of_war = 7;
+  repeated UserSpecificMap user_map = 8;
 }
 
-message Map { repeated Level levels = 1; }
+message UserSpecificMap {
+  Position position = 1;
+  int32 distance = 2;
+  bool line_of_sight = 3;
+}
+
+message FogOfWarMap {
+  Position position = 1;
+  bool fog_of_war = 3;
+}
+
+message Map {
+  repeated Level levels = 1;
+}
 
 message Event {
   enum Type {

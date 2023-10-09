@@ -163,6 +163,21 @@ func (g *Game) gameLoop() {
 		var respawnPlayers []*gameobject.Player
 		var deprecatedLevels []int32
 		var deprecatedZero bool
+
+		// Propagate level age timeout
+		for _, l := range g.Game.Map.Levels {
+			lc, err := g.GetCachedLevel(l.Level)
+			if err != nil {
+				log.Warn().Err(err).Msgf("level cache missing for %d", l.Level)
+			} else {
+				if l.Level == 0 {
+					l.DeprecationInSeconds = 30 - (g.Game.Tick - lc.GeneratedTick)
+				} else {
+					l.DeprecationInSeconds = (LevelAgeTimeout(l.Level) * 60) - (g.Game.Tick - lc.GeneratedTick)
+				}
+			}
+		}
+
 		for l, lc := range g.mapCache.Level {
 			if IsMapDeprecated(lc, g.Game.Tick, l) {
 				// map garbage collection
@@ -194,7 +209,6 @@ func (g *Game) gameLoop() {
 				if l == 0 {
 					deprecatedZero = true
 				}
-
 			}
 		}
 		for _, l := range deprecatedLevels {
@@ -243,6 +257,10 @@ func (g *Game) gameLoop() {
 	}
 }
 
+func LevelAgeTimeout(l int32) int32 {
+	return 10 + (l / 10)
+}
+
 func IsMapDeprecated(mm *LevelCache, t int32, l int32) bool {
 	if l == 0 {
 		if (t - mm.GeneratedTick) > 30 {
@@ -250,7 +268,7 @@ func IsMapDeprecated(mm *LevelCache, t int32, l int32) bool {
 			return true
 		}
 	} else {
-		if (t - mm.GeneratedTick) > 8*60 {
+		if (t - mm.GeneratedTick) > LevelAgeTimeout(l)*60 {
 			log.Info().Msgf("%d level is deprecated due to age", l)
 			return true
 		}

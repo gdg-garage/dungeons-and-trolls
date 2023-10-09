@@ -18,7 +18,7 @@ type LevelCache struct {
 	Grid               *paths.Grid
 	GeneratedTick      int32
 	LastInteractedTick int32
-	Fov                [][]bool
+	Fow                map[int32]map[int32]bool
 }
 
 type MapCache struct {
@@ -322,6 +322,7 @@ func (m *MapCache) createLevelCache(l int32) *LevelCache {
 			Objects: map[int32]map[int32]*api.MapObjects{},
 		}
 	}
+	m.Level[l].Fow = map[int32]map[int32]bool{}
 	return m.Level[l]
 }
 
@@ -369,6 +370,15 @@ func LevelsPostProcessing(g *Game, m *api.Map, mapCache *MapCache) error {
 		lc.GeneratedTick = g.Game.Tick
 		lc.LastInteractedTick = g.Game.Tick
 		lc.Grid = paths.NewGrid(int(l.Width), int(l.Height), 1, 1)
+
+		var x, y int32
+		for x = 0; x < l.Width; x++ {
+			lc.Fow[x] = map[int32]bool{}
+			for y = 0; y < l.Height; y++ {
+				// TODO enable FOW here + special handling for 0 level
+				lc.Fow[x][y] = false
+			}
+		}
 
 		spawn, err := findLevelSpawnPoint(l)
 		if err != nil {

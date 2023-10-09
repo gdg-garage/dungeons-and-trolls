@@ -117,6 +117,27 @@ func (s *server) gameState(ctx context.Context, params *api.GameStateParams, lev
 		g.ShopItems = []*api.Item{}
 	}
 
+	if params.FogOfWar != nil && *params.FogOfWar {
+		for _, l := range g.Map.Levels {
+			lc, err := s.G.GetCachedLevel(l.Level)
+			if err != nil {
+				return g, fmt.Errorf("level cache retrieval failed for level %d: %s", l.Level, err.Error())
+			}
+			for x, vy := range lc.Fow {
+				for y, fow := range vy {
+					log.Info().Msgf("adding fow for (%d, %d)", x, y)
+					l.FogOfWar = append(l.FogOfWar, &api.FogOfWarMap{
+						Position: &api.Position{
+							PositionX: x,
+							PositionY: y,
+						},
+						FogOfWar: fow,
+					})
+				}
+			}
+		}
+	}
+
 	// token not found
 	if err != nil || len(token) == 0 {
 		filterGameState(s.G, g, level)
@@ -200,6 +221,7 @@ func (s *server) GameLevel(ctx context.Context, params *api.GameStateParamsLevel
 	return s.gameState(ctx, &api.GameStateParams{
 		Blocking: params.Blocking,
 		Items:    params.Items,
+		FogOfWar: params.FogOfWar,
 	}, &params.Level)
 }
 
