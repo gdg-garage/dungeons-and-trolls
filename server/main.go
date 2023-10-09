@@ -50,14 +50,14 @@ func calculateDistanceAndLineOfSight(currentMap *api.Level, currentPosition *api
 	resultMap := make(map[PlainPos]MapCellExt)
 	// fill map with map objects
 	for _, objects := range currentMap.Objects {
-		resultMap[currentPlainPos] = MapCellExt{
+		resultMap[PlainPosFromApiPos(objects.Position)] = MapCellExt{
 			mapObjects:  objects,
-			distance:    math.MaxInt32,
+			distance:    -1,
 			lineOfSight: false,
 		}
 	}
 
-	//b.Logger.Debugw("Original map -> (player: A, no data / free: ' ', wall: w, spawn: *, stairs: s, unknown: ?)")
+	//log.Info().Msgf("Original map -> (player: A, no data / free: ' ', wall: w, spawn: *, stairs: s, unknown: ?)")
 	//for y := int32(0); y < currentMap.Height; y++ {
 	//	row := ""
 	//	for x := int32(0); x < currentMap.Width; x++ {
@@ -66,7 +66,7 @@ func calculateDistanceAndLineOfSight(currentMap *api.Level, currentPosition *api
 	//			row += "A"
 	//		} else if !found {
 	//			row += " "
-	//		} else if cell.mapObjects.IsSpawn {
+	//		} else if cell.mapObjects.IsSpawn != nil && *cell.mapObjects.IsSpawn {
 	//			row += "*"
 	//		} else if cell.mapObjects.IsStairs {
 	//			row += "s"
@@ -78,7 +78,7 @@ func calculateDistanceAndLineOfSight(currentMap *api.Level, currentPosition *api
 	//			row += "?"
 	//		}
 	//	}
-	//	//b.Logger.Debugf("Map row: %s (y = %d)", row, y)
+	//	log.Info().Msgf("Map row: %s (y = %d)", row, y)
 	//}
 
 	// standard BFS stuff
@@ -134,7 +134,7 @@ func calculateDistanceAndLineOfSight(currentMap *api.Level, currentPosition *api
 		}
 	}
 
-	//b.Logger.Debugw("Map with distances -> (player: A, no data: !, not reachable: ~, distance < 10: 0-9, distance >= 10: +)")
+	//log.Info().Msgf("Map with distances -> (player: A, no data: !, not reachable: ~, distance < 10: 0-9, distance >= 10: +)")
 	//for y := int32(0); y < currentMap.Height; y++ {
 	//	row := ""
 	//	for x := int32(0); x < currentMap.Width; x++ {
@@ -154,12 +154,12 @@ func calculateDistanceAndLineOfSight(currentMap *api.Level, currentPosition *api
 	//	//b.Logger.Debugf("Map row: %s (y = %d)", row, y)
 	//}
 
-	//b.Logger.Debugw("Map with line of sight -> (player: A, no data: !, line of sight: ' ', wall: w, no line of sight: ~)")
+	//log.Info().Msgf("Map with line of sight -> (player: A, no data: !, line of sight: ' ', wall: w, no line of sight: ~)")
 	//for y := int32(0); y < currentMap.Height; y++ {
 	//	row := ""
 	//	for x := int32(0); x < currentMap.Width; x++ {
 	//		cell, found := resultMap[makePosition(x, y)]
-	//		if makePosition(x, y) == currentPosition {
+	//		if currentPosition.PositionX == x && currentPosition.PositionY == y {
 	//			row += "A"
 	//		} else if !found {
 	//			row += "!"
@@ -171,7 +171,7 @@ func calculateDistanceAndLineOfSight(currentMap *api.Level, currentPosition *api
 	//			row += "~"
 	//		}
 	//	}
-	//	//b.Logger.Debugf("Map row: %s (y = %d)", row, y)
+	//	log.Info().Msgf("Map row: %s (y = %d)", row, y)
 	//}
 
 	return resultMap
@@ -213,19 +213,19 @@ func getLoS(currentLevel *api.Level, resultMap map[PlainPos]MapCellExt, distance
 	// TODO: somehow round the value to prevent cache misses
 	losDist, found := distanceToFirstObstacle[slope]
 	if found {
-		//b.Logger.Debugw("LoS: found in cache",
-		//	"playerPosition", pos1,
-		//	"position", pos2,
-		//	"slope", slope,
-		//	"distance", distance,
-		//	"lineOfSightDistance", losDist,
-		//	"lineOfSight", distance < float64(losDist),
-		//)
-		return distance < float64(losDist)
+		//	log.Info().Msgf("LoS: found in cache",
+		//		"playerPosition", pos1,
+		//		"position", pos2,
+		//		"slope", slope,
+		//		"distance", distance,
+		//		"lineOfSightDistance", losDist,
+		//		"lineOfSight", distance < float64(losDist),
+		//	)
+		//	return distance < float64(losDist)
 	}
 	losDist = rayTrace(currentLevel, resultMap, slope, x1, y1, x2, y2)
 	distanceToFirstObstacle[slope] = losDist
-	//b.Logger.Debugw("LoS: calculated",
+	//log.Info().Msgf("LoS: calculated",
 	//	"playerPosition", pos1,
 	//	"position", pos2,
 	//	"slope", slope,
@@ -338,7 +338,6 @@ func filterGameState(game *dungeonsandtrolls.Game, g *api.GameState, level *int3
 		}
 
 		if position != nil {
-			log.Info().Msgf("los")
 			distInfo := calculateDistanceAndLineOfSight(l, position)
 			for p, i := range distInfo {
 				l.PlayerMap = append(l.PlayerMap, &api.PlayerSpecificMap{
