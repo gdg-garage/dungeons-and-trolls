@@ -9,7 +9,8 @@ rm -rf /var/lib/apt/lists/*
 
 WORKDIR /app
 
-COPY go.mod go.sum
+COPY go.mod go.mod
+COPY go.sum go.sum
 RUN go mod download && go mod verify
 
 COPY . .
