@@ -32,6 +32,10 @@ func validateSkill(game *dungeonsandtrolls.Game, skillUse *api.SkillUse, p gameo
 		return fmt.Errorf("skill %s not found for Character %s", skillUse.SkillId, p.GetId())
 	}
 
+	if s.Flags.Passive {
+		return fmt.Errorf("passive skills cannot be used (they are used automatically)")
+	}
+
 	if skillUse.TargetId != nil && skillUse.Position != nil {
 		return fmt.Errorf("cannot use skill on target and location at the same time")
 	}
