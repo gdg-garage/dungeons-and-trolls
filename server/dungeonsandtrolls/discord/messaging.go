@@ -21,7 +21,7 @@ func getDiscordUser(s *discordgo.Session, guildId string, username string, discr
 	return nil, fmt.Errorf("user not found")
 }
 
-func parseUsernameAndDiscriminatorFromHandle(handle string) (string, string, error) {
+func ParseUsernameAndDiscriminatorFromHandle(handle string) (string, string, error) {
 	i := strings.Index(handle, "#")
 	if i > -1 {
 		if i >= len(handle)-1 {
@@ -58,7 +58,7 @@ func SendMessageToUser(message string, username string, discriminator string) er
 
 // Handle must be in format 'username#discriminator' or just 'username' if there is no discriminator.
 func SendAPIKeyToUser(apiKey string, handle string) error {
-	username, discriminator, err := parseUsernameAndDiscriminatorFromHandle(handle)
+	username, discriminator, err := ParseUsernameAndDiscriminatorFromHandle(handle)
 	if err != nil {
 		return err
 	}

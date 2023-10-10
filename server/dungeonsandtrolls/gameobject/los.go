@@ -203,7 +203,7 @@ func GetLoS(currentLevel *api.Level, resultMap map[PlainPos]MapCellExt, distance
 		//		"lineOfSightDistance", losDist,
 		//		"LineOfSight", Distance < float64(losDist),
 		//	)
-		//	return Distance < float64(losDist)
+		return distance < float64(losDist)
 	}
 	losDist = rayTrace(currentLevel, resultMap, slope, x1, y1, x2, y2)
 	distanceToFirstObstacle[slope] = losDist

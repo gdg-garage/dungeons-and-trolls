@@ -6,6 +6,7 @@ import (
 	"github.com/gdg-garage/dungeons-and-trolls/server/dungeonsandtrolls/api"
 	"github.com/gdg-garage/dungeons-and-trolls/server/dungeonsandtrolls/gameobject"
 	"github.com/gdg-garage/dungeons-and-trolls/server/dungeonsandtrolls/utils"
+	"github.com/rs/zerolog/log"
 )
 
 func checkDistance(playerPosition *api.Coordinates, playerAttributes *api.Attributes, c *api.Coordinates, s *api.Skill) error {
@@ -73,6 +74,8 @@ func validateSkill(game *dungeonsandtrolls.Game, skillUse *api.SkillUse, p gameo
 				}
 			}
 
+			log.Info().Msgf("current level for los %+v", currentLevel)
+
 			resultMap := make(map[gameobject.PlainPos]gameobject.MapCellExt)
 			for _, objects := range currentLevel.Objects {
 				resultMap[gameobject.PlainPosFromApiPos(objects.Position)] = gameobject.MapCellExt{
@@ -82,7 +85,7 @@ func validateSkill(game *dungeonsandtrolls.Game, skillUse *api.SkillUse, p gameo
 				}
 			}
 
-			if gameobject.GetLoS(currentLevel, resultMap, map[float32]float32{}, gameobject.CoordinatesToPosition(p.GetPosition()), targetPos) {
+			if !gameobject.GetLoS(currentLevel, resultMap, map[float32]float32{}, gameobject.CoordinatesToPosition(p.GetPosition()), targetPos) {
 				return fmt.Errorf("target is not in los")
 			}
 		}
