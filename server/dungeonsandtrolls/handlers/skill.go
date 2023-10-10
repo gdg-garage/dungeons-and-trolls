@@ -6,7 +6,6 @@ import (
 	"github.com/gdg-garage/dungeons-and-trolls/server/dungeonsandtrolls/api"
 	"github.com/gdg-garage/dungeons-and-trolls/server/dungeonsandtrolls/gameobject"
 	"github.com/gdg-garage/dungeons-and-trolls/server/dungeonsandtrolls/utils"
-	"github.com/rs/zerolog/log"
 )
 
 func checkDistance(playerPosition *api.Coordinates, playerAttributes *api.Attributes, c *api.Coordinates, s *api.Skill) error {
@@ -49,42 +48,42 @@ func validateSkill(game *dungeonsandtrolls.Game, skillUse *api.SkillUse, p gameo
 		}
 
 		if s.Flags.RequiresLineOfSight {
-			var targetPos gameobject.PlainPos
-			switch s.Target {
-			case api.Skill_character:
-				ti, err := game.GetObjectById(*skillUse.TargetId)
-				if err != nil {
-					return fmt.Errorf("targetId %s is not valid", *skillUse.TargetId)
-				}
-				t, ok := ti.(gameobject.Skiller)
-				if !ok {
-					return fmt.Errorf("using skill on wrong object type with id %s", *skillUse.TargetId)
-				}
-				targetPos = gameobject.PlainPosFromApiPos(gameobject.CoordinatesToPosition(t.GetPosition()))
-			case api.Skill_position:
-				targetPos = gameobject.PlainPosFromApiPos(skillUse.Position)
-			case api.Skill_none:
-				targetPos = gameobject.PlainPosFromApiPos(gameobject.CoordinatesToPosition(p.GetPosition()))
-			}
-
-			var currentLevel *api.Level
-			for _, l := range game.Game.Map.Levels {
-				if l.Level == p.GetPosition().Level {
-					currentLevel = l
-				}
-			}
-
-			log.Info().Msgf("current level for los %+v", currentLevel)
-
-			resultMap := make(map[gameobject.PlainPos]gameobject.MapCellExt)
-			for _, objects := range currentLevel.Objects {
-				resultMap[gameobject.PlainPosFromApiPos(objects.Position)] = gameobject.MapCellExt{
-					MapObjects:  objects,
-					Distance:    -1,
-					LineOfSight: false,
-				}
-				log.Info().Msgf("map cell los %+v", resultMap[gameobject.PlainPosFromApiPos(objects.Position)])
-			}
+			//var targetPos gameobject.PlainPos
+			//switch s.Target {
+			//case api.Skill_character:
+			//	ti, err := game.GetObjectById(*skillUse.TargetId)
+			//	if err != nil {
+			//		return fmt.Errorf("targetId %s is not valid", *skillUse.TargetId)
+			//	}
+			//	t, ok := ti.(gameobject.Skiller)
+			//	if !ok {
+			//		return fmt.Errorf("using skill on wrong object type with id %s", *skillUse.TargetId)
+			//	}
+			//	targetPos = gameobject.PlainPosFromApiPos(gameobject.CoordinatesToPosition(t.GetPosition()))
+			//case api.Skill_position:
+			//	targetPos = gameobject.PlainPosFromApiPos(skillUse.Position)
+			//case api.Skill_none:
+			//	targetPos = gameobject.PlainPosFromApiPos(gameobject.CoordinatesToPosition(p.GetPosition()))
+			//}
+			//
+			//var currentLevel *api.Level
+			//for _, l := range game.Game.Map.Levels {
+			//	if l.Level == p.GetPosition().Level {
+			//		currentLevel = l
+			//	}
+			//}
+			//
+			//log.Info().Msgf("current level for los %+v", currentLevel)
+			//
+			//resultMap := make(map[gameobject.PlainPos]gameobject.MapCellExt)
+			//for _, objects := range currentLevel.Objects {
+			//	resultMap[gameobject.PlainPosFromApiPos(objects.Position)] = gameobject.MapCellExt{
+			//		MapObjects:  objects,
+			//		Distance:    -1,
+			//		LineOfSight: false,
+			//	}
+			//	log.Info().Msgf("map cell los %+v", resultMap[gameobject.PlainPosFromApiPos(objects.Position)])
+			//}
 
 			//if !gameobject.GetLoS(currentLevel, resultMap, map[float32]float32{}, gameobject.CoordinatesToPosition(p.GetPosition()), targetPos) {
 			//	return fmt.Errorf("target is not in los")
