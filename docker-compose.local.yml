@@ -12,7 +12,7 @@ services:
       - 8080
     labels:
       - "traefik.http.routers.server.entrypoints=web"
-      - "traefik.http.routers.server.rule=Host(`localhost`)"
+      - "traefik.http.routers.server.rule=Host(`localhost`) || Host(`10.0.1.63`)"
       - "traefik.http.routers.server.middlewares=secured"
       - "traefik.http.middlewares.secured.chain.middlewares=server_compress,cors"
       - "traefik.http.middlewares.server_compress.compress=true"
