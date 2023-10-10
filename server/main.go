@@ -244,6 +244,7 @@ func (s *server) Register(ctx context.Context, user *api.User) (*api.Registratio
 	if err != nil {
 		return nil, err
 	}
+	r.ApiKey = nil
 	return r, nil
 }
 
