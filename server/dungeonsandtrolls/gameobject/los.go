@@ -2,6 +2,7 @@ package gameobject
 
 import (
 	"github.com/gdg-garage/dungeons-and-trolls/server/dungeonsandtrolls/api"
+	"github.com/rs/zerolog/log"
 	"math"
 )
 
@@ -252,8 +253,11 @@ func rayTrace(currentLevel *api.Level, resultMap map[PlainPos]MapCellExt, slope 
 		cell, found := resultMap[pos]
 
 		// obstacle hit if end of map OR not free
+		log.Info().Msgf("los level %+v", currentLevel)
+		log.Info().Msgf("los pos %+v", pos)
 		if !isInBounds(currentLevel, &pos) || (found && !cell.MapObjects.IsFree) {
 			dist := math.Sqrt(float64((x-x1)*(x-x1) + (y-y1)*(y-y1)))
+			log.Info().Msgf("los exit")
 			return float32(dist)
 		}
 
