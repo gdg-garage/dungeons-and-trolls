@@ -59,11 +59,13 @@ func Commands(game *dungeonsandtrolls.Game, c *api.CommandsBatch, token string) 
 	}
 
 	pc := game.GetCommands(p.Character.Id)
+	game.CommandsLock.Lock()
 	pc.Yell = c.Yell
 	pc.Buy = c.Buy
 	pc.PickUp = c.PickUp
 	pc.Skill = c.Skill
 	pc.AssignSkillPoints = c.AssignSkillPoints
+	game.CommandsLock.Unlock()
 
 	return nil
 }

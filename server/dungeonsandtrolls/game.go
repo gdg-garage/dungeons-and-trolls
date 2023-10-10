@@ -35,6 +35,7 @@ type Game struct {
 	MaxLevelReached int32                         `json:"max_reached_level"`
 	Game            api.GameState                 `json:"-"`
 	GameLock        sync.RWMutex                  `json:"-"`
+	CommandsLock    sync.RWMutex                  `json:"-"`
 	TickCond        *sync.Cond                    `json:"-"`
 
 	generatorLock sync.RWMutex
@@ -309,7 +310,9 @@ func (g *Game) MarkVisitedLevel(level int32) {
 }
 
 func (g *Game) Respawn(player *gameobject.Player, markDeath bool) {
+	g.CommandsLock.RLock()
 	g.Commands[player.GetId()] = &api.CommandsBatch{}
+	g.CommandsLock.RUnlock()
 	player.SetMovingTo(nil)
 
 	if markDeath {
@@ -951,10 +954,17 @@ func (g *Game) GetCurrentPlayer(token string) (*gameobject.Player, error) {
 }
 
 func (g *Game) GetCommands(pId string) *api.CommandsBatch {
+	g.CommandsLock.RLock()
 	if pc, ok := g.Commands[pId]; ok {
+		g.CommandsLock.RUnlock()
 		return pc
 	}
+	g.CommandsLock.RUnlock()
+
+	g.CommandsLock.Lock()
 	g.Commands[pId] = &api.CommandsBatch{}
+	defer g.CommandsLock.Unlock()
+
 	return g.Commands[pId]
 }
 

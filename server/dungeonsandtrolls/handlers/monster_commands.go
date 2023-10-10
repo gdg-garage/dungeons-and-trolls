@@ -57,8 +57,10 @@ func validateMonsterCommands(game *dungeonsandtrolls.Game, mc *api.CommandsForMo
 		}
 
 		pc := game.GetCommands(mId)
+		game.CommandsLock.Lock()
 		pc.Yell = c.Yell
 		pc.Skill = c.Skill
+		game.CommandsLock.Unlock()
 	}
 	return nil
 }
