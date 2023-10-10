@@ -4,6 +4,7 @@ import (
 	"github.com/gdg-garage/dungeons-and-trolls/server/dungeonsandtrolls/api"
 	"github.com/gdg-garage/dungeons-and-trolls/server/dungeonsandtrolls/utils"
 	"github.com/solarlune/paths"
+	"math/rand"
 )
 
 const ZeroLevel int32 = 0
@@ -36,8 +37,8 @@ type Skiller interface {
 }
 
 type TeleportPosition struct {
-	Move *api.Coordinates
-	// TODO add knockbacks - to have main influence
+	Move      *api.Coordinates
+	Knockback *utils.V
 }
 
 func TeleportMoveTo(s Skiller, c *api.Coordinates) {
@@ -48,4 +49,21 @@ func TeleportMoveTo(s Skiller, c *api.Coordinates) {
 		utils.ManhattanDistance(s.GetTeleportTo().Move.PositionX, s.GetTeleportTo().Move.PositionY, c.PositionX, c.PositionY) {
 		s.GetTeleportTo().Move = c
 	}
+}
+
+func Knockback(s Skiller, from *api.Coordinates) {
+	if s.GetTeleportTo().Knockback == nil {
+		s.GetTeleportTo().Knockback = &utils.V{} // null vector
+	}
+
+	to := s.GetPosition()
+	k := utils.VectorFromPoints(from.PositionX, from.PositionY, to.PositionX, to.PositionY)
+	// random move from self pos
+	if k.X == 0 && k.Y == 0 {
+		k.X += float64(rand.Intn(2) - 1)
+		k.Y += float64(rand.Intn(2) - 1)
+	}
+	utils.NormalizeVector(k)
+	utils.InverseVector(k)
+	utils.AddVectors(s.GetTeleportTo().Knockback, k)
 }

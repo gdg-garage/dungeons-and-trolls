@@ -657,6 +657,39 @@ func (g *Game) processCommands() {
 		}
 	}
 
+	// resolve teleports and knockbacks
+	for _, i := range g.idToObject {
+		switch c := i.(type) {
+		case gameobject.Skiller:
+			if c.GetTeleportTo().Move != nil {
+				log.Info().Msgf("moving %s (%s) based on casts %+v", c.GetId(), c.GetName(), c.GetTeleportTo().Move)
+				g.ForceMoveCharacter(c, c.GetTeleportTo().Move)
+			}
+			if c.GetTeleportTo().Knockback != nil {
+				c.SetMovingTo(nil)
+				k := c.GetTeleportTo().Knockback
+				utils.NormalizeVector(k)
+				whereTo := c.GetPosition()
+				whereTo.PositionX += int32(k.X)
+				whereTo.PositionY += int32(k.Y)
+				mo, err := g.GetObjectsOnPosition(whereTo)
+				if err != nil {
+					log.Warn().Err(err).Msgf("problem getting position during knockback")
+					continue
+				}
+				if mo != nil && !mo.IsFree {
+					log.Info().Msgf("cannot move based on knockback")
+					continue
+				}
+				log.Info().Msgf("moving %s (%s) based on knockback %+v", c.GetId(), c.GetName(), whereTo)
+				g.ForceMoveCharacter(c, whereTo)
+
+			}
+
+			c.ResetTeleportTo()
+		}
+	}
+
 	// Kill what is dead
 	// TODO solve kill stats (all players who interacted)
 	for _, i := range g.idToObject {
@@ -731,19 +764,6 @@ func (g *Game) processCommands() {
 			}
 		default:
 			continue
-		}
-	}
-
-	// resolve teleports and knockbacks
-	for _, i := range g.idToObject {
-		switch c := i.(type) {
-		case gameobject.Skiller:
-			// TODO add knockback
-			if c.GetTeleportTo().Move != nil {
-				log.Info().Msgf("moving %s (%s) based on casts %+v", c.GetId(), c.GetName(), c.GetTeleportTo().Move)
-				g.ForceMoveCharacter(c, c.GetTeleportTo().Move)
-			}
-			c.ResetTeleportTo()
 		}
 	}
 

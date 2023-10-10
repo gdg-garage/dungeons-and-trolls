@@ -218,7 +218,7 @@ func TilesInRange(game *Game, startingPosition *api.Coordinates, rng int32) []*a
 	return aoe
 }
 
-func findSkillerAndAddEffect(g *Game, tid string, damage float64, s *api.Skill, e *api.Attributes, duration int32, casterId string, targetPos *api.Coordinates) error {
+func findSkillerAndAddEffect(g *Game, tid string, damage float64, s *api.Skill, e *api.Attributes, duration int32, casterId string, targetPos *api.Coordinates, casterPos *api.Coordinates) error {
 	soi, err := g.GetObjectById(tid)
 	so := soi.(gameobject.Skiller)
 	if err != nil {
@@ -242,7 +242,7 @@ func findSkillerAndAddEffect(g *Game, tid string, damage float64, s *api.Skill, 
 	}
 
 	if s.CasterEffects.Flags.Knockback {
-		// todo knockback
+		gameobject.Knockback(so, casterPos)
 	}
 
 	return nil
@@ -354,7 +354,7 @@ func ExecuteSkill(game *Game, player gameobject.Skiller, su *api.SkillUse) error
 		}
 
 		if s.CasterEffects.Flags.Knockback {
-			// TODO flags knockback
+			gameobject.Knockback(player, targetPos)
 		}
 	}
 
@@ -483,7 +483,7 @@ func ExecuteSkill(game *Game, player gameobject.Skiller, su *api.SkillUse) error
 			})
 			for _, t := range TilesInRange(game, targetPos, int32(radiusValue)) {
 				for _, m := range t.Monsters {
-					err := findSkillerAndAddEffect(game, m.GetId(), d, s, e, int32(duration), casterId, targetPos)
+					err := findSkillerAndAddEffect(game, m.GetId(), d, s, e, int32(duration), casterId, targetPos, player.GetPosition())
 					if err != nil {
 						return err
 					}
@@ -492,7 +492,7 @@ func ExecuteSkill(game *Game, player gameobject.Skiller, su *api.SkillUse) error
 					if p.GetId() == player.GetId() && s.Target != api.Skill_character {
 						continue
 					}
-					err := findSkillerAndAddEffect(game, p.GetId(), d, s, e, int32(duration), casterId, targetPos)
+					err := findSkillerAndAddEffect(game, p.GetId(), d, s, e, int32(duration), casterId, targetPos, player.GetPosition())
 					if err != nil {
 						return err
 					}
@@ -502,7 +502,7 @@ func ExecuteSkill(game *Game, player gameobject.Skiller, su *api.SkillUse) error
 			// apply to everyone (else) on the same tile
 			for _, t := range TilesInRange(game, targetPos, 0) {
 				for _, m := range t.Monsters {
-					err := findSkillerAndAddEffect(game, m.GetId(), d, s, e, int32(duration), casterId, targetPos)
+					err := findSkillerAndAddEffect(game, m.GetId(), d, s, e, int32(duration), casterId, targetPos, player.GetPosition())
 					if err != nil {
 						return err
 					}
@@ -511,7 +511,7 @@ func ExecuteSkill(game *Game, player gameobject.Skiller, su *api.SkillUse) error
 					if p.GetId() == player.GetId() {
 						continue
 					}
-					err := findSkillerAndAddEffect(game, p.GetId(), d, s, e, int32(duration), casterId, targetPos)
+					err := findSkillerAndAddEffect(game, p.GetId(), d, s, e, int32(duration), casterId, targetPos, player.GetPosition())
 					if err != nil {
 						return err
 					}
@@ -519,13 +519,11 @@ func ExecuteSkill(game *Game, player gameobject.Skiller, su *api.SkillUse) error
 			}
 		} else if s.Target == api.Skill_character {
 			// apply to the target char regardless the range
-			err := findSkillerAndAddEffect(game, *su.TargetId, d, s, e, int32(duration), casterId, targetPos)
+			err := findSkillerAndAddEffect(game, *su.TargetId, d, s, e, int32(duration), casterId, targetPos, player.GetPosition())
 			if err != nil {
 				return err
 			}
 		}
-
-		// TODO flags (knockback)
 
 		for _, sum := range s.TargetEffects.Summons {
 			summon(game, sum, player, targetPos, int32(duration))
