@@ -50,7 +50,7 @@ func ValidateBuy(game *Game, p *gameobject.Player, identifiers *api.Identifiers)
 	}
 
 	// Propagate base attributes
-	err := gameobject.MergeAllAttributes(attributes, p.MaxStats, false)
+	err := gameobject.MergeAllAttributes(attributes, p.BaseAttributes, false)
 	if err != nil {
 		return err
 	}
