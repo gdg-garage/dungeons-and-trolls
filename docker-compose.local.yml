@@ -3,11 +3,11 @@ version: "3.8"
 services:
   server:
     build: server
-    environment:
-      - DISCORD_TOKEN=
-      - GARAGE_GUILD_ID=
+    env_file:
+      - discord.env
     volumes:
       - ./data:/app/data
+      - ./server/generator/dntgenerator:/app/server/generator/dntgenerator
     expose:
       - 8080
     labels:
@@ -56,7 +56,7 @@ services:
     image: timberio/vector:latest-debian
     restart: always
     volumes:
-      - ./config/vector.toml:/etc/vector/vector.toml:ro
+      - ./config/vector-prod.toml:/etc/vector/vector.toml:ro
       - /var/lib/docker/containers:/var/lib/docker/containers:ro
       - /var/run/docker.sock:/var/run/docker.sock
 
