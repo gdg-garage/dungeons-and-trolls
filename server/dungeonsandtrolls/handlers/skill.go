@@ -83,6 +83,7 @@ func validateSkill(game *dungeonsandtrolls.Game, skillUse *api.SkillUse, p gameo
 					Distance:    -1,
 					LineOfSight: false,
 				}
+				log.Info().Msgf("map cell los %+v", resultMap[gameobject.PlainPosFromApiPos(objects.Position)])
 			}
 
 			if !gameobject.GetLoS(currentLevel, resultMap, map[float32]float32{}, gameobject.CoordinatesToPosition(p.GetPosition()), targetPos) {
