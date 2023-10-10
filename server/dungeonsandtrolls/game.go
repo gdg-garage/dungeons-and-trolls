@@ -779,7 +779,7 @@ func (g *Game) GetPlayerByKey(apiKey string) (*gameobject.Player, error) {
 }
 
 func (g *Game) GetMoney() int32 {
-	return int32(math.Pow(float64(g.Score)*0.03, 0.75) + float64(420))
+	return int32(math.Pow(float64(g.Score)*0.001, 0.75) + float64(420))
 }
 
 func (g *Game) SpawnPlayer(p *gameobject.Player, level int32) {

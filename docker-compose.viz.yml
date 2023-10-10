@@ -1,0 +1,10 @@
+version: "3.8"
+
+services:
+  traefik:
+    image: nginx:latest
+    restart: always
+    volumes:
+      - .:/data:rw
+    ports:
+      - "80:80"
