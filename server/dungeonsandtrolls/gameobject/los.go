@@ -223,7 +223,7 @@ func rayTrace(currentLevel *api.Level, resultMap map[PlainPos]MapCellExt, slope 
 	dy := y2 - y1
 
 	if dx == 0 && dy == 0 {
-		return 0
+		return math.MaxFloat32
 	}
 
 	// Calculate absolute values of dx and dy
