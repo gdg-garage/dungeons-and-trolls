@@ -45,5 +45,6 @@ func RegisterUser(game *dungeonsandtrolls.Game, user *api.User) (*api.Registrati
 		ApiKey: &apiKey,
 	}
 	game.AddPlayer(gameobject.CreatePlayer(user.Username), r)
+	r.ApiKey = nil
 	return r, nil
 }
