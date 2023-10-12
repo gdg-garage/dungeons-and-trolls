@@ -41,6 +41,9 @@ func validateSkill(game *dungeonsandtrolls.Game, skillUse *api.SkillUse, p gameo
 	if (skillUse.TargetId != nil || skillUse.Position != nil) && (s.Target == api.Skill_none) {
 		return fmt.Errorf("skill target should be none")
 	}
+	if skillUse.Position == nil && s.Target == api.Skill_position {
+		return fmt.Errorf("skill location not specified")
+	}
 
 	if s.Flags != nil {
 		if s.Flags.Passive {
@@ -122,9 +125,6 @@ func validateSkill(game *dungeonsandtrolls.Game, skillUse *api.SkillUse, p gameo
 		}
 	}
 	if skillUse.Position != nil {
-		if skillUse.Position == nil && s.Target == api.Skill_position {
-			return fmt.Errorf("skill location not specified")
-		}
 		l, err := game.GetCachedLevel(p.GetPosition().Level)
 		if err != nil {
 			return fmt.Errorf("level not found")
