@@ -959,6 +959,24 @@ func (g *Game) AlwaysGetObjectsOnPosition(c *api.Coordinates) (*api.MapObjects, 
 		Position: gameobject.CoordinatesToPosition(c),
 		IsFree:   true,
 	}
+	found := false
+	var foundLevel *api.Level
+	for _, l := range g.Game.Map.Levels {
+		if l.Level != c.Level {
+			foundLevel = l
+			continue
+		}
+		for _, o := range l.Objects {
+			if o.Position.PositionX == c.PositionX && o.Position.PositionY == c.PositionY {
+				found = true
+				break
+			}
+		}
+		break
+	}
+	if !found && foundLevel != nil {
+		foundLevel.Objects = append(foundLevel.Objects, mo)
+	}
 	return lc.CacheObjectsOnPosition(c, mo), nil
 }
 

@@ -206,7 +206,6 @@ func TilesInRange(game *Game, startingPosition *api.Coordinates, rng int32) []*a
 			if dist > rng {
 				continue
 			}
-			// TODO create tile
 			mo, err := game.AlwaysGetObjectsOnPosition(p)
 			if mo == nil {
 				log.Warn().Err(err).Msgf("tile retrieval failed for aoe")
@@ -484,6 +483,9 @@ func ExecuteSkill(game *Game, player gameobject.Skiller, su *api.SkillUse) error
 			})
 			for _, t := range TilesInRange(game, targetPos, int32(radiusValue)) {
 				for _, m := range t.Monsters {
+					if m.GetId() == player.GetId() && s.Target != api.Skill_character {
+						continue
+					}
 					err := findSkillerAndAddEffect(game, m.GetId(), d, s, e, int32(duration), casterId, targetPos, player.GetPosition())
 					if err != nil {
 						return err
@@ -503,6 +505,9 @@ func ExecuteSkill(game *Game, player gameobject.Skiller, su *api.SkillUse) error
 			// apply to everyone (else) on the same tile
 			for _, t := range TilesInRange(game, targetPos, 0) {
 				for _, m := range t.Monsters {
+					if m.GetId() == player.GetId() {
+						continue
+					}
 					err := findSkillerAndAddEffect(game, m.GetId(), d, s, e, int32(duration), casterId, targetPos, player.GetPosition())
 					if err != nil {
 						return err
