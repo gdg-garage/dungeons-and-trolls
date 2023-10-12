@@ -192,12 +192,12 @@ func TilesInRange(game *Game, startingPosition *api.Coordinates, rng int32) []*a
 		return aoe
 	}
 	p := proto.Clone(startingPosition).(*api.Coordinates)
-	for x := startingPosition.PositionX - rng; x < startingPosition.PositionX+rng; x++ {
+	for x := startingPosition.PositionX - rng; x <= startingPosition.PositionX+rng; x++ {
 		if x < 0 || x >= lc.Height {
 			continue
 		}
 		p.PositionX = x
-		for y := startingPosition.PositionY - rng; y < startingPosition.PositionY+rng; y++ {
+		for y := startingPosition.PositionY - rng; y <= startingPosition.PositionY+rng; y++ {
 			if y < 0 || y >= lc.Width {
 				continue
 			}

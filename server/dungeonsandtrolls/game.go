@@ -273,10 +273,10 @@ func IsMapDeprecated(mm *LevelCache, t int32, l int32) bool {
 			log.Info().Msgf("%d level is deprecated due to age", l)
 			return true
 		}
-		if (t - mm.LastInteractedTick) > 60 {
-			log.Info().Msgf("%d level is deprecated due to inactivity", l)
-			return true
-		}
+		//if (t - mm.LastInteractedTick) > 60 {
+		//	log.Info().Msgf("%d level is deprecated due to inactivity", l)
+		//	return true
+		//}
 	}
 	return false
 }
