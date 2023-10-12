@@ -9,6 +9,7 @@ import (
 )
 
 const baseStat float32 = 100
+const baseResist float32 = 5
 
 type Player struct {
 	MovingTo       *paths.Path                 `json:"-"`
@@ -48,11 +49,11 @@ func (p *Player) InitAttributes() {
 		Willpower:    pointy.Float32(0),
 		Constitution: pointy.Float32(0),
 
-		SlashResist:    pointy.Float32(0),
-		PierceResist:   pointy.Float32(0),
-		FireResist:     pointy.Float32(0),
-		PoisonResist:   pointy.Float32(0),
-		ElectricResist: pointy.Float32(0),
+		SlashResist:    pointy.Float32(baseResist),
+		PierceResist:   pointy.Float32(baseResist),
+		FireResist:     pointy.Float32(baseResist),
+		PoisonResist:   pointy.Float32(baseResist),
+		ElectricResist: pointy.Float32(baseResist),
 
 		// necessary because scalar part in the skills would be zero or skipped
 		Constant: pointy.Float32(1),
@@ -66,6 +67,12 @@ func (p *Player) InitAttributes() {
 		Life:    pointy.Float32(baseStat * 1.5),
 		Mana:    pointy.Float32(baseStat),
 		Stamina: pointy.Float32(baseStat),
+
+		SlashResist:    pointy.Float32(baseResist),
+		PierceResist:   pointy.Float32(baseResist),
+		FireResist:     pointy.Float32(baseResist),
+		PoisonResist:   pointy.Float32(baseResist),
+		ElectricResist: pointy.Float32(baseResist),
 	}
 }
 
