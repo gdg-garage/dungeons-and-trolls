@@ -607,9 +607,18 @@ func (g *Game) processCommands() {
 						})
 					}
 				}
+
+				// what to keep
+				var keptEffects []*api.Effect
+				for _, e := range o.Effects {
+					e.Duration--
+					if e.Duration > 0 {
+						keptEffects = append(keptEffects, e)
+					}
+				}
+				o.Effects = keptEffects
 			}
 		}
-
 	}
 
 	for _, i := range g.idToObject {
