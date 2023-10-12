@@ -941,6 +941,18 @@ func (g *Game) GetCachedLevel(level int32) (*LevelCache, error) {
 	return g.mapCache.CachedLevel(level)
 }
 
+func (g *Game) AlwaysGetObjectsOnPosition(c *api.Coordinates) (*api.MapObjects, error) {
+	lc, err := g.mapCache.CachedLevel(c.Level)
+	if err != nil {
+		return nil, err
+	}
+	mo := &api.MapObjects{
+		Position: gameobject.CoordinatesToPosition(c),
+		IsFree:   true,
+	}
+	return lc.CacheObjectsOnPosition(c, mo), nil
+}
+
 func (g *Game) GetObjectsOnPosition(c *api.Coordinates) (*api.MapObjects, error) {
 	lc, err := g.mapCache.CachedLevel(c.Level)
 	if err != nil {

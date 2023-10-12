@@ -206,7 +206,8 @@ func TilesInRange(game *Game, startingPosition *api.Coordinates, rng int32) []*a
 			if dist > rng {
 				continue
 			}
-			mo, err := game.GetObjectsOnPosition(p)
+			// TODO create tile
+			mo, err := game.AlwaysGetObjectsOnPosition(p)
 			if mo == nil {
 				log.Warn().Err(err).Msgf("tile retrieval failed for aoe")
 				continue
