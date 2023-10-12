@@ -38,7 +38,7 @@ func CreatePlayer(name string) *Player {
 
 func (p *Player) InitAttributes() {
 	p.BaseAttributes = &api.Attributes{
-		Life:    pointy.Float32(baseStat),
+		Life:    pointy.Float32(baseStat * 1.5),
 		Mana:    pointy.Float32(baseStat),
 		Stamina: pointy.Float32(baseStat),
 
@@ -58,12 +58,12 @@ func (p *Player) InitAttributes() {
 		Constant: pointy.Float32(1),
 	}
 	p.MaxStats = &api.Attributes{
-		Life:    pointy.Float32(baseStat),
+		Life:    pointy.Float32(baseStat * 1.5),
 		Mana:    pointy.Float32(baseStat),
 		Stamina: pointy.Float32(baseStat),
 	}
 	p.Character.Attributes = &api.Attributes{
-		Life:    pointy.Float32(baseStat),
+		Life:    pointy.Float32(baseStat * 1.5),
 		Mana:    pointy.Float32(baseStat),
 		Stamina: pointy.Float32(baseStat),
 	}

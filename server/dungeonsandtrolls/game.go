@@ -598,7 +598,7 @@ func (g *Game) processCommands() {
 					if err != nil {
 						log.Warn().Err(err).Msg("")
 					} else {
-						pl.(*gameobject.Monster).AddEffect(&api.Effect{
+						pl.(*gameobject.Player).AddEffect(&api.Effect{
 							DamageType:   e.DamageType,
 							DamageAmount: e.DamageAmount,
 							XCasterId:    e.XCasterId,
