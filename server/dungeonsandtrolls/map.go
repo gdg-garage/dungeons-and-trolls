@@ -7,6 +7,7 @@ import (
 	"github.com/gdg-garage/dungeons-and-trolls/server/dungeonsandtrolls/gameobject"
 	"github.com/rs/zerolog/log"
 	"github.com/solarlune/paths"
+	"go.openly.dev/pointy"
 	"google.golang.org/protobuf/encoding/protojson"
 )
 
@@ -81,6 +82,7 @@ func parseLevel(level interface{}) (*api.Level, error) {
 			return nil, err
 		}
 	}
+	// Ground effects
 	return l, nil
 }
 
@@ -247,6 +249,15 @@ func parseMapObjects(tile map[string]interface{}, o *api.MapObjects) error {
 			o.Decorations = append(o.Decorations, i.Decoration)
 		case *api.Droppable_Waypoint:
 			o.Portal = i.Waypoint
+		case *api.Droppable_Skill:
+			// Spawn ground effects - using dummy monster
+			m := &api.Monster{
+				Name:       "dummy - ground effect",
+				Faction:    "none",
+				Attributes: &api.Attributes{Life: pointy.Float32(0), Constant: pointy.Float32(1)},
+				OnDeath:    []*api.Droppable{d}}
+			nonNilMonster(m)
+			o.Monsters = append(o.Monsters, m)
 		default:
 			log.Info().Msgf("I found something(%T) %v", i, i)
 		}

@@ -742,9 +742,11 @@ func (g *Game) processCommands() {
 						// TODO
 					case *api.Droppable_Item:
 						o.Item.Id = gameobject.GetNewId()
+						g.Register(o.Item)
 						po.Items = append(po.Items, o.Item)
 					case *api.Droppable_Monster:
 						o.Monster.Id = gameobject.GetNewId()
+						g.Register(o.Monster)
 						po.Monsters = append(po.Monsters, o.Monster)
 						g.Register(gameobject.CreateMonster(o.Monster, c.GetPosition()))
 					case *api.Droppable_Decoration:

@@ -193,12 +193,12 @@ func TilesInRange(game *Game, startingPosition *api.Coordinates, rng int32) []*a
 	}
 	p := proto.Clone(startingPosition).(*api.Coordinates)
 	for x := startingPosition.PositionX - rng; x <= startingPosition.PositionX+rng; x++ {
-		if x < 0 || x >= lc.Height {
+		if x < 0 || x >= lc.Width {
 			continue
 		}
 		p.PositionX = x
 		for y := startingPosition.PositionY - rng; y <= startingPosition.PositionY+rng; y++ {
-			if y < 0 || y >= lc.Width {
+			if y < 0 || y >= lc.Height {
 				continue
 			}
 			p.PositionY = y
@@ -358,7 +358,8 @@ func ExecuteSkill(game *Game, player gameobject.Skiller, su *api.SkillUse) error
 		}
 	}
 
-	if s.CasterEffects.Flags.GroundEffect {
+	// Ground effect
+	if s.CasterEffects.Flags.GroundEffect && s.TargetEffects != nil {
 		game.LogEvent(&api.Event{
 			Type:        &aoeEvent,
 			Message:     fmt.Sprintf("%s (%s): caused aoe ground effect", player.GetId(), player.GetName()),
@@ -367,7 +368,7 @@ func ExecuteSkill(game *Game, player gameobject.Skiller, su *api.SkillUse) error
 			Radius:      pointy.Float32(float32(radiusValue)),
 		})
 
-		e, err := gameobject.EvaluateSkillAttributes(s.CasterEffects.Attributes, player.GetAttributes())
+		e, err := gameobject.EvaluateSkillAttributes(s.TargetEffects.Attributes, player.GetAttributes())
 		if err != nil {
 			return err
 		}
